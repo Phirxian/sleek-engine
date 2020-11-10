@@ -1,0 +1,212 @@
+#include "Core.h"
+#include "Engine.h"
+
+#include <iostream>
+#include <unistd.h>
+#include <GL/gl.h>
+
+using namespace sleek;
+using namespace device;
+#define number 100
+
+namespace sample
+{
+    Engine::Engine(Core *mom) noexcept
+        : screen(mom->getDevice()), core(mom),
+          rotation(true), distance(50), metaball(40)
+    {
+        smgr = new sleek::scene3d::Scene(screen, mom->getDriver());
+
+        texture.push_back(mom->getLoader()->loadTexture("texture/crate.jpg"));
+//        texture.push_back(mom->getLoader()->loadTexture("texture/lena.pgm"));
+        texture.push_back(mom->getLoader()->loadTexture("texture/eye.png"));
+        texture.push_back(mom->getLoader()->loadTexture("texture/earth.jpg"));
+
+        for(auto &it : texture)
+        {
+            it->createIdentifier(mom->getContext());
+            it->getIdentifier()->update();
+        }
+
+        for(int i=0; i<3; i++)
+            metaball.balls.push_back({sleek::math::vec3f(0.0f, 0.0f, 0.0f), 25.0f*(i+1)});
+
+        tmp.reset(&metaball);
+        metaball.move();
+        metaball.update();
+        metaball.setThreshold(2.0f);
+
+//        core->getContext()->createVAO(tmp.get(), sleek::driver::VAO_DYNAMIC, sleek::driver::VAO_DYNAMIC);
+        core->getContext()->createVAO(tmp.get(), sleek::driver::VAO_STREAM, sleek::driver::VAO_STREAM);
+//        core->getContext()->createVAO(tmp.get(), sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
+
+        scene3d::real::Natif *cube = new scene3d::real::Natif(smgr);
+        auto mesh = std::shared_ptr<driver::mesh>(driver::Geometry().createCube({50, 50, 50}));
+        core->getContext()->createVAO(mesh.get(), sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
+        cube->setPosition({0,0,0});
+        cube->setMesh(mesh);
+        cube->setMaterial(buildMaterial(cube, "shader/object/default.vert", "shader/object/solid.frag", 0));
+        cube->getMaterial()->setFaceCulling(driver::rfc_front);
+        smgr->addSceneNode(cube);
+
+        scene3d::Node *grid = new scene3d::real::Grid(smgr);
+        grid->setMaterial(buildMaterial(grid, "shader/object/default.vert", "shader/object/solid.frag", 0));
+        smgr->addSceneNode(grid);
+
+        node = new scene3d::real::Natif(smgr);
+        node->setPosition({0,0,0});
+        node->setMaterial(buildMaterial(node, "shader/object/default.vert", "shader/object/sphere.frag", 1));
+        node->setMesh(tmp);
+        smgr->addSceneNode(node);
+
+        smgr->getCamera()->setRotation({0, 1, 0});
+        smgr->getCamera()->setTarget({0, 0, 0});
+
+//        sleep(20);
+    }
+
+    Engine::~Engine() noexcept
+    {
+        smgr->clear();
+    }
+
+    std::shared_ptr<sleek::driver::material> Engine::buildMaterial(sleek::scene3d::Node *node, std::string filename_vert, std::string filename_frag, int tid) noexcept
+    {
+        auto shade = core->getContext()->createShader();
+        auto mat = std::make_shared<driver::material>();
+
+        mat->setMode(driver::rmd_polygon);
+        mat->setShadeModel(driver::rsd_flat);
+        mat->setFaceCulling(driver::rfc_back);
+        mat->setMaterialRender(driver::rmt_solid);
+        mat->setShader(shade);
+
+        if(tid >= 0 && tid < texture.size())
+            mat->Texture.push_back(texture[tid]->getIdentifier().get());
+
+        auto vert = core->getFileSystem()->read(filename_vert);
+        auto frag = core->getFileSystem()->read(filename_frag);
+
+        shade->attacheShader(driver::shd_vert, vert->readAll(), "main");
+        shade->attacheShader(driver::shd_frag, frag->readAll(), "main");
+        // used to get information from material (like texture binding) by callback
+        shade->setLinkToMaterial(mat.get());
+        // used to get model view
+        shade->user[0] = node;
+
+        shade->setCallback([](driver::shader *i) noexcept
+        {
+            auto *node = static_cast<scene3d::Node*>(i->user[0]);
+            auto *camera = node->getScene()->getCamera();
+
+            i->setVariable("model",      node->getModelMatrix());
+            i->setVariable("view",       camera->getViewMatrix());
+            i->setVariable("projection", camera->getProjectionMatrix());
+
+            i->setTexture("base", i->getLinkFromMaterial()->Texture[0], 0);
+        });
+
+        shade->compileShader();
+
+        return mat;
+    }
+
+    bool Engine::manage(sleek::device::input *a) noexcept
+    {
+        if(smgr->manage(a))
+            return true;
+
+        if(a->type == EVENT_MOUSSE_UP)
+        {
+            if(a->mouse[MOUSE_WHEEL_DOWN])
+            {
+                distance *= 1.25;
+                return true;
+            }
+            if(a->mouse[MOUSE_WHEEL_UP])
+            {
+                distance *= 0.75;
+                return true;
+            }
+        }
+
+        if(a->type == EVENT_KEY_DOWN)
+        {
+            //! engine test
+            if(a->key[KEY_F11])
+            {
+                screen->setFullScreen(!screen->getInfo().fullscreen);
+                return true;
+            }
+
+            //! engine test
+            if(a->key[KEY_SPACE])
+            {
+                rotation = !rotation;
+                return true;
+            }
+
+            //! vertex buffer object, disable and enable
+            if(a->key[KEY_KEY_Q])
+            {
+                if(tmp->getIdentifier())
+                    tmp->setIdentifier(nullptr);
+                else
+                {
+                    core->getContext()->createVAO(tmp.get());
+                    tmp->getIdentifier()->update();
+                }
+                return true;
+            }
+
+            if(a->key[KEY_KEY_W])
+            {
+                node->getMaterial()->setWireframe(
+                    !node->getMaterial()->getWireframe()
+                );
+                return true;
+            }
+
+            if(a->key[KEY_KEY_S])
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void Engine::render() noexcept
+    {
+        if(rotation)
+        {
+            tm.update();
+
+            float c = 2.0f*cos(tm.getTimeMsec()/600);
+
+            metaball.balls[0].position.x = -8.0f*cos(tm.getTimeMsec()/700) - c;
+            metaball.balls[0].position.y =  8.0f*sin(tm.getTimeMsec()/600) - c;
+            metaball.balls[1].position.y =  10.0f*sin(tm.getTimeMsec()/400) + c;
+            metaball.balls[1].position.z =  10.0f*cos(tm.getTimeMsec()/400) - c;
+            metaball.balls[2].position.x = -15.0f*cos(tm.getTimeMsec()/400) - 0.2f*sin(tm.getTimeMsec()/600);
+            metaball.balls[2].position.z =  15.0f*sin(tm.getTimeMsec()/500) - 0.2f*sin(tm.getTimeMsec()/400);
+
+            metaball.move();
+            metaball.update();
+
+            if(tmp->getIdentifier())
+                tmp->getIdentifier()->update();
+        }
+
+        float rot = tm.getTimeMsec()/50.0f;
+
+        smgr->getCamera()->setPosition(
+            math::vec3f(
+                sin(rot/100)*2*distance, distance,
+                cos(rot/100)*2*distance
+            )
+        );
+
+        smgr->render();
+    }
+}

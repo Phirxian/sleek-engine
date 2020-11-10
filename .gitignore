@@ -1,0 +1,4 @@
+bin/libsleek-ext.a
+bin/main-app
+bin/libsleek-engine.a
+html/*
