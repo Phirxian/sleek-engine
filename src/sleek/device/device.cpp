@@ -88,14 +88,6 @@ namespace sleek
             return cpu;
         }
 
-        void Device::WarpMouse(const math::vec2i&) noexcept
-        {
-        }
-
-        void Device::ShowMouse(bool) noexcept
-        {
-        }
-
         void Device::setCaption(const std::string &name) noexcept
         {
             info.name = name;
@@ -133,14 +125,6 @@ namespace sleek
             current->type = EVENT_WINDOW_RESIZE;
         }
 
-        void Device::setWindowPos(const math::vec2i&) noexcept
-        {
-        }
-
-        void Device::setGamma(const math::pixel &c) noexcept
-        {
-        }
-
         void Device::setFullScreen(bool f) noexcept
         {
             info.fullscreen = f;
@@ -149,10 +133,6 @@ namespace sleek
         event *Device::getEventReceiver() const noexcept
         {
             return evt;
-        }
-
-        math::vec2i Device::getDesktopVideoSize() const noexcept
-        {
         }
 
         void Device::begin() noexcept

@@ -1,4 +1,3 @@
-
 #if defined __linux
     #define x11_device_support
 #elif defined WIN32 || WIN64
@@ -12,6 +11,7 @@
 
 //#define sdl_device_support²
 //#define sdl2_device_support
+//#define gtk3_device_support
 
 #define std_filesystem_support
 #define mem_filesystem_support

@@ -127,7 +127,6 @@ namespace sleek
 
         void Device_x11::setGamma(const math::pixel &c) noexcept
         {
-            Device::setGamma(c);
         }
 
         void Device_x11::setFullScreen(bool f) noexcept

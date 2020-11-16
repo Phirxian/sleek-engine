@@ -107,6 +107,8 @@ namespace sleek
                     return reinterpret_cast<std::uintptr_t>(&buffer[index]);
                 break;
             }
+            
+            return math::pixel(0, 0, 0);
         }
 
         TextureFormat texture::getFormat() const noexcept

@@ -14,15 +14,18 @@ namespace sleek
         static tsize_t tiff_Read(thandle_t st, tdata_t buffer, tsize_t size) noexcept
         {
             ((io::filereader*)st)->read(buffer, size);
+            return size;
         }
 
         static tsize_t tiff_Write(thandle_t st,tdata_t buffer,tsize_t size) noexcept
         {
             ((io::filewriter*)st)->write(buffer, size);
+            return size;
         }
 
         static int tiff_Close(thandle_t i) noexcept
         {
+            return 0;
         }
 
         static toff_t tiff_Seek(thandle_t st, toff_t pos, int whence) noexcept
@@ -31,11 +34,13 @@ namespace sleek
                 return 0xFFFFFFFF;
 
             ((io::filereader*)st)->seek(pos, whence);
+            
+            return (toff_t) ((io::filereader*)st)->pos();
         }
 
         static toff_t tiff_Size(thandle_t st) noexcept
         {
-            return ((io::filereader*)st)->size();
+            return (toff_t)((io::filereader*)st)->size();
         }
 
         static int tiff_Map(thandle_t, tdata_t*, toff_t*) noexcept

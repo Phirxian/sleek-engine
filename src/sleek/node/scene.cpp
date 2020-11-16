@@ -23,6 +23,7 @@ namespace sleek
         Node *Scene::addSceneNode(Node *t) noexcept
         {
             nd.push_back(t);
+            return t;
         }
 
         void Scene::removeNode(Node *t) noexcept

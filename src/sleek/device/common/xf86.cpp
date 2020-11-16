@@ -73,7 +73,6 @@ namespace sleek
         }
         void Device_xf86::setGamma(const math::pixel &c)
         {
-            Device::setGamma(c);
         }
         void Device_xf86::setFullScreen(bool f)
         {

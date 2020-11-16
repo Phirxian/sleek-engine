@@ -27,12 +27,12 @@ namespace sleek
 
         u8 texture_array::getComposantCount() const noexcept
         {
-            component;
+            return component;
         }
 
         u8 texture_array::getPitch() const noexcept
         {
-            pitch;
+            return pitch;
         }
 
         bool texture_array::push_back(std::shared_ptr<texture> tx) noexcept

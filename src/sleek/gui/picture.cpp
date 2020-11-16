@@ -39,6 +39,8 @@ namespace sleek
                     gui::IET_PICTURE_FOCUSED;
                 return true;
             }
+            
+            return frame::manage(e);
         }
 
         std::shared_ptr<driver::texture> picture::getTexture() const noexcept

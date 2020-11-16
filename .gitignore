@@ -1,4 +1,6 @@
 bin/libsleek-ext.a
 bin/main-app
+bin/.gdb_history
 bin/libsleek-engine.a
 html/*
+build/*

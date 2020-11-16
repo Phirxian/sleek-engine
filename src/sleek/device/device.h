@@ -35,16 +35,16 @@ namespace sleek
 
                 virtual const DeviceWindowManager getType() const { return DWM_COUNT; }
 
-                virtual void setGamma(const math::pixel&) noexcept;
+                virtual void setGamma(const math::pixel&) noexcept = 0;
                 virtual void setCaption(const std::string&) noexcept;
                 virtual void setEventReceiver(event*) noexcept;
                 virtual void setVideoSize(const math::vec2i&) noexcept;
-                virtual void setWindowPos(const math::vec2i&) noexcept;
+                virtual void setWindowPos(const math::vec2i&) noexcept = 0;
                 virtual void setFullScreen(bool) noexcept;
 
                 virtual void enableWindowDecorator(bool) noexcept;
 
-                virtual math::vec2i getDesktopVideoSize() const noexcept;
+                virtual math::vec2i getDesktopVideoSize() const noexcept = 0;
 
                 virtual std::shared_ptr<tool::cpuid> getCPUID() const noexcept;
                 virtual std::shared_ptr<spdlog::logger> getLogger() const noexcept;
@@ -63,8 +63,8 @@ namespace sleek
                     return shared_from_this();
                 }
 
-                virtual void WarpMouse(const math::vec2i&) noexcept;
-                virtual void ShowMouse(bool) noexcept;
+                virtual void WarpMouse(const math::vec2i&) noexcept = 0;
+                virtual void ShowMouse(bool) noexcept = 0;
 
                 virtual bool run() noexcept;
                 virtual void exit() noexcept;

@@ -39,7 +39,7 @@ namespace sleek
 
                 using file_list = std::vector<directory::entry>;
             public:
-                inline file_list::const_iterator begin() const noexcept { file.begin(); }
+                inline file_list::const_iterator begin() const noexcept { return file.begin(); }
                 inline file_list::const_iterator end() const noexcept { return file.end(); }
 
                 inline std::shared_ptr<directory> getptr() noexcept

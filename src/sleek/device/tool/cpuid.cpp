@@ -64,6 +64,7 @@ namespace sleek
 
             processor cpuid::getVirtualProcessor(const u32) const noexcept
             {
+                return proc[0];
             }
 
             void cpuid::updateVirtualProcessorInfo(const u32) noexcept
