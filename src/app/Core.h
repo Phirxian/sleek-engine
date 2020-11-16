@@ -1,7 +1,7 @@
 #ifndef SAMPLE_CORE
 #define SAMPLE_CORE
 
-#include "Engine.h"
+#include "sample/Sample.h"
 #include "PostProcessing.h"
 
 namespace sample
@@ -34,7 +34,7 @@ namespace sample
         private:
             sleek::math::timer time;
             PostProcessing *pp;
-            Engine *scene;
+            Sample *scene;
     };
 }
 #endif

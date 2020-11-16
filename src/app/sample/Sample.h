@@ -6,19 +6,16 @@
 #include "../sleek/loader/ressource_loader.h"
 #include "../sleek/gui/interface.h"
 #include "../sleek/math/math.h"
-
-#include "skinning/LinearBlend.h"
-#include "skinning/DualQuaternion.h"
 #include <map>
 
 namespace sample
 {
     class Core;
-    class Engine : public sleek::device::event
+    class Sample : public sleek::device::event
     {
         public:
-            Engine(Core*) noexcept;
-            virtual ~Engine() noexcept;
+            Sample(Core*) noexcept;
+            virtual ~Sample() noexcept;
 
             std::shared_ptr<sleek::driver::material> buildMaterial(
                 sleek::scene3d::Node *node, void *user,
@@ -28,7 +25,7 @@ namespace sample
                 int tid
             ) noexcept;
 
-            static void callback(sleek::driver::shader *i) noexcept
+            static void material_callback(sleek::driver::shader *i) noexcept
             {
                 auto *node = static_cast<sleek::scene3d::real::Natif*>(i->user[0]);
                 auto *camera = node->getScene()->getCamera();
@@ -43,28 +40,17 @@ namespace sample
             sleek::scene3d::Scene* getSceneManager() const noexcept { return smgr; }
             sleek::device::Device* getDevice() const noexcept { return screen; }
             sleek::math::timer* getTimer() noexcept { return &tm; }
-
-            bool manage(sleek::device::input*) noexcept override;
-
-            void render() noexcept;
-        private:
-            sleek::f32 distance;
-            bool rotation = 0;
-            float pitch = 0.f;
-            float rot = 0.f;
-
-            std::vector<std::shared_ptr<sleek::driver::texture>> texture;
-            std::vector<std::shared_ptr<sleek::driver::mesh>> mesh;
-            std::vector<sleek::scene3d::real::Natif*> node;
-
-            LinearBlend linear_blend;
-            DualQuaternion dual_quat;
-            DualQuaternion heart;
-        private:
-            sleek::math::timer tm;
+            
+            virtual void render() noexcept = 0;
+            
+        protected:
             sleek::device::Device *screen;
             sleek::scene3d::Scene *smgr;
+            
             sleek::scene3d::real::Grid *grid;
+            std::vector<std::shared_ptr<sleek::driver::texture>> texture;
+            
+            sleek::math::timer tm;
             Core *core;
     };
 }

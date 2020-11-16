@@ -1,5 +1,5 @@
 #include "Core.h"
-#include "Engine.h"
+#include "MetaballSample.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -11,9 +11,8 @@ using namespace device;
 
 namespace sample
 {
-    Engine::Engine(Core *mom) noexcept
-        : screen(mom->getDevice()), core(mom),
-          rotation(true), distance(50), metaball(40)
+    MetaballSample::MetaballSample(Core *mom) noexcept
+        : Sample(mom), rotation(true), distance(50), metaball(40)
     {
         smgr = new sleek::scene3d::Scene(screen, mom->getDriver());
 
@@ -45,73 +44,25 @@ namespace sample
         core->getContext()->createVAO(mesh.get(), sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
         cube->setPosition({0,0,0});
         cube->setMesh(mesh);
-        cube->setMaterial(buildMaterial(cube, "shader/object/default.vert", "shader/object/solid.frag", 0));
+        cube->setMaterial(buildMaterial(cube, nullptr, "shader/object/default.vert", "shader/object/solid.frag", Sample::material_callback, 0));
         cube->getMaterial()->setFaceCulling(driver::rfc_front);
         smgr->addSceneNode(cube);
 
-        scene3d::Node *grid = new scene3d::real::Grid(smgr);
-        grid->setMaterial(buildMaterial(grid, "shader/object/default.vert", "shader/object/solid.frag", 0));
-        smgr->addSceneNode(grid);
-
         node = new scene3d::real::Natif(smgr);
         node->setPosition({0,0,0});
-        node->setMaterial(buildMaterial(node, "shader/object/default.vert", "shader/object/sphere.frag", 1));
+        node->setMaterial(buildMaterial(node, nullptr, "shader/object/default.vert", "shader/object/sphere.frag", Sample::material_callback, 1));
         node->setMesh(tmp);
         smgr->addSceneNode(node);
 
         smgr->getCamera()->setRotation({0, 1, 0});
         smgr->getCamera()->setTarget({0, 0, 0});
-
-//        sleep(20);
     }
 
-    Engine::~Engine() noexcept
+    MetaballSample::~MetaballSample() noexcept
     {
-        smgr->clear();
     }
 
-    std::shared_ptr<sleek::driver::material> Engine::buildMaterial(sleek::scene3d::Node *node, std::string filename_vert, std::string filename_frag, int tid) noexcept
-    {
-        auto shade = core->getContext()->createShader();
-        auto mat = std::make_shared<driver::material>();
-
-        mat->setMode(driver::rmd_polygon);
-        mat->setShadeModel(driver::rsd_flat);
-        mat->setFaceCulling(driver::rfc_back);
-        mat->setMaterialRender(driver::rmt_solid);
-        mat->setShader(shade);
-
-        if(tid >= 0 && tid < texture.size())
-            mat->Texture.push_back(texture[tid]->getIdentifier().get());
-
-        auto vert = core->getFileSystem()->read(filename_vert);
-        auto frag = core->getFileSystem()->read(filename_frag);
-
-        shade->attacheShader(driver::shd_vert, vert->readAll(), "main");
-        shade->attacheShader(driver::shd_frag, frag->readAll(), "main");
-        // used to get information from material (like texture binding) by callback
-        shade->setLinkToMaterial(mat.get());
-        // used to get model view
-        shade->user[0] = node;
-
-        shade->setCallback([](driver::shader *i) noexcept
-        {
-            auto *node = static_cast<scene3d::Node*>(i->user[0]);
-            auto *camera = node->getScene()->getCamera();
-
-            i->setVariable("model",      node->getModelMatrix());
-            i->setVariable("view",       camera->getViewMatrix());
-            i->setVariable("projection", camera->getProjectionMatrix());
-
-            i->setTexture("base", i->getLinkFromMaterial()->Texture[0], 0);
-        });
-
-        shade->compileShader();
-
-        return mat;
-    }
-
-    bool Engine::manage(sleek::device::input *a) noexcept
+    bool MetaballSample::manage(sleek::device::input *a) noexcept
     {
         if(smgr->manage(a))
             return true;
@@ -176,7 +127,7 @@ namespace sample
         return false;
     }
 
-    void Engine::render() noexcept
+    void MetaballSample::render() noexcept
     {
         if(rotation)
         {

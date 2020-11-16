@@ -125,6 +125,8 @@ namespace sample
                     fb[i+1]->resize(core->getDevice()->getInfo().size);
             fb[0]->resize(core->getDevice()->getInfo().size);
         }
+        
+        return false;
     }
 
     void PostProcessing::begin() noexcept
