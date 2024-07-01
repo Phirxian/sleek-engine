@@ -19,7 +19,7 @@ namespace sleek
                     return RCTX_OGL3;
                 }
 
-                virtual std::shared_ptr<driver> createDriver() noexcept;
+                virtual std::shared_ptr<driver>  createDriver() noexcept;
                 virtual std::shared_ptr<texture> createScreenshot(const math::aabbox2du&) const noexcept;
 
                 virtual std::shared_ptr<identifier> createTexture(texture *o, bool dsa = true) const noexcept;

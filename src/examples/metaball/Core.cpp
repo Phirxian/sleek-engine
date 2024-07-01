@@ -4,7 +4,6 @@
 #include "../sleek/gui/statictext.h"
 
 #include "sample/MetaballSample.h"
-#include "sample/SkinningSample.h"
 
 #include <string>
 #include <sstream>
@@ -61,11 +60,7 @@ namespace sample
             guienv->getCursor()->setTexture(pointor);
         }
 
-        if(true)
-            scene = new SkinningSample(this);
-        else
-            scene = new MetaballSample(this);
-            
+        scene = new MetaballSample(this);
         screen->setEventReceiver(this);
 
 //        std::shared_ptr<sleek::gui::frame> par[4];

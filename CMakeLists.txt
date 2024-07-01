@@ -81,7 +81,7 @@ target_include_directories(sleek-engine PUBLIC ${PNG_INCLUDE_DIR})
 target_include_directories(sleek-engine PUBLIC ${TIFF_INCLUDE_DIR})
 target_include_directories(sleek-engine PUBLIC ${JPEG_INCLUDE_DIR})
 
-set(ALL_LIBS ${OPENGL_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} )
+set(ALL_LIBS ${OPENGL_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} Threads::Threads -lstdc++fs -lzip)
 
 if(X11_FOUND)
   add_definitions("-Dx11_device_support")
@@ -122,14 +122,17 @@ endif(TIFF_FOUND)
 ################################ project app ##################################
 ###############################################################################
 
-file(GLOB_RECURSE application  src/app/*.cpp src/app/*.c src/*.h)
+file(GLOB_RECURSE metaball  src/examples/metaball/*.cpp src/examples/metaball/*.c src/*.h)
+add_executable(metaball src/examples/metaball/main.cpp ${metaball})
+target_include_directories(metaball PUBLIC src/examples/metaball/ src/sleek/)
+target_link_libraries(metaball sleek-engine sleek-ext ${ALL_LIBS})
 
-add_executable(main-app src/app/main.cpp ${application})
-target_include_directories(main-app PUBLIC src/app/)
-target_include_directories(main-app PUBLIC src/sleek/)
+file(GLOB_RECURSE skinning  src/examples/skinning/*.cpp src/examples/skinning/*.c src/*.h)
+add_executable(skinning src/examples/skinning/main.cpp ${skinning})
+target_include_directories(skinning PUBLIC src/examples/skinning/ src/sleek/)
+target_link_libraries(skinning sleek-engine sleek-ext ${ALL_LIBS})
 
-
-target_link_libraries(
-    main-app sleek-engine sleek-ext ${ALL_LIBS}
-    Threads::Threads -lstdc++fs -lzip
-)
+file(GLOB_RECURSE space_shooter  src/examples/space-shooter/*.cpp src/examples/space-shooter/*.c src/*.h)
+add_executable(space-shooter src/examples/space-shooter/main.cpp ${space_shooter})
+target_include_directories(space-shooter PUBLIC src/examples/space-shooter src/sleek/)
+target_link_libraries(space-shooter sleek-engine sleek-ext ${ALL_LIBS})
