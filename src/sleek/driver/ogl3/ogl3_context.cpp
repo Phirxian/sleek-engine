@@ -19,7 +19,7 @@ namespace sleek
             auto sogl = (s && s->getType() == RCTX_OGL3) ?
                         reinterpret_cast<ogl3_context*>(s.get()) : 0;
 
-            if(d->getType() != device::DWM_SDL)
+            if(d->getType() != device::DWM_SDL && d->getType() != device::DWM_GLFW3)
             {
                 #if defined __linux
                     cx = nullptr;
@@ -32,8 +32,13 @@ namespace sleek
                         {
                             int context_attribs[] =
                             {
+                                #ifdef GLX_CONTEXT_MAJOR_VERSION_ARB
                                 GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
                                 GLX_CONTEXT_MINOR_VERSION_ARB, 1,
+                                #else
+                                GL_MAJOR_VERSION, 3,
+                                GL_MINOR_VERSION, 1,
+                                #endif
                                 None
                             };
 
@@ -92,8 +97,11 @@ namespace sleek
             if(checkExtension("GL_ARB_multitexture"))
             {
                 int texture_unity = reserved_texture;
-                glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texture_unity);
+                #ifdef GL_MAX_TEXTURE_UNITS_ARB
                 glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB,&texture_unity);
+                #else
+                glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texture_unity);
+                #endif
                 printf("Max texture units initialized: %d\n", texture_unity);
             }
             else printf("GL_ARB_multitexture: test fail\n");
@@ -322,6 +330,9 @@ namespace sleek
             testError(__LINE__, __FILE__);
 
             if(win->getType() == device::DWM_SDL)
+                return true;
+
+            if(win->getType() == device::DWM_GLFW3)
                 return true;
 
             #if defined __linux

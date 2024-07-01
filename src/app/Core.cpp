@@ -30,6 +30,13 @@ namespace sample
     {
         device::Device_stub info = device::Device_stub(512,512,32,false);
         screen = CreateDeviceWindowManager(device::DWM_X11, info);
+
+        if (screen == nullptr)
+        {
+            std::cout << "CreateDeviceWindowManager failed" << std::endl;
+            return;
+        }
+
         screen->setWindowPos((screen->getDesktopVideoSize()-screen->getInfo().size)/2);
         screen->setCaption("SleekThink !");
 
@@ -54,7 +61,7 @@ namespace sample
             guienv->getCursor()->setTexture(pointor);
         }
 
-        if(false)
+        if(true)
             scene = new SkinningSample(this);
         else
             scene = new MetaballSample(this);
@@ -166,6 +173,9 @@ namespace sample
 
     void Core::run() noexcept
     {
+        if (screen == nullptr)
+            return;
+
         srand(clock());
 
         time.update();

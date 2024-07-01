@@ -75,7 +75,7 @@ namespace sleek
 
                 img = std::make_shared<driver::texture>(math::vec2i(w, h));
 
-                bool succ = TIFFReadRGBAImageOriented(tif, w, h, (uint32*)img->getBuffer(), ORIENTATION_TOPLEFT, 0);
+                bool succ = TIFFReadRGBAImageOriented(tif, w, h, (uint32_t*)img->getBuffer(), ORIENTATION_TOPLEFT, 0);
                 TIFFClose(tif);
 
                 if(!succ)

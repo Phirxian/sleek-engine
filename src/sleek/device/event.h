@@ -39,6 +39,7 @@ namespace sleek
                 friend class Device_win;
                 friend class Device_x11;
                 friend class Device_xf86;
+                friend class Device_glfw3;
                 bool asRunning;
         };
         struct input

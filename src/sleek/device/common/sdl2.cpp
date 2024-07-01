@@ -161,7 +161,6 @@ namespace sleek
             SDL_GL_SwapWindow(display);
             if(!reading) return;
             Device::end();
-            os::Sleeping(1);
             reading = false;
         }
 

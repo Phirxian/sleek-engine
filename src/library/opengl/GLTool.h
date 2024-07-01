@@ -1,4 +1,4 @@
-//#include "gl.h"
+#include <opengl/GLee.h>
 
 void glRotatef(GLfloat x, GLfloat y, GLfloat z);
 void glQuad();

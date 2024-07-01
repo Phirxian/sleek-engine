@@ -1,4 +1,3 @@
-#include "gl.h"
 #include "GLTool.h"
 
 void glRotatef(GLfloat x, GLfloat y, GLfloat z)

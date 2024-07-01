@@ -14,15 +14,24 @@ namespace sleek
             GL_DEPTH_COMPONENT,
 
             //! rgb
-
+            #ifdef GL_LUMINANCE
             GL_LUMINANCE,
             GL_LUMINANCE_ALPHA,
+            #else
+            GL_RED,
+            GL_RG,
+            #endif
+
             GL_RGB,
             GL_RGBA,
 
             //! float
 
+            #ifdef GL_LUMINANCE
             GL_LUMINANCE,
+            #else
+            GL_RED,
+            #endif
             GL_RG,
             GL_RGB,
             GL_RGBA
@@ -50,7 +59,7 @@ namespace sleek
 
         static const unsigned int ogl3_texture_componantes[] = {
             GL_DEPTH_COMPONENT,
-            GL_LUMINANCE8,       GL_RG8,   GL_RGB8,   GL_RGBA8,
+            GL_LUMINANCE8_EXT,   GL_RG8,   GL_RGB8,   GL_RGBA8,
             GL_LUMINANCE32F_ARB, GL_RG32F, GL_RGB32F, GL_RGBA32F
         };
 

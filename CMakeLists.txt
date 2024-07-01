@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 project(SleekThink)
 
 SET(CMAKE_CXX_FLAGS_RELEASE "-O6 -ffast-math -Os")
@@ -35,14 +35,29 @@ endif()
 
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
+add_definitions("-DGL_GLEXT_LEGACY")
+add_definitions("-DGLEW_STATICY")
+add_definitions("-DGL3_PROTOTYPES")
+add_definitions("-DGLX_GLXEXT_LEGACY")
 
-find_package(X11 REQUIRED)
+# Opengl
 find_package(OpenGL REQUIRED)
-find_package(PNG REQUIRED)
-find_package(TIFF REQUIRED)
-find_package(JPEG REQUIRED)
 find_package(Threads REQUIRED)
 find_package(GLUT REQUIRED)
+find_package(GLEW REQUIRED)
+
+#devices
+find_package(X11 REQUIRED)
+find_package(SDL)
+find_package(SDL2)
+find_package(glfw3)
+
+#images
+find_package(PNG)
+find_package(TIFF)
+find_package(JPEG)
+
+
 
 include_directories("src/app")
 include_directories("src/sleek")
@@ -66,6 +81,43 @@ target_include_directories(sleek-engine PUBLIC ${PNG_INCLUDE_DIR})
 target_include_directories(sleek-engine PUBLIC ${TIFF_INCLUDE_DIR})
 target_include_directories(sleek-engine PUBLIC ${JPEG_INCLUDE_DIR})
 
+set(ALL_LIBS ${OPENGL_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} )
+
+if(X11_FOUND)
+  add_definitions("-Dx11_device_support")
+  list(APPEND ALL_LIBS ${X11_LIBRARIES})
+  list(APPEND ALL_LIBS -lXxf86vm)
+endif(X11_FOUND)
+
+if(SDL_FOUND)
+  add_definitions("-Dsdl_device_support")
+endif(SDL_FOUND)
+
+if(SDL2_FOUND)
+  add_definitions("-Dsdl2_device_support")
+  list(APPEND ALL_LIBS ${SDL2_LIBRARIES})
+endif(SDL2_FOUND)
+
+if(glfw3_FOUND)
+  add_definitions("-Dglfw3_device_support")
+  list(APPEND ALL_LIBS glfw)
+endif(glfw3_FOUND)
+
+if(PNG_FOUND)
+  add_definitions("-Dtexture_loader_png_support")
+  list(APPEND ALL_LIBS ${PNG_LIBRARIES})
+endif(TIFF_FOUND)
+
+if(TIFF_FOUND)
+  add_definitions("-Dtexture_loader_tiff_support")
+  list(APPEND ALL_LIBS ${TIFF_LIBRARIES})
+endif(TIFF_FOUND)
+
+if(JPEG_FOUND)
+  add_definitions("-Dtexture_loader_jpeg_support")
+  list(APPEND ALL_LIBS ${JPEG_LIBRARIES})
+endif(TIFF_FOUND)
+
 ###############################################################################
 ################################ project app ##################################
 ###############################################################################
@@ -76,9 +128,8 @@ add_executable(main-app src/app/main.cpp ${application})
 target_include_directories(main-app PUBLIC src/app/)
 target_include_directories(main-app PUBLIC src/sleek/)
 
+
 target_link_libraries(
-    main-app sleek-engine sleek-ext
-    ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${TIFF_LIBRARIES}
-    ${X11_LIBRARIES} ${OPENGL_LIBRARY} ${GLUT_LIBRARY}
-    Threads::Threads -lstdc++fs -lXxf86vm -lzip
+    main-app sleek-engine sleek-ext ${ALL_LIBS}
+    Threads::Threads -lstdc++fs -lzip
 )

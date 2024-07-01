@@ -4,6 +4,7 @@
 #include "common/win.h"
 #include "common/x11.h"
 #include "common/xf86.h"
+#include "common/glfw3.h"
 #include <iostream>
 
 #include "console/spdlog.h"
@@ -39,6 +40,9 @@ namespace sleek
                 #endif
                 #if defined win_device_support
                     case DWM_WIN: return std::make_shared<Device_win>(info); break;
+                #endif
+                #if defined glfw3_device_support
+                    case DWM_GLFW3: return std::make_shared<Device_glfw3>(info); break;
                 #endif
             }
 

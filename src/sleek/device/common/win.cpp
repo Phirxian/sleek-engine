@@ -91,10 +91,41 @@ namespace sleek
 
         void Device_win::setGamma(const math::pixel &c)
         {
+			HDC hDC = GetDC(NULL); // Get the device context for the entire desktop
+			if (hDC)
+			{
+				// Set the gamma ramp for each color component
+				SetDeviceGammaRamp(hDC, &c.ptr);
+				ReleaseDC(NULL, hDC);
+			}
         }
 
         void Device_win::setFullScreen(bool f)
         {
+			static RECT windowRect;
+			static bool isFullScreen = false;
+
+			if (f && !isFullScreen)
+			{
+				// Store the current window position and size
+				GetWindowRect(screen, &windowRect);
+
+				// Set the window style to remove the caption and border
+				SetWindowLongPtr(screen, GWL_STYLE, WS_OVERLAPPEDWINDOW & ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU));
+
+				// Move the window to cover the entire desktop
+				SetWindowPos(screen, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_FRAMECHANGED);
+
+				isFullScreen = true;
+			}
+			else if (!f && isFullScreen)
+			{
+				// Restore the window style and position
+				SetWindowLongPtr(screen, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+				SetWindowPos(screen, HWND_TOP, windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_FRAMECHANGED);
+
+				isFullScreen = false;
+			}
         }
 
         bool Device_win::run()

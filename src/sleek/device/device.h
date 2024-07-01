@@ -24,6 +24,8 @@ namespace sleek
             DWM_AUTO,
             DWM_SDL,
             DWM_X11,
+            DWM_XF86,
+            DWM_GLFW3,
             DWM_WIN,
             DWM_COUNT
         };

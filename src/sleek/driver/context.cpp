@@ -1,3 +1,4 @@
+#include "../device/device.h"
 #include "context.h"
 
 #include "ogl3/ogl3_context.h"
@@ -23,6 +24,9 @@ namespace sleek
 
         std::shared_ptr<context> createContextRenderer(RENDER_CONTEXT cx, std::shared_ptr<device::Device> &d, std::shared_ptr<context> s) noexcept
         {
+            if(d->getType() == device::DWM_SDL || d->getType() == device::DWM_GLFW3)
+                return std::make_shared<ogl3_context>(d, s);
+
             switch(cx)
             {
                 case RCTX_OGL3:
