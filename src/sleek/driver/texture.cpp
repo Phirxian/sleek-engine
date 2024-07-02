@@ -20,8 +20,8 @@ namespace sleek
         texture::texture(const math::vec2i &size, const TextureFormat p, u8 *data) noexcept
             : gpu(nullptr), buffer(0), fmt(p)
         {
-            pitch = TextureFormatSize[p-1];
-            component = TextureFormatComponant[p-1];
+            pitch = TextureFormatSize[p];
+            component = TextureFormatComponant[p];
             original = size;
             buffer = data ? data : new u8[getBufferSize()];
         }
@@ -42,7 +42,12 @@ namespace sleek
 
         void texture::setPixel(const math::vec2i &pos, const math::pixel &color) noexcept
         {
-            u8* pixel = &buffer[(pos.x+pos.y*original.x)*pitch];
+            int idx = (pos.x+pos.y*original.x)*pitch;
+
+            if(idx > getBufferSize())
+                return;
+
+            u8* pixel = &buffer[idx];
             switch(fmt)
             {
                 case TXFMT_LUMINANCE:
@@ -91,6 +96,7 @@ namespace sleek
         math::pixel texture::getPixel(const math::vec2i &pos) const noexcept
         {
             register unsigned long index = indexof(pos);
+            
             switch(fmt)
             {
                 case TXFMT_LUMINANCE:       return math::pixel(buffer[index],buffer[index],buffer[index],255);                  break;

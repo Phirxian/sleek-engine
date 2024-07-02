@@ -54,7 +54,7 @@
                 private:
                     Cursor invisCursor;
                     void CreateX11Cursor() noexcept;
-                    void keymap(XEvent,input*) noexcept;
+                    void keymap(XEvent, input*, bool) noexcept;
             };
         }
     }

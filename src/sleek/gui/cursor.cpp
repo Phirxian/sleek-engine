@@ -48,7 +48,6 @@ namespace sleek
                 return false;
 
             pos = a->mouse_pos;
-
             return true;
         }
 

@@ -71,7 +71,11 @@ namespace sleek
 
             virtual inline void setId(const u32 i) noexcept { id = i; }
             virtual inline u32 getId() const noexcept { return id; }
+
+            virtual inline void setUser(void *i) noexcept { userdata = i; }
+            virtual inline void* getUser() const noexcept { return userdata; }
         protected:
+            void *userdata;
             std::vector<reference*> bloc;
             std::vector<attribute> info;
             std::string TypeName;

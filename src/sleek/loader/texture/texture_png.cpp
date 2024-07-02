@@ -128,8 +128,11 @@ namespace sleek
                 row_pointers = new png_bytep[h];
 
                 // vertival flip or not ? comment = not
-                //for(register unsigned int i = 0; i < h; ++i) row_pointers[i] = (png_bytep)(texels+(i*w*internalFormat));
-                for(register unsigned int i = 0; i < h; ++i) row_pointers[i] = (png_bytep)(texels+((h-(i+1))*w*internalFormat));
+                //for(register unsigned int i = 0; i < h; ++i)
+                //    row_pointers[i] = (png_bytep)(texels+(i*w*internalFormat));
+                
+                for(register unsigned int i = 0; i < h; ++i)
+                    row_pointers[i] = (png_bytep)(texels+((h-(i+1))*w*internalFormat));
 
                 png_read_image(png_ptr, row_pointers);
                 png_read_end(png_ptr, 0);
@@ -150,10 +153,6 @@ namespace sleek
         bool textureloader_png::write(driver::texture *img, io::filewriter *file) const noexcept
         {
             #ifdef texture_loader_png_support
-                //! no floating texture supported
-                if(img->getFormat() >= 5)
-                    return false;
-
                 png_structp p = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
                 png_infop info_ptr = png_create_info_struct(p);
 
@@ -161,25 +160,60 @@ namespace sleek
                     PNG_COLOR_TYPE_GRAY,
                     PNG_COLOR_TYPE_GRAY_ALPHA,
                     PNG_COLOR_TYPE_RGB,
-                    PNG_COLOR_TYPE_RGB_ALPHA
+                    PNG_COLOR_TYPE_RGB_ALPHA,
                 };
+
+                int colorType = png_color_type[img->getComposantCount()];
 
                 png_set_IHDR(
                     p, info_ptr,
                     img->getDimension().x,
                     img->getDimension().y,
-                    8, png_color_type[img->getComposantCount()],
+                    img->getFormat() >= 5 ? 32 : 8,
+                    colorType,
                     PNG_INTERLACE_NONE,
                     PNG_COMPRESSION_TYPE_DEFAULT,
                     PNG_FILTER_TYPE_DEFAULT
                 );
 
-                std::vector<u8*> rows(img->getDimension().y);
-                for (size_t y = 0; y<img->getDimension().y; ++y)
-                    rows[y] = img->getBuffer() + img->indexof({0,y});
-
-                png_set_rows(p, info_ptr, &rows[0]);
                 png_set_write_fn(p, file, user_write_data_fcn, NULL);
+                png_write_info(p, info_ptr);
+
+                //std::vector<png_bytep> row_pointers(img->getDimension().y);
+                //for (int y = 0; y < img->getDimension().y; y++)
+                //    row_pointers[y] = const_cast<png_bytep>(&img->getBuffer()[(y * img->getDimension().x)*img->getPitch()]);
+
+
+                std::vector<png_bytep> row_pointers(img->getDimension().y);
+                for (int y = 0; y < img->getDimension().y; ++y)
+                {
+                    row_pointers[y] = new png_byte[png_get_rowbytes(p, info_ptr)];
+                    for (int x = 0; x < img->getDimension().x; ++x)
+                    {
+                        math::pixel pixel = img->getPixel(math::vec2i(x, y));
+                        int index = x * png_get_channels(p, info_ptr);
+                        
+                        row_pointers[y][index] = pixel.red;
+
+                        if(colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
+                            row_pointers[y][index + 1] = pixel.alpha;
+
+                        if(colorType == PNG_COLOR_TYPE_RGB)
+                        {
+                            row_pointers[y][index + 1] = pixel.green;
+                            row_pointers[y][index + 2] = pixel.blue;
+                        }
+
+                        if (colorType == PNG_COLOR_TYPE_RGBA)
+                        {
+                            row_pointers[y][index + 1] = pixel.green;
+                            row_pointers[y][index + 2] = pixel.blue;
+                            row_pointers[y][index + 3] = pixel.alpha;
+                        }
+                    }
+                }
+
+                png_set_rows(p, info_ptr, &row_pointers[0]);
                 png_write_png(p, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
                 png_destroy_write_struct(&p, NULL);
 

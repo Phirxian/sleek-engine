@@ -53,6 +53,7 @@ namespace sleek
 
             bool mouse[MOUSE_CODE_COUNT];
             bool key[KEY_KEY_CODES_COUNT];
+            bool key_state[KEY_KEY_CODES_COUNT];
 
             struct
             {

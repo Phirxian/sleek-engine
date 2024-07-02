@@ -44,7 +44,7 @@
                     XEvent       xev;
                     XSetWindowAttributes swa;
                 private:
-                    void keymap(XEvent a, input *i);
+                    void keymap(XEvent a, input *i, bool);
             };
         }
     }

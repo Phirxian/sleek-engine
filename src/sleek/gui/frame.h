@@ -53,8 +53,8 @@ namespace sleek
                 virtual u32 getTextSize() const noexcept;
                 virtual bool isVisible() const noexcept;
 
-                virtual void setFontCache(std::shared_ptr<fontcache>) noexcept;
-                std::shared_ptr<fontcache> getFontCache() const noexcept;
+                virtual void setFontCache(std::shared_ptr<driver::texture>) noexcept;
+                std::shared_ptr<driver::texture> getFontCache() const noexcept;
 
                 virtual void move(math::vec2i) noexcept;
                 virtual bool manage(device::input*) noexcept;
@@ -65,7 +65,9 @@ namespace sleek
             protected:
                 frame() noexcept {}
 
-                std::shared_ptr<font>  ft2;
+                std::shared_ptr<font> ft2;
+                std::shared_ptr<driver::texture> fontcache;
+                
                 frame* parent;
                 interface *mom;
 
@@ -76,7 +78,6 @@ namespace sleek
                 std::string text;
                 math::pixel textcolor;
                 u32 textsize;
-                std::shared_ptr<fontcache> cache;
 
                 virtual void renderChild() noexcept;
 

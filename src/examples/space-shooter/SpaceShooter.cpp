@@ -14,7 +14,7 @@ SpaceShooter::SpaceShooter() noexcept
     device::Device_stub info = device::Device_stub(512, 512, 32, false);
     screen = CreateDeviceWindowManager(device::DWM_X11, info);
 
-    if (screen == nullptr)
+    if(screen == nullptr)
     {
         std::cout << "CreateDeviceWindowManager failed" << std::endl;
         return;
@@ -22,6 +22,7 @@ SpaceShooter::SpaceShooter() noexcept
 
     screen->setWindowPos((screen->getDesktopVideoSize()-screen->getInfo().size)/2);
     screen->setCaption("SleekThink !");
+    screen->setEventReceiver(this);
 
     renderer = createContextRenderer(driver::RCTX_OGL3, screen);
     renderer->setAntialiasing(driver::DAM_NICE);
@@ -32,8 +33,12 @@ SpaceShooter::SpaceShooter() noexcept
     loader = std::make_shared<sleek::loader::loader>(fs);
 
     guienv = sleek::gui::createGUIEnvironment(screen, driver);
-    guienv->getCursor()->showCursor(false);
+    guienv->getCursor()->showCursor(true);
     guienv->getCursor()->showTexture(true);
+
+    auto button = guienv->addButton("Play", {100, 100, 200, 150});
+    button->setTextColor({255,128,0,255});
+    guienv->addCustomFrame(button);
 
     pointor = loader->loadTexture("texture/pointor.bmp");
 
@@ -80,29 +85,35 @@ sleek::io::filesystem* SpaceShooter::getFileSystem() const noexcept
     return fs.get();
 }
 
-bool SpaceShooter::manage(sleek::device::input *a) noexcept
+bool SpaceShooter::manage(sleek::device::input *e) noexcept
 {
-    if(a->type == sleek::device::EVENT_WINDOW_RESIZE)
+    if(e->type == sleek::device::EVENT_WINDOW_RESIZE)
         renderer->setViewport(screen->getInfo().size);
 
-    if(a->type == sleek::device::EVENT_KEY_DOWN)
+    if(e->type == sleek::device::EVENT_KEY_DOWN)
     {
-        if(a->key[sleek::device::KEY_KEY_Q] && a->key[sleek::device::KEY_CONTROL])
+        if(e->key_state[sleek::device::KEY_KEY_Q] && e->key_state[sleek::device::KEY_CONTROL])
         {
+            this->exit();
+            e->exit_msg = true;
             screen->exit();
             return true;
         }
     }
 
-    //pp->manage(a);
+    //pp->manage(e);
 
-    if(guienv->manage(a))
+    if(guienv->manage(e))
+    {
+        if(e->gui.code == gui::IET_BUTTON_CLICKED)
+            std::cout << "clicked" << std::endl;
         return true;
+    }
 
-    //if(scene->manage(a))
+    //if(scene->manage(e))
     //    return true;
 
-    event::manage(a);
+    event::manage(e);
 
     return false;
 }
@@ -143,7 +154,7 @@ void SpaceShooter::run() noexcept
         screen->manage();
 
         renderer->bind();
-        renderer->begin(0xFF101010);
+        renderer->begin(0xFF454545);
             //pp->begin();
             //    scene->render();
             //pp->end();

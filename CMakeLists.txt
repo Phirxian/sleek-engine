@@ -41,13 +41,21 @@ add_definitions("-DGL3_PROTOTYPES")
 add_definitions("-DGLX_GLXEXT_LEGACY")
 
 # Opengl
+find_package(Freetype REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
 
 #devices
+if (UNIX)
 find_package(X11 REQUIRED)
+endif (UNIX)
+
+if (WIN32)
+  add_definitions("-Dwin_device_support")
+endif (WIN32)
+
 find_package(SDL)
 find_package(SDL2)
 find_package(glfw3)
@@ -56,7 +64,6 @@ find_package(glfw3)
 find_package(PNG)
 find_package(TIFF)
 find_package(JPEG)
-
 
 
 include_directories("src/app")
@@ -80,8 +87,17 @@ add_library(sleek-engine STATIC ${sleek_engine})
 target_include_directories(sleek-engine PUBLIC ${PNG_INCLUDE_DIR})
 target_include_directories(sleek-engine PUBLIC ${TIFF_INCLUDE_DIR})
 target_include_directories(sleek-engine PUBLIC ${JPEG_INCLUDE_DIR})
+target_include_directories(sleek-engine PUBLIC ${FREETYPE_INCLUDE_DIR_ft2build})
 
-set(ALL_LIBS ${OPENGL_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} Threads::Threads -lstdc++fs -lzip)
+set(
+  ALL_LIBS
+  ${OPENGL_LIBRARY}
+  ${GLUT_LIBRARY}
+  ${GLEW_LIBRARY}
+  freetype
+  Threads::Threads
+  -lstdc++fs -lzip
+)
 
 if(X11_FOUND)
   add_definitions("-Dx11_device_support")

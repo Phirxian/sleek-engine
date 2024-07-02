@@ -7,26 +7,28 @@ namespace sleek
     {
         frame::frame(interface *m) noexcept : mom(m)
         {
-            textsize = 12;
+            textsize = 24;
             parent = nullptr;
             show = true;
             isActive = false;
             ft2 = mom->getInternalFont();
-            cache = nullptr;
+            fontcache = nullptr;
         }
 
         frame::~frame() noexcept
         {
         }
 
-        void frame::setFontCache(std::shared_ptr<fontcache> i) noexcept
+        void frame::setFontCache(std::shared_ptr<driver::texture> i) noexcept
         {
-            cache = i;
+            fontcache = i;
+            i->createIdentifier(mom->getDrawManager()->getContext().get());
+            i->getIdentifier()->update();
         }
 
-        std::shared_ptr<fontcache> frame::getFontCache() const noexcept
+        std::shared_ptr<driver::texture> frame::getFontCache() const noexcept
         {
-            return cache;
+            return fontcache;
         }
 
         void frame::addChild(std::shared_ptr<frame> i) noexcept
@@ -52,6 +54,8 @@ namespace sleek
         void frame::setFont(std::shared_ptr<font> i) noexcept
         {
             ft2 = i;
+            if(text.size() > 0 && ft2)
+                setFontCache(ft2->build(text, textsize));
         }
 
         void frame::setParent(frame *i) noexcept
@@ -63,6 +67,8 @@ namespace sleek
         void frame::setText(std::string t) noexcept
         {
             text = t;
+            if(text.size() > 0 && ft2)
+                setFontCache(ft2->build(text, textsize));
         }
 
         void frame::setTextColor(const math::pixel &c) noexcept
@@ -200,10 +206,10 @@ namespace sleek
             textpos = absolute+relative;
             textpos += box.getCenter();
 
-            if(cache)
+            if(fontcache)
             {
-                textpos.x -= cache->size.x/2;
-                textpos.y -= cache->size.y/2;
+                textpos.x -= fontcache->getDimension().x/2;
+                textpos.y -= fontcache->getDimension().y/2;
             }
         }
     }

@@ -69,6 +69,7 @@ namespace sleek
             
             for(u16 i = 0; i<MOUSE_CODE_COUNT; ++i)
                 mouse[i] = false;
+                
             for(u16 i = 0; i<KEY_KEY_CODES_COUNT; ++i)
                 key[i] = false;
 

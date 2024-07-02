@@ -29,16 +29,17 @@ namespace sleek
             textpos = absolute+relative;
             textpos += box.getSize()/2;
 
-            if(cache)
+            if(fontcache)
             {
-                textpos.x -= cache->size.x/2;
-                textpos.y += 2;
+                textpos.x -= fontcache->getDimension().x/2;
+                textpos.y -= fontcache->getDimension().y/2 - 2;
             }
         }
 
         bool button::manage(device::input* e) noexcept
         {
-            bool CHovored = hovored, CPushed = pushed;
+            bool CHovored = hovored;
+            bool CPushed = pushed;
 
             if(frame::manage(e))
             {
@@ -47,11 +48,16 @@ namespace sleek
                 return true;
             }
 
+/*
             if(e->type == device::EVENT_MOUSSE_MOVED)
                 hovored = box.intersect(e->mouse_pos);
 
             if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && hovored)
                 pushed = true;
+*/
+
+            hovored = box.intersect(e->mouse_pos);
+            pushed = e->mouse[device::MOUSE_LEFT] && hovored;
 
             if(e->type == device::EVENT_MOUSSE_UP && e->mouse[device::MOUSE_LEFT])
             {
@@ -88,9 +94,12 @@ namespace sleek
         {
             if(!show) return;
 
-            if(pushed && hovored) mom->getTheme()->drawButtonPushed(this);
-            else if(hovored && !pushed) mom->getTheme()->drawButtonHovored(this);
-            else mom->getTheme()->drawButton(this);
+            if(hovored && pushed)
+                mom->getTheme()->drawButtonPushed(this);
+            else if(hovored && !pushed)
+                mom->getTheme()->drawButtonHovored(this);
+            else
+                mom->getTheme()->drawButton(this);
 
             mom->getTheme()->drawFont(this);
             renderChild();

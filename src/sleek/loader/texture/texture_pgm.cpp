@@ -102,17 +102,20 @@ namespace sleek
                 if(img->getFormat() >= 5)
                     return false;
 
-                file->write("P6\n");
-                file->write("# Sleek-think pgm exporter\n");
+                file->write("P3\n");
                 file->write(std::to_string(img->getDimension().x) + " ");
                 file->write(std::to_string(img->getDimension().y) + "\n");
                 file->write("255\n");
 
-                for(auto it : *img)
+                for (int y = 0; y < img->getDimension().y; ++y)
                 {
-                    file->write(std::to_string(it[0]) + " ");
-                    file->write(std::to_string(it[1]) + " ");
-                    file->write(std::to_string(it[2]) + "\n");
+                    for (int x = 0; x < img->getDimension().x; ++x)
+                    {
+                        auto pixel = img->getPixel({x,y});
+                        file->write(std::to_string(pixel.red) + " ");
+                        file->write(std::to_string(pixel.green) + " ");
+                        file->write(std::to_string(pixel.blue) + "\n");
+                    }
                 }
 
                 return true;

@@ -80,7 +80,7 @@ namespace sleek
             if(mat && mat->effect)
                 mat->effect->update();
             ctx->testError(-1, "shader_callback");
-            glColor4f(255,255,255,255);
+            glColor4f(1.f, 1.f, 1.f, 1.f);
         }
 
         void ogl3_driver::ObjectRenderEnd() const noexcept
@@ -92,7 +92,7 @@ namespace sleek
         {
             ObjectRenderBegin();
                 beginTo2D();
-                    glColor4f(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                     glBegin(GL_POINTS);
                         glVertex2f(pos.x, pos.y);
                     glEnd();
@@ -104,7 +104,7 @@ namespace sleek
         {
             if(!src->ready()) return;
             ObjectRenderBegin();
-                glColor4f(clr.red, clr.green, clr.blue, clr.alpha);
+                glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                 glBegin(GL_POINTS);
                     glVertex3f(pos.x, pos.y, pos.z);
                 glEnd();
@@ -117,7 +117,7 @@ namespace sleek
             ObjectRenderBegin();
                 beginTo2D();
                     glBegin(GL_LINES);
-                        glColor4f(clr.red, clr.green, clr.blue, clr.alpha);
+                        glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                         glVertex2f(a.x, a.y);
                         glVertex2f(b.x, b.y);
                     glEnd();
@@ -130,7 +130,7 @@ namespace sleek
             if(!src->ready()) return;
             ObjectRenderBegin();
                 glBegin(GL_LINES);
-                    glColor4f(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                     glVertex3f(a.x, a.y, a.z);
                     glVertex3f(b.x, b.y, b.z);
                 glEnd();
@@ -206,7 +206,7 @@ namespace sleek
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(c.getSize().x, c.getSize().y,1);
                     glBegin(ogl3_render_mode[mat->getMode()]);
-                        glColor4f(clr.red, clr.green, clr.blue, clr.alpha);
+                        glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                         glQuadCenter();
                     glEnd();
                 endFrom2D();
@@ -223,7 +223,7 @@ namespace sleek
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(c.getSize().x, c.getSize().y, c.getSize().z);
                 glBegin(GL_QUADS);
-                    glColor4f(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                     glCubeCenter();
                 glEnd();
             ObjectRenderEnd();
@@ -272,7 +272,7 @@ namespace sleek
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                         glBegin(ogl3_render_mode[mat->getMode()]);
-                            glColor4f(clr.red, clr.green, clr.blue, clr.alpha);
+                            glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                             for(u32 i = 0; i< n; ++i)
                                 glVertex2f(a[i].x,a[i].y);
                         glEnd();
@@ -286,7 +286,7 @@ namespace sleek
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glBegin(ogl3_render_mode[mat->getMode()]);
-                    glColor4f(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                     for(u32 i = 0; i< n; ++i)
                         glVertex3f(a[i].x,a[i].y, a[i].z);
                 glEnd();
@@ -300,7 +300,7 @@ namespace sleek
                     glEnable(GL_TEXTURE_2D);
                     glActiveTexture(GL_TEXTURE0_ARB);
                     tex->getTexture(0)->bind();
-                    glColor4f(255,255,255,255);
+                    glColor4f(1.f, 1.f, 1.f, 1.f);
                     glTranslatef(0,0,0);
                     glScalef(tex->getSize().x,tex->getSize().y,1);
                     glBegin(GL_QUADS);
@@ -315,14 +315,14 @@ namespace sleek
             ObjectRenderEnd();
         }
 
-        void ogl3_driver::drawTexture(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec2f uv) const noexcept
+        void ogl3_driver::drawTexture(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec2f uv, const math::pixel clr) const noexcept
         {
             ObjectRenderBegin();
                 beginTo2D();
                     glEnable(GL_TEXTURE_2D);
                     glActiveTexture(GL_TEXTURE0_ARB);
                     tex->getIdentifier()->bind();
-                    glColor4f(255,255,255,255);
+                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(tex->getDimension().x,tex->getDimension().y,1);
@@ -338,13 +338,13 @@ namespace sleek
             ObjectRenderEnd();
         }
 
-        void ogl3_driver::drawTexture(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec2f uv) const noexcept
+        void ogl3_driver::drawTexture(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec2f uv, const math::pixel clr) const noexcept
         {
             ObjectRenderBegin();
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);
                 tex->getIdentifier()->bind();
-                glColor4f(255,255,255,255);
+                glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(tex->getDimension().x,tex->getDimension().y,1);
@@ -359,14 +359,14 @@ namespace sleek
             ObjectRenderEnd();
         }
 
-        void ogl3_driver::drawTextureScale(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec3f scl, const math::vec2f uv) const noexcept
+        void ogl3_driver::drawTextureScale(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec3f scl, const math::vec2f uv, const math::pixel clr) const noexcept
         {
             ObjectRenderBegin();
                 beginTo2D();
                     glEnable(GL_TEXTURE_2D);
                     glActiveTexture(GL_TEXTURE0_ARB);
                     tex->getIdentifier()->bind();
-                    glColor4f(255,255,255,255);
+                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(scl.x,scl.y,scl.z);
@@ -382,13 +382,13 @@ namespace sleek
             ObjectRenderEnd();
         }
 
-        void ogl3_driver::drawTextureScale(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec3f scl, const math::vec2f uv) const noexcept
+        void ogl3_driver::drawTextureScale(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec3f scl, const math::vec2f uv, const math::pixel clr) const noexcept
         {
             ObjectRenderBegin();
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);
                 tex->getIdentifier()->bind();
-                glColor4f(255,255,255,255);
+                glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(scl.x,scl.y,scl.z);
@@ -403,14 +403,14 @@ namespace sleek
             ObjectRenderEnd();
         }
 
-        void ogl3_driver::drawTextureCenter(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec2f uv) const noexcept
+        void ogl3_driver::drawTextureCenter(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec2f uv, const math::pixel clr) const noexcept
         {
             ObjectRenderBegin();
                 beginTo2D();
                     glEnable(GL_TEXTURE_2D);
                     glActiveTexture(GL_TEXTURE0_ARB);
                     tex->getIdentifier()->bind();
-                    glColor4f(255,255,255,255);
+                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(tex->getDimension().x,tex->getDimension().y,1);
@@ -426,13 +426,13 @@ namespace sleek
             ObjectRenderEnd();
         }
 
-        void ogl3_driver::drawTextureCenter(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec2f uv) const noexcept
+        void ogl3_driver::drawTextureCenter(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec2f uv, const math::pixel clr) const noexcept
         {
             ObjectRenderBegin();
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);
                 tex->getIdentifier()->bind();
-                glColor4f(255,255,255,255);
+                glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(tex->getDimension().x,tex->getDimension().y,1);
@@ -450,7 +450,7 @@ namespace sleek
         void ogl3_driver::drawMesh(mesh *m, const math::vec3f pos, const math::vec3f rot) const noexcept
         {
             ObjectRenderBegin();
-                glColor4f(255,255,255,255);
+                glColor4f(1.f, 1.f, 1.f, 1.f);
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(mat->getScale().x,mat->getScale().y,mat->getScale().z);

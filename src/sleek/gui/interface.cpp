@@ -1,4 +1,5 @@
 #include "interface.h"
+#include "font-ttf.h"
 
 #include "button.h"
 #include "statictext.h"
@@ -21,7 +22,8 @@ namespace sleek
         interface::interface(std::shared_ptr<device::Device> s, std::shared_ptr<driver::driver> d) noexcept : screen(s), mom(d)
         {
             cr = std::make_shared<cursor>(this);
-            internal = std::make_shared<font>(this, nullptr, 0);
+            //internal = std::make_shared<font>(this, nullptr, 0);
+            internal = std::make_shared<font_ttf>(this, "font/Raleway-Regular.ttf");
             interne = std::make_shared<theme>(this);
             custom = interne;
         }
@@ -119,7 +121,7 @@ namespace sleek
                 if(fontcache[i]->getFilename() == file)
                     return fontcache[i];
 
-            auto tmp = std::make_shared<font>(this, file);
+            auto tmp = std::make_shared<font_ttf>(this, file);
             fontcache.push_back(tmp);
 
             return tmp;
@@ -138,13 +140,9 @@ namespace sleek
 
             cr->manage(a);
 
-            for(u32 i = 0; i<gui.size(); ++i)
-            {
-                if(gui[gui.size()-1-i]->manage(a))
-                {
+            for(u32 i = gui.size()-1; i<=0; --i)
+                if(gui[i]->manage(a))
                     return true;
-                }
-            }
 
             return false;
         }
@@ -163,6 +161,7 @@ namespace sleek
                     break;
                 }
             }
+
             gui.push_back(i);
         }
 
@@ -217,11 +216,15 @@ namespace sleek
 
         void interface::render() noexcept
         {
-            mom->setActiveMaterial(std::make_shared<driver::material>());
+            auto mat = std::make_shared<driver::material>();
+            //mat->setMaterialRender(driver::rmt_add);
+            mom->setActiveMaterial(mat);
             mom->beginTo2D();
+
             for(u32 i = 0; i<gui.size(); ++i)
                 gui[i]->render();
             cr->render();
+
             mom->endFrom2D();
         }
     }

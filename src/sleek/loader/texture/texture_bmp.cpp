@@ -136,31 +136,57 @@ namespace sleek
                 if(img->getFormat() >= 5)
                     return false;
 
-                unsigned char header[0x36] = {0};
-                    header[0] = 'B';
-                    header[1] = 'M';
-                    header[0x1C] = img->getPitch()*8;
+                math::vec2i size = img->getDimension();
 
-                    CTOI(header[0x1E]) = 0;
-                    CTOI(header[0x1C]) = 32;    // BGRA 4 component of 8 bit
-                    CTOI(header[0x0A]) = 0x36;
-                    CTOI(header[0x12]) = img->getDimension().x;
-                    CTOI(header[0x16]) = img->getDimension().y;
-                    CTOI(header[0x22]) = img->getBufferSize();
+                // BMP file header
+                uint32_t fileSize = 54 + 3 * size.x * size.y;
+                uint32_t reserved = 0;
+                uint32_t dataOffset = 54;
 
-                file->write(header, 0x36);
+                file->write("BM", 2);
+                file->write(reinterpret_cast<const char*>(&fileSize), 4);
+                file->write(reinterpret_cast<const char*>(&reserved), 4);
+                file->write(reinterpret_cast<const char*>(&dataOffset), 4);
 
-                math::vec2u pos;
-                for(;pos.y < img->getDimension().y; ++pos.y)
+                // BMP info header
+                uint32_t infoHeaderSize = 40;
+                int32_t width = size.x;
+                int32_t height = -size.y; // Negative for top-down image
+                uint16_t planes = 1;
+                uint16_t bitsPerPixel = 24;
+                uint32_t compression = 0;
+                uint32_t imageSize = 3 * size.x * size.y;
+                int32_t xPixelsPerMeter = 2835; // 72 DPI
+                int32_t yPixelsPerMeter = 2835; // 72 DPI
+                uint32_t totalColors = 0;
+                uint32_t importantColors = 0;
+
+                file->write(reinterpret_cast<const char*>(&infoHeaderSize), 4);
+                file->write(reinterpret_cast<const char*>(&width), 4);
+                file->write(reinterpret_cast<const char*>(&height), 4);
+                file->write(reinterpret_cast<const char*>(&planes), 2);
+                file->write(reinterpret_cast<const char*>(&bitsPerPixel), 2);
+                file->write(reinterpret_cast<const char*>(&compression), 4);
+                file->write(reinterpret_cast<const char*>(&imageSize), 4);
+                file->write(reinterpret_cast<const char*>(&xPixelsPerMeter), 4);
+                file->write(reinterpret_cast<const char*>(&yPixelsPerMeter), 4);
+                file->write(reinterpret_cast<const char*>(&totalColors), 4);
+                file->write(reinterpret_cast<const char*>(&importantColors), 4);
+
+                // Write pixel data
+                std::vector<unsigned char> row(size.x * 3);
+                for(int y = 0; y < size.y; ++y)
                 {
-                    for(;pos.x < img->getDimension().x; ++pos.x)
+                    for(int x = 0; x < size.x; ++x)
                     {
-                        math::pixel tmp = img->getPixel(pos);
-                        std::swap(tmp.red, tmp.blue); // bgr to rgb
-                        file->write(&tmp, 4);
+                        auto pixel = img->getPixel({x,y});
+                        row[x * 3 + 0] = pixel.blue;
+                        row[x * 3 + 1] = pixel.green;
+                        row[x * 3 + 2] = pixel.red;
                     }
+                    file->write(reinterpret_cast<const char*>(row.data()), row.size());
                 }
-
+            
                 return true;
             #endif
             return false;

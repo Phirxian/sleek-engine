@@ -1,6 +1,11 @@
 bin/libsleek-ext.a
-bin/main-app
-bin/.gdb_history
 bin/libsleek-engine.a
+bin/skinning
+bin/metaball
+bin/space-shooter
+bin/output*
+bin/.gdb_history
+bin/gmon.out
 html/*
 build/*
+.vscode/*

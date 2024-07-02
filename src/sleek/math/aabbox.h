@@ -10,8 +10,28 @@ namespace sleek
         class aabbox2d
         {
             public:
-                aabbox2d(const T x0, const T y0, const T x1, const T y1){ upperleft = vec2<T>(x0,y0); lowerright = vec2<T>(x1,y1); }
-                aabbox2d(const vec2<T> &min = vec2<T>(0,0), const vec2<T> &max = vec2<T>(0,0)){ upperleft = min; lowerright = max; }
+                aabbox2d()
+                {
+                    upperleft = vec2<T>(0,0);
+                    lowerright = vec2<T>(0,0);
+                }
+
+                aabbox2d(const T x0, const T y0, const T x1, const T y1)
+                {
+                    upperleft = vec2<T>(x0,y0);
+                    lowerright = vec2<T>(x1,y1);
+                    assert(upperleft.x <= lowerright.x);
+                    assert(upperleft.y <= lowerright.y);
+                }
+
+                aabbox2d(const vec2<T> &min, const vec2<T> &max)
+                {
+                    upperleft = min;
+                    lowerright = max;
+                    assert(upperleft.x <= lowerright.x);
+                    assert(upperleft.y <= lowerright.y);
+                }
+
                 virtual ~aabbox2d(){}
 
                 inline void clear() { upperleft = lowerright = vec2<T>((T)0, (T)0); }

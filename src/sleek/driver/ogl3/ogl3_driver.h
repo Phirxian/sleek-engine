@@ -39,14 +39,14 @@ namespace sleek
 
                 virtual void drawFBO(fbo*) const noexcept;
 
-                virtual void drawTexture(texture*, const math::vec2i pos = {0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}) const noexcept;
-                virtual void drawTexture(texture*, const math::vec3f pos = {0, 0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}) const noexcept;
+                virtual void drawTexture(texture*, const math::vec2i pos = {0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}, const math::pixel clr = {255,255,255,255}) const noexcept;
+                virtual void drawTexture(texture*, const math::vec3f pos = {0, 0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}, const math::pixel clr = {255,255,255,255}) const noexcept;
 
-                virtual void drawTextureCenter(texture*, const math::vec2i pos = {0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}) const noexcept;
-                virtual void drawTextureCenter(texture*, const math::vec3f pos = {0, 0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}) const noexcept;
+                virtual void drawTextureCenter(texture*, const math::vec2i pos = {0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}, const math::pixel clr = {255,255,255,255}) const noexcept;
+                virtual void drawTextureCenter(texture*, const math::vec3f pos = {0, 0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}, const math::pixel clr = {255,255,255,255}) const noexcept;
 
-                virtual void drawTextureScale(texture*, const math::vec2i pos = {0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec3f scl = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}) const noexcept;
-                virtual void drawTextureScale(texture*, const math::vec3f pos = {0, 0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec3f scl = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}) const noexcept;
+                virtual void drawTextureScale(texture*, const math::vec2i pos = {0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec3f scl = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}, const math::pixel clr = {255,255,255,255}) const noexcept;
+                virtual void drawTextureScale(texture*, const math::vec3f pos = {0, 0, 0}, const math::vec3f rot = {0, 0, 0}, const math::vec3f scl = {0, 0, 0}, const math::vec2f uv = {1.f, 1.f}, const math::pixel clr = {255,255,255,255}) const noexcept;
 
                 virtual void drawMesh(mesh*, math::vec3f, math::vec3f rot = {0, 0, 0}) const noexcept;
 

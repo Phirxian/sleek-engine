@@ -31,9 +31,9 @@ namespace sleek
         {
             textpos = absolute+relative;
 
-            if(cache)
+            if(fontcache)
             {
-                textpos.y += cache->size.y+7;
+                textpos.y += fontcache->getDimension().y+7;
                 textpos.x += 12;
             }
         }
