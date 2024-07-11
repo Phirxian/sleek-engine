@@ -42,7 +42,7 @@ namespace sleek
 {
     namespace loader
     {
-        std::shared_ptr<driver::mesh> mesh_obj::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::mesh> meshloader_obj::read(io::filereader *file) const noexcept
         {
             std::shared_ptr<driver::mesh> mesh = nullptr;
             
@@ -144,8 +144,9 @@ namespace sleek
             return mesh;
         }
 
-        bool mesh_obj::write(driver::mesh *m, io::filewriter *out) const noexcept
+        bool meshwriter_obj::write(driver::mesh *m, io::filewriter *out) const noexcept
         {
+            #ifdef mesh_loader_obj_support
             if (!m || !out)
                 return false;
 
@@ -183,9 +184,12 @@ namespace sleek
             }
 
             return true;
+            #endif
+            
+            return false;
         }
 
-        bool mesh_obj::match(const std::string &filename) const noexcept
+        bool meshmime_obj::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

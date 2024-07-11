@@ -9,7 +9,7 @@ namespace sleek
     {
         #define CTOI(C)(*(int*)&C)
 
-        int texture_bmp::check_header(io::filereader *file) const noexcept
+        int texturemime_bmp::check_header(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_bmp_support
                 char header[2];
@@ -19,7 +19,7 @@ namespace sleek
             return -1;
         }
 
-        std::shared_ptr<driver::texture> texture_bmp::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::texture> textureloader_bmp::read(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_bmp_support
             unsigned char header[0x36];
@@ -129,7 +129,7 @@ namespace sleek
             #endif
         }
 
-        bool texture_bmp::write(driver::texture *img, io::filewriter *file) const noexcept
+        bool texturewriter_bmp::write(driver::texture *img, io::filewriter *file) const noexcept
         {
             #ifdef texture_loader_bmp_support
                 //! no floating texture support
@@ -192,7 +192,7 @@ namespace sleek
             return false;
         }
 
-        bool texture_bmp::match(const std::string &filename) const noexcept
+        bool texturemime_bmp::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);
@@ -200,7 +200,7 @@ namespace sleek
         }
 
         //! original code from irrlicht
-        void texture_bmp::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 height, s32 pitch) const
+        void textureloader_bmp::decompress8BitRLE(u8*& bmpData, s32 size, s32 width, s32 height, s32 pitch) const
         {
             u8* p = bmpData;
             u8* newBmp = new u8[(width+pitch)*height];
@@ -265,7 +265,7 @@ namespace sleek
         }
 
         //! original code from irrlicht
-        void texture_bmp::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 height, s32 pitch) const
+        void textureloader_bmp::decompress4BitRLE(u8*& bmpData, s32 size, s32 width, s32 height, s32 pitch) const
         {
             s32 lineWidth =(width+1)/2+pitch;
             u8* p = bmpData;

@@ -364,7 +364,7 @@ namespace sleek
 
     namespace loader
     {
-        std::shared_ptr<driver::texture> texture_tga::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::texture> textureloader_tga::read(io::filereader *file) const noexcept
         {
             std::shared_ptr<driver::texture> img = nullptr;
 
@@ -385,7 +385,7 @@ namespace sleek
             return img;
         }
 
-        bool texture_tga::write(driver::texture *img, io::filewriter *file) const noexcept
+        bool texturewriter_tga::write(driver::texture *img, io::filewriter *file) const noexcept
         {
             #ifdef texture_loader_tga_support
                 //! no floating texture supported
@@ -463,7 +463,7 @@ namespace sleek
             return false;
         }
 
-        bool texture_tga::match(const std::string &filename) const noexcept
+        bool texturemime_tga::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

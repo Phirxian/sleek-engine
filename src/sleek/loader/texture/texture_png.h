@@ -4,18 +4,26 @@ namespace sleek
 {
     namespace loader
     {
-        class texture_png : public mimetype, public textureloader, public texturewriter
+        class texturemime_png : public mimetype
         {
             public:
-                std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
-
                 const char *getTypeName() const noexcept override { return "texture_png"; }
 
                 int check_header(io::filereader*) const noexcept override;
 
-                bool write(driver::texture*, io::filewriter*) const noexcept override;
-
                 bool match(const std::string&) const noexcept override;
+        };
+        
+        class textureloader_png : public textureloader
+        {
+            public:
+                std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
+        };
+        
+        class texturewriter_png : public texturewriter
+        {
+            public:
+                bool write(driver::texture*, io::filewriter*) const noexcept override;
         };
     }
 }

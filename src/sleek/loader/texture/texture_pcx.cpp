@@ -11,9 +11,31 @@
 
 namespace sleek
 {
+    struct pcxheader
+    {
+        u8	Manufacturer;
+        u8	Version;
+        u8	Encoding;
+        u8	BitsPerPixel;
+        u16	XMin;
+        u16	YMin;
+        u16	XMax;
+        u16	YMax;
+        u16	HorizDPI;
+        u16	VertDPI;
+        u8	Palette[48];
+        u8	Reserved;
+        u8	Planes;
+        u16	BytesPerLine;
+        u16	PaletteType;
+        u16	HScrSize;
+        u16	VScrSize;
+        u8	Filler[54];
+    };
+
     namespace loader
     {
-        int texture_pcx::check_header(io::filereader *file) const noexcept
+        int texturemime_pcx::check_header(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_blp_support
                 char header[2];
@@ -24,7 +46,7 @@ namespace sleek
             return -1;
         }
 
-        std::shared_ptr<driver::texture> texture_pcx::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::texture> textureloader_pcx::read(io::filereader *file) const noexcept
         {
             std::shared_ptr<driver::texture> img;
 
@@ -143,7 +165,7 @@ namespace sleek
             return img;
         }
 
-        bool texture_pcx::write(driver::texture *img, io::filewriter *file) const noexcept
+        bool texturewriter_pcx::write(driver::texture *img, io::filewriter *file) const noexcept
         {
             #ifdef texture_loader_pcx_support
                 if(img->getFormat() >= 5)
@@ -219,7 +241,7 @@ namespace sleek
             return false;
         }
 
-        bool texture_pcx::match(const std::string &filename) const noexcept
+        bool texturemime_pcx::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

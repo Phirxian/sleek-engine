@@ -13,7 +13,7 @@ namespace sleek
             fstat(f, &buf);
             return buf.st_size;
         }
-        std::shared_ptr<driver::mesh> mesh_3ds::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::mesh> meshloader_3ds::read(io::filereader *file) const noexcept
         {
             #ifdef mesh_loader_3ds_support
             unsigned char lchar = 0;
@@ -74,7 +74,7 @@ namespace sleek
             #endif
         }
 
-        bool mesh_3ds::match(const std::string &filename) const noexcept
+        bool meshmime_3ds::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

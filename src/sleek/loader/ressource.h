@@ -25,7 +25,6 @@ namespace sleek
                 virtual bool match(const std::string&) const noexcept = 0;
         };
 
-
         template<typename T>
         class ressource_loader
         {

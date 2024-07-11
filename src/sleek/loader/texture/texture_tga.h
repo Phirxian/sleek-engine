@@ -7,16 +7,24 @@ namespace sleek
 {
     namespace loader
     {
-        class texture_tga : public mimetype, public textureloader, public texturewriter
+        class texturemime_tga : public mimetype
+        {
+            public:
+                const char *getTypeName() const noexcept override { return "texture_tga"; }
+
+                bool match(const std::string&) const noexcept override;
+        };
+
+        class textureloader_tga : public textureloader
         {
             public:
                 std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
+        };
 
-                const char *getTypeName() const noexcept override { return "texture_tga"; }
-
+        class texturewriter_tga : public texturewriter
+        {
+            public:
                 bool write(driver::texture*, io::filewriter*) const noexcept override;
-
-                bool match(const std::string&) const noexcept override;
         };
     }
 }

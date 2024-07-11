@@ -115,6 +115,7 @@ namespace sleek
             tx3d = checkExtension("GL_EXT_texture3D");
             printf("GL_EXT_texture3D: %s\n", tx3d ? "Yes" : "No");
 
+            printf("GL_MAX_TEXTURE_SIZE: %d\n", queryHardwareLimitation(GL_MAX_TEXTURE_SIZE));
             printf("GL_MAX_VERTEX_ATTRIBS: %d\n", queryHardwareLimitation(GL_MAX_VERTEX_ATTRIBS));
             printf("GL_MAX_COLOR_ATTACHMENTS: %d\n", queryHardwareLimitation(GL_MAX_COLOR_ATTACHMENTS));
             printf("GL_MAX_DRAW_BUFFERS: %d\n", queryHardwareLimitation(GL_MAX_DRAW_BUFFERS));

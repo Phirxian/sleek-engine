@@ -63,71 +63,94 @@ namespace sleek
             else
             {
                 #ifdef texture_loader_blp_support
-                rtexture.push_back(new texture_blp());
-                wtexture.push_back(new texture_blp());
+                rtexture.push_back(std::make_pair(new texturemime_blp(), new textureloader_blp()));
+                wtexture.push_back(std::make_pair(new texturemime_blp(), new texturewriter_blp()));
                 #endif
 
                 #ifdef texture_loader_bmp_support
-                rtexture.push_back(new texture_bmp());
-                wtexture.push_back(new texture_bmp());
+                rtexture.push_back(std::make_pair(new texturemime_bmp(), new textureloader_bmp()));
+                wtexture.push_back(std::make_pair(new texturemime_bmp(), new texturewriter_bmp()));
                 #endif
 
-                #ifdef texture_loader_jpg_support
-                rtexture.push_back(new texture_jpg());
-                wtexture.push_back(new texture_jpg());
+                #ifdef texture_loader_jpeg_support
+                rtexture.push_back(std::make_pair(new texturemime_jpg(), new textureloader_jpg()));
+                wtexture.push_back(std::make_pair(new texturemime_jpg(), new texturewriter_jpg()));
                 #endif
 
                 #ifdef texture_loader_pcx_support
-                rtexture.push_back(new texture_pcx());
-                wtexture.push_back(new texture_pcx());
+                rtexture.push_back(std::make_pair(new texturemime_pcx(), new textureloader_pcx()));
+                wtexture.push_back(std::make_pair(new texturemime_pcx(), new texturewriter_pcx()));
                 #endif
 
                 #ifdef texture_loader_pgm_support
-                rtexture.push_back(new texture_pgm());
-                wtexture.push_back(new texture_pgm());
+                rtexture.push_back(std::make_pair(new texturemime_pgm(), new textureloader_pgm()));
+                wtexture.push_back(std::make_pair(new texturemime_pgm(), new texturewriter_pgm()));
                 #endif
 
                 #ifdef texture_loader_png_support
-                rtexture.push_back(new texture_png());
-                wtexture.push_back(new texture_png());
+                rtexture.push_back(std::make_pair(new texturemime_png(), new textureloader_png()));
+                wtexture.push_back(std::make_pair(new texturemime_png(), new texturewriter_png()));
                 #endif
 
                 #ifdef texture_loader_tga_support
-                rtexture.push_back(new texture_tga());
-                wtexture.push_back(new texture_tga());
+                rtexture.push_back(std::make_pair(new texturemime_tga(), new textureloader_tga()));
+                wtexture.push_back(std::make_pair(new texturemime_tga(), new texturewriter_tga()));
                 #endif
 
                 #ifdef texture_loader_tiff_support
-                rtexture.push_back(new texture_tiff());
+                rtexture.push_back(std::make_pair(new texturemime_tiff(), new textureloader_tiff()));
                 // unsupported write
                 #endif
 
                 #ifdef mesh_loader_3ds_support
-                rmesh.push_back(new mesh_3ds());
+                rmesh.push_back(std::make_pair(new meshmime_3ds(), new meshloader_3ds()));
                 // unsupported write
                 #endif
 
                 #ifdef mesh_loader_txt_support
-                rmesh.push_back(new mesh_txt());
-                wmesh.push_back(new mesh_txt());
+                rmesh.push_back(std::make_pair(new meshmime_txt(), new meshloader_txt()));
+                wmesh.push_back(std::make_pair(new meshmime_txt(), new meshwriter_txt()));
                 #endif
 
                 #ifdef mesh_loader_obj_support
-                rmesh.push_back(new mesh_obj());
-                wmesh.push_back(new mesh_obj());
+                rmesh.push_back(std::make_pair(new meshmime_obj(), new meshloader_obj()));
+                wmesh.push_back(std::make_pair(new meshmime_obj(), new meshwriter_obj()));
                 #endif
             }
         }
         loader::~loader()
         {
+            for(auto e : rtexture)
+            {
+                delete e.first;
+                delete e.second;
+            }
+
+            for(auto e : rmesh)
+            {
+                delete e.first;
+                delete e.second;
+            }
+
+            for(auto e : wmesh)
+            {
+                delete e.first;
+                delete e.second;
+            }
+
+            for(auto e : wtexture)
+            {
+                delete e.first;
+                delete e.second;
+            }
         }
         std::shared_ptr<driver::mesh> loader::loadMesh(const std::string &filename) const noexcept
         {
             for(auto e : rmesh)
             {
-                if(e->match(filename))
+                if(e.first->match(filename))
                 {
-                    auto loader = (meshloader*)e;
+                    auto loader = e.second;
                     auto file = fs->read(filename);
                     return file ? debug(loader->read(file.get()), filename.c_str()) : nullptr;
                 }
@@ -140,9 +163,9 @@ namespace sleek
         {
             for(auto e : rtexture)
             {
-                if(e->match(filename))
+                if(e.first->match(filename))
                 {
-                    auto loader = (textureloader*)e;
+                    auto loader = e.second;
                     auto file = fs->read(filename);
                     return file ? debug(loader->read(file.get()), filename.c_str()) : nullptr;
                 }
@@ -158,9 +181,9 @@ namespace sleek
 
             for(auto e : wmesh)
             {
-                if(e->match(filename))
+                if(e.first->match(filename))
                 {
-                    auto writer = (meshwriter*)e;
+                    auto writer = e.second;
                     auto file = fs->write(filename);
                     return file ? writer->write(data.get(), file.get()) : false;
                     // if false, file should be deleted ?
@@ -176,9 +199,9 @@ namespace sleek
 
             for(auto e : wtexture)
             {
-                if(e->match(filename))
+                if(e.first->match(filename))
                 {
-                    auto writer = (texturewriter*)e;
+                    auto writer = e.second;
                     auto file = fs->write(filename);
                     return file ? writer->write(data.get(), file.get()) : false;
                 }

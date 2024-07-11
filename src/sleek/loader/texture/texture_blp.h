@@ -44,7 +44,7 @@ namespace sleek
             u32   mipmap_lengths[16]; // The length of each mipmap data block
         };
 
-        class texture_blp : public mimetype, public textureloader, public texturewriter
+        class texturemime_blp : public mimetype
         {
             public:
                 enum Compression : int
@@ -55,20 +55,29 @@ namespace sleek
                     DXT = 3
                 };
             public:
-                std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
-
                 const char *getTypeName() const noexcept override { return "texture_blp"; }
 
                 int check_header(io::filereader*) const noexcept override;
 
-                bool write(driver::texture*, io::filewriter*) const noexcept override;
-
                 bool match(const std::string&) const noexcept override;
+        };
+
+        // heritage allow to acces to the function check_header
+        class textureloader_blp : public textureloader, private texturemime_blp
+        {
+            public:
+                std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
             protected:
                 std::shared_ptr<driver::texture> decompressBLP(const sharedheader&, char *, size_t) const;
                 std::shared_ptr<driver::texture> decompressDXT(const sharedheader&, char *, size_t) const;
                 std::shared_ptr<driver::texture> decompressRaw(const sharedheader&, char *, size_t) const;
                 std::shared_ptr<driver::texture> decompressJpg(const sharedheader&, char *, size_t) const;
+        };
+
+        class texturewriter_blp : public texturewriter
+        {
+            public:
+                bool write(driver::texture*, io::filewriter*) const noexcept override;
         };
     }
 }
