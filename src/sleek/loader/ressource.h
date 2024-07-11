@@ -14,6 +14,18 @@ namespace sleek
     }
     namespace loader
     {
+        class mimetype
+        {
+            public:
+                virtual const char *getTypeName() const noexcept = 0;
+
+                //! return -1 on failure, or version of the header [0, 1, 2, ...]
+                virtual int check_header(io::filereader*) const noexcept { return true; }
+
+                virtual bool match(const std::string&) const noexcept = 0;
+        };
+
+
         template<typename T>
         class ressource_loader
         {
@@ -21,19 +33,22 @@ namespace sleek
                 using type = T;
             public:
                 virtual std::shared_ptr<T> read(io::filereader*) const noexcept = 0;
+        };
 
-                virtual const char *getTypeName() const noexcept = 0;
-
-                //! return -1 on failure, or version of the header [0, 1, 2, ...]
-                virtual int check_header(io::filereader*) const noexcept { return true; }
-
+        template<typename T>
+        class ressource_writer
+        {
+            public:
+                using type = T;
+            public:
                 virtual bool write(T*, io::filewriter*) const noexcept = 0;
-
-                virtual bool match(const std::string&) const noexcept = 0;
         };
 
         using meshloader = ressource_loader<driver::mesh>;
         using textureloader = ressource_loader<driver::texture>;
+
+        using meshwriter = ressource_writer<driver::mesh>;
+        using texturewriter = ressource_writer<driver::texture>;
     }
 }
 

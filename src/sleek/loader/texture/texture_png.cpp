@@ -42,7 +42,7 @@ namespace sleek
         }
         #endif
 
-        int textureloader_png::check_header(io::filereader *file) const noexcept
+        int texture_png::check_header(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_png_support
                 png_byte magic[8];
@@ -52,7 +52,7 @@ namespace sleek
             return -1;
         }
 
-        std::shared_ptr<driver::texture> textureloader_png::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::texture> texture_png::read(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_png_support
                 png_byte magic[8];
@@ -150,7 +150,7 @@ namespace sleek
             #endif
         }
 
-        bool textureloader_png::write(driver::texture *img, io::filewriter *file) const noexcept
+        bool texture_png::write(driver::texture *img, io::filewriter *file) const noexcept
         {
             #ifdef texture_loader_png_support
                 png_structp p = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -222,7 +222,7 @@ namespace sleek
             return false;
         }
 
-        bool textureloader_png::match(const std::string &filename) const noexcept
+        bool texture_png::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

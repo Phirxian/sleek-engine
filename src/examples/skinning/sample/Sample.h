@@ -3,7 +3,7 @@
 
 #include "../sleek/start.h"
 #include "../sleek/driver/mesh.h"
-#include "../sleek/loader/ressource_loader.h"
+#include "../sleek/loader/ressource.h"
 #include "../sleek/gui/interface.h"
 #include "../sleek/math/math.h"
 #include <map>

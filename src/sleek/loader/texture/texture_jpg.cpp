@@ -28,7 +28,7 @@ namespace sleek
             }
         #endif
 
-        int textureloader_jpg::check_header(io::filereader *file) const noexcept
+        int texture_jpg::check_header(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_jpeg_support
                 u32 magic;
@@ -38,7 +38,7 @@ namespace sleek
             return false;
         }
 
-        std::shared_ptr<driver::texture> textureloader_jpg::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::texture> texture_jpg::read(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_jpeg_support
                 std::shared_ptr<driver::texture> img = nullptr;
@@ -84,7 +84,7 @@ namespace sleek
             #endif
         }
 
-        bool textureloader_jpg::write(driver::texture *img, io::filewriter *file) const noexcept
+        bool texture_jpg::write(driver::texture *img, io::filewriter *file) const noexcept
         {
             #ifdef texture_loader_jpeg_support
                 struct jpeg_compress_struct cinfo;
@@ -159,7 +159,7 @@ namespace sleek
             return false;
         }
 
-        bool textureloader_jpg::match(const std::string &filename) const noexcept
+        bool texture_jpg::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

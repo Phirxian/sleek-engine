@@ -2,7 +2,7 @@
 #define __LOADER__
 
 #include <vector>
-#include "ressource_loader.h"
+#include "ressource.h"
 
 namespace sleek
 {
@@ -26,8 +26,10 @@ namespace sleek
                 virtual bool writeTexture(std::shared_ptr<driver::texture>, const std::string&) const noexcept;
             public:
                 std::shared_ptr<io::filesystem> fs;
-                std::vector<textureloader*> texture;
-                std::vector<meshloader*> mesh;
+                std::vector<mimetype*> rtexture;
+                std::vector<mimetype*> rmesh;
+                std::vector<mimetype*> wtexture;
+                std::vector<mimetype*> wmesh;
         };
     }
 }

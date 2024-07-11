@@ -1,21 +1,21 @@
-#include "../ressource_loader.h"
+#include "../ressource.h"
 
 namespace sleek
 {
     namespace loader
     {
-        class textureloader_bmp : public textureloader
+        class texture_bmp : public mimetype, public textureloader, public texturewriter
         {
             public:
-                virtual std::shared_ptr<driver::texture> read(io::filereader*) const noexcept;
+                std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
 
-                virtual const char *getTypeName() const noexcept { return "textureloader_bmp"; }
+                const char *getTypeName() const noexcept override { return "texture_bmp"; }
 
-                virtual int check_header(io::filereader*) const noexcept;
+                int check_header(io::filereader*) const noexcept override;
 
-                virtual bool write(driver::texture*, io::filewriter*) const noexcept;
+                bool write(driver::texture*, io::filewriter*) const noexcept override;
 
-                virtual bool match(const std::string&) const noexcept;
+                bool match(const std::string&) const noexcept override;
             private:
                 void decompress8BitRLE(u8*& BmpData, s32 size, s32 width, s32 height, s32 pitch) const;
 

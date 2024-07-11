@@ -1,7 +1,7 @@
 #ifndef TEXTURE_BLP_H
 #define TEXTURE_BLP_H
 
-#include "../ressource_loader.h"
+#include "../ressource.h"
 
 namespace sleek
 {
@@ -44,7 +44,7 @@ namespace sleek
             u32   mipmap_lengths[16]; // The length of each mipmap data block
         };
 
-        class textureloader_blp : public textureloader
+        class texture_blp : public mimetype, public textureloader, public texturewriter
         {
             public:
                 enum Compression : int
@@ -55,15 +55,15 @@ namespace sleek
                     DXT = 3
                 };
             public:
-                virtual std::shared_ptr<driver::texture> read(io::filereader*) const noexcept;
+                std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
 
-                virtual const char *getTypeName() const noexcept { return "textureloader_blp"; }
+                const char *getTypeName() const noexcept override { return "texture_blp"; }
 
-                virtual int check_header(io::filereader*) const noexcept;
+                int check_header(io::filereader*) const noexcept override;
 
-                virtual bool write(driver::texture*, io::filewriter*) const noexcept;
+                bool write(driver::texture*, io::filewriter*) const noexcept override;
 
-                virtual bool match(const std::string&) const noexcept;
+                bool match(const std::string&) const noexcept override;
             protected:
                 std::shared_ptr<driver::texture> decompressBLP(const sharedheader&, char *, size_t) const;
                 std::shared_ptr<driver::texture> decompressDXT(const sharedheader&, char *, size_t) const;

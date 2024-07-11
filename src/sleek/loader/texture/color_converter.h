@@ -3,7 +3,7 @@
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 #pragma once
 
-#include "../ressource_loader.h"
+#include "../ressource.h"
 
 namespace sleek
 {

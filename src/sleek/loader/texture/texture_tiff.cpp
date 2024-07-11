@@ -54,7 +54,7 @@ namespace sleek
         }
         #endif
 
-        std::shared_ptr<driver::texture> textureloader_tiff::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::texture> texture_tiff::read(io::filereader *file) const noexcept
         {
             std::shared_ptr<driver::texture> img;
 
@@ -96,12 +96,7 @@ namespace sleek
             return img;
         }
 
-        bool textureloader_tiff::write(driver::texture *img, io::filewriter *file) const noexcept
-        {
-            return false;
-        }
-
-        bool textureloader_tiff::match(const std::string &filename) const noexcept
+        bool texture_tiff::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

@@ -7,7 +7,7 @@ namespace sleek
 {
     namespace loader
     {
-        std::shared_ptr<driver::mesh> meshloader_txt::read(io::filereader *in) const noexcept
+        std::shared_ptr<driver::mesh> mesh_txt::read(io::filereader *in) const noexcept
         {
             #ifdef mesh_loader_txt_support
                 int     nvert;
@@ -59,7 +59,7 @@ namespace sleek
             #endif
         }
 
-        bool meshloader_txt::write(driver::mesh *m, io::filewriter *out) const noexcept
+        bool mesh_txt::write(driver::mesh *m, io::filewriter *out) const noexcept
         {
             #ifdef mesh_loader_txt_support
                 std::string data = "Vertices: ";
@@ -84,7 +84,7 @@ namespace sleek
             #endif
         }
 
-        bool meshloader_txt::match(const std::string &filename) const noexcept
+        bool mesh_txt::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

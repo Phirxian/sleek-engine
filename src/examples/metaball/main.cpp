@@ -1,5 +1,5 @@
 #include "../sleek/device/splash.h"
-#include "../sleek/loader/ressource_loader.h"
+#include "../sleek/loader/ressource.h"
 
 /**
  * Copyright 2010-2012 SleekThink All rights reserved.

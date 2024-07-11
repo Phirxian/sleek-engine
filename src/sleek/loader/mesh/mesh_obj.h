@@ -1,22 +1,20 @@
 #ifndef MESH_OBJ_H
 #define MESH_OBJ_H
 
-#include "../ressource_loader.h"
+#include "../ressource.h"
 
 namespace sleek
 {
     namespace loader
     {
-        class meshloader_obj : public meshloader
+        class mesh_obj : public mimetype, public meshloader
         {
             public:
-                virtual std::shared_ptr<driver::mesh> read(io::filereader*) const noexcept;
+                std::shared_ptr<driver::mesh> read(io::filereader*) const noexcept override;
 
-                virtual const char *getTypeName() const noexcept { return "meshloader_md5"; }
+                const char *getTypeName() const noexcept override { return "mesh_md5"; }
 
-                virtual bool write(driver::mesh*, io::filewriter*) const noexcept;
-
-                virtual bool match(const std::string&) const noexcept;
+                bool match(const std::string&) const noexcept override;
         };
     }
 }

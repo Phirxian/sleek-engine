@@ -1,19 +1,19 @@
-#include "../ressource_loader.h"
+#include "../ressource.h"
 
 namespace sleek
 {
     namespace loader
     {
-        class meshloader_txt : public meshloader
+        class mesh_txt : public mimetype, public meshloader, public meshwriter
         {
             public:
-                virtual std::shared_ptr<driver::mesh> read(io::filereader*) const noexcept;
+                std::shared_ptr<driver::mesh> read(io::filereader*) const noexcept override;
 
-                virtual const char *getTypeName() const noexcept { return "meshloader_txt"; }
+                const char *getTypeName() const noexcept override { return "mesh_txt"; }
 
-                virtual bool write(driver::mesh*, io::filewriter*) const noexcept;
+                bool write(driver::mesh*, io::filewriter*) const noexcept override;
 
-                virtual bool match(const std::string&) const noexcept;
+                bool match(const std::string&) const noexcept override;
         };
     }
 }

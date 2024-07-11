@@ -13,7 +13,7 @@ namespace sleek
 {
     namespace loader
     {
-        int textureloader_pcx::check_header(io::filereader *file) const noexcept
+        int texture_pcx::check_header(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_blp_support
                 char header[2];
@@ -24,7 +24,7 @@ namespace sleek
             return -1;
         }
 
-        std::shared_ptr<driver::texture> textureloader_pcx::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::texture> texture_pcx::read(io::filereader *file) const noexcept
         {
             std::shared_ptr<driver::texture> img;
 
@@ -143,7 +143,7 @@ namespace sleek
             return img;
         }
 
-        bool textureloader_pcx::write(driver::texture *img, io::filewriter *file) const noexcept
+        bool texture_pcx::write(driver::texture *img, io::filewriter *file) const noexcept
         {
             #ifdef texture_loader_pcx_support
                 if(img->getFormat() >= 5)
@@ -219,7 +219,7 @@ namespace sleek
             return false;
         }
 
-        bool textureloader_pcx::match(const std::string &filename) const noexcept
+        bool texture_pcx::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);

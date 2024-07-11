@@ -62,18 +62,30 @@ namespace sleek
             }
             else
             {
-                mesh.push_back(new meshloader_3ds());
-                mesh.push_back(new meshloader_txt());
-                mesh.push_back(new meshloader_obj());
+                rmesh.push_back(new mesh_3ds());
+                rmesh.push_back(new mesh_txt());
+                rmesh.push_back(new mesh_obj());
 
-                texture.push_back(new textureloader_bmp());
-                texture.push_back(new textureloader_png());
-                texture.push_back(new textureloader_jpg());
-                texture.push_back(new textureloader_tiff());
-                texture.push_back(new textureloader_pgm());
-                texture.push_back(new textureloader_tga());
-                texture.push_back(new textureloader_blp());
-                texture.push_back(new textureloader_pcx());
+                wmesh.push_back(new mesh_obj());
+
+                rtexture.push_back(new texture_blp());
+                rtexture.push_back(new texture_bmp());
+                rtexture.push_back(new texture_jpg());
+                rtexture.push_back(new texture_pcx());
+                rtexture.push_back(new texture_pgm());
+                rtexture.push_back(new texture_png());
+                rtexture.push_back(new texture_tga());
+                rtexture.push_back(new texture_tiff());
+
+                wtexture.push_back(new texture_blp());
+                wtexture.push_back(new texture_bmp());
+                wtexture.push_back(new texture_jpg());
+                wtexture.push_back(new texture_pcx());
+                wtexture.push_back(new texture_pgm());
+                wtexture.push_back(new texture_png());
+                wtexture.push_back(new texture_tga());
+                // unsupported
+                //wtexture.push_back(new texture_tiff());
             }
         }
         loader::~loader()
@@ -81,12 +93,13 @@ namespace sleek
         }
         std::shared_ptr<driver::mesh> loader::loadMesh(const std::string &filename) const noexcept
         {
-            for(auto e : mesh)
+            for(auto e : rmesh)
             {
                 if(e->match(filename))
                 {
+                    auto loader = (meshloader*)e;
                     auto file = fs->read(filename);
-                    return file ? debug(e->read(file.get()), filename.c_str()) : nullptr;
+                    return file ? debug(loader->read(file.get()), filename.c_str()) : nullptr;
                 }
             }
 
@@ -95,12 +108,13 @@ namespace sleek
         }
         std::shared_ptr<driver::texture> loader::loadTexture(const std::string &filename) const noexcept
         {
-            for(auto e : texture)
+            for(auto e : rtexture)
             {
                 if(e->match(filename))
                 {
+                    auto loader = (textureloader*)e;
                     auto file = fs->read(filename);
-                    return file ? debug(e->read(file.get()), filename.c_str()) : nullptr;
+                    return file ? debug(loader->read(file.get()), filename.c_str()) : nullptr;
                 }
             }
 
@@ -112,12 +126,13 @@ namespace sleek
             if(!data)
                 return false;
 
-            for(auto e : mesh)
+            for(auto e : wmesh)
             {
                 if(e->match(filename))
                 {
+                    auto writer = (meshwriter*)e;
                     auto file = fs->write(filename);
-                    return file ? e->write(data.get(), file.get()) : false;
+                    return file ? writer->write(data.get(), file.get()) : false;
                 }
             }
 
@@ -128,12 +143,13 @@ namespace sleek
             if(!data)
                 return false;
 
-            for(auto e : texture)
+            for(auto e : wtexture)
             {
                 if(e->match(filename))
                 {
+                    auto writer = (texturewriter*)e;
                     auto file = fs->write(filename);
-                    return file ? e->write(data.get(), file.get()) : false;
+                    return file ? writer->write(data.get(), file.get()) : false;
                 }
             }
 

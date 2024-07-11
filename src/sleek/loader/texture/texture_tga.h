@@ -1,22 +1,22 @@
 #ifndef TEXTURE_TGA_H
 #define TEXTURE_TGA_H
 
-#include "../ressource_loader.h"
+#include "../ressource.h"
 
 namespace sleek
 {
     namespace loader
     {
-        class textureloader_tga : public textureloader
+        class texture_tga : public mimetype, public textureloader, public texturewriter
         {
             public:
-                virtual std::shared_ptr<driver::texture> read(io::filereader*) const noexcept;
+                std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
 
-                virtual const char *getTypeName() const noexcept { return "textureloader_tga"; }
+                const char *getTypeName() const noexcept override { return "texture_tga"; }
 
-                virtual bool write(driver::texture*, io::filewriter*) const noexcept;
+                bool write(driver::texture*, io::filewriter*) const noexcept override;
 
-                virtual bool match(const std::string&) const noexcept;
+                bool match(const std::string&) const noexcept override;
         };
     }
 }

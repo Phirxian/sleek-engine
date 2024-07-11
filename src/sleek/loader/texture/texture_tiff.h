@@ -1,19 +1,17 @@
-#include "../ressource_loader.h"
+#include "../ressource.h"
 
 namespace sleek
 {
     namespace loader
     {
-        class textureloader_tiff : public textureloader
+        class texture_tiff : public mimetype, public textureloader
         {
             public:
-                virtual std::shared_ptr<driver::texture> read(io::filereader*) const noexcept;
+                std::shared_ptr<driver::texture> read(io::filereader*) const noexcept override;
 
-                virtual const char *getTypeName() const noexcept { return "textureloader_tiff"; }
+                const char *getTypeName() const noexcept override { return "texture_tiff"; }
 
-                virtual bool write(driver::texture*, io::filewriter*) const noexcept;
-
-                virtual bool match(const std::string&) const noexcept;
+                bool match(const std::string&) const noexcept override;
         };
     }
 }

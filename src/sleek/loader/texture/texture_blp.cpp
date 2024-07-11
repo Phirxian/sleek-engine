@@ -14,7 +14,7 @@ namespace sleek
 {
     namespace loader
     {
-        int textureloader_blp::check_header(io::filereader *file) const noexcept
+        int texture_blp::check_header(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_blp_support
                 char magic[4];
@@ -25,7 +25,7 @@ namespace sleek
             return -1;
         }
 
-        std::shared_ptr<driver::texture> textureloader_blp::read(io::filereader *file) const noexcept
+        std::shared_ptr<driver::texture> texture_blp::read(io::filereader *file) const noexcept
         {
             #ifdef texture_loader_blp_support
                 int version = check_header(file);
@@ -141,7 +141,7 @@ namespace sleek
             #endif
         }
 
-        bool textureloader_blp::write(driver::texture *img, io::filewriter *file) const noexcept
+        bool texture_blp::write(driver::texture *img, io::filewriter *file) const noexcept
         {
             #ifdef texture_loader_blp_support
                 //! no floating texture support
@@ -182,14 +182,14 @@ namespace sleek
             return false;
         }
 
-        bool textureloader_blp::match(const std::string &filename) const noexcept
+        bool texture_blp::match(const std::string &filename) const noexcept
         {
             int index = filename.find_last_of('.')+1;
             auto extention = filename.substr(index, filename.size()-index);
             return extention == "blp";
         }
 
-        std::shared_ptr<driver::texture> textureloader_blp::decompressBLP(const sharedheader &header, char *data, size_t size) const
+        std::shared_ptr<driver::texture> texture_blp::decompressBLP(const sharedheader &header, char *data, size_t size) const
         {
             auto img = std::make_shared<driver::texture>(
                 math::vec2i(header.width, header.height)
@@ -224,7 +224,7 @@ namespace sleek
             return img;
         }
 
-        std::shared_ptr<driver::texture> textureloader_blp::decompressDXT(const sharedheader &header, char *data, size_t size) const
+        std::shared_ptr<driver::texture> texture_blp::decompressDXT(const sharedheader &header, char *data, size_t size) const
         {
             std::shared_ptr<driver::texture> img = nullptr;
 
@@ -253,7 +253,7 @@ namespace sleek
             return img;
         }
 
-        std::shared_ptr<driver::texture> textureloader_blp::decompressRaw(const sharedheader &header, char *data, size_t size) const
+        std::shared_ptr<driver::texture> texture_blp::decompressRaw(const sharedheader &header, char *data, size_t size) const
         {
             auto img = std::make_shared<driver::texture>(
                 math::vec2i(header.width, header.height),
@@ -266,7 +266,7 @@ namespace sleek
             return img;
         }
 
-        std::shared_ptr<driver::texture> textureloader_blp::decompressJpg(const sharedheader &header, char *buffer, size_t size) const
+        std::shared_ptr<driver::texture> texture_blp::decompressJpg(const sharedheader &header, char *buffer, size_t size) const
         {
             std::shared_ptr<driver::texture> img = nullptr;
 
