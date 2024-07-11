@@ -90,7 +90,7 @@ namespace sleek
 
         math::pixel texture3d::getPixel(const math::vec3i &pos) const noexcept
         {
-            register unsigned long index = (pos.x + pos.y*original.x + pos.z*original.y*original.y)*pitch;
+            unsigned long index = (pos.x + pos.y*original.x + pos.z*original.y*original.y)*pitch;
             switch(fmt)
             {
                 case TXFMT_LUMINANCE: return math::pixel(buffer[index],buffer[index],buffer[index],255); break;

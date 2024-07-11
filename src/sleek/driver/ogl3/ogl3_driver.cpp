@@ -92,7 +92,7 @@ namespace sleek
         {
             ObjectRenderBegin();
                 beginTo2D();
-                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4ub(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                     glBegin(GL_POINTS);
                         glVertex2f(pos.x, pos.y);
                     glEnd();
@@ -104,7 +104,7 @@ namespace sleek
         {
             if(!src->ready()) return;
             ObjectRenderBegin();
-                glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                glColor4ub(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                 glBegin(GL_POINTS);
                     glVertex3f(pos.x, pos.y, pos.z);
                 glEnd();
@@ -117,7 +117,7 @@ namespace sleek
             ObjectRenderBegin();
                 beginTo2D();
                     glBegin(GL_LINES);
-                        glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                        glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                         glVertex2f(a.x, a.y);
                         glVertex2f(b.x, b.y);
                     glEnd();
@@ -130,7 +130,7 @@ namespace sleek
             if(!src->ready()) return;
             ObjectRenderBegin();
                 glBegin(GL_LINES);
-                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                     glVertex3f(a.x, a.y, a.z);
                     glVertex3f(b.x, b.y, b.z);
                 glEnd();
@@ -206,7 +206,7 @@ namespace sleek
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(c.getSize().x, c.getSize().y,1);
                     glBegin(ogl3_render_mode[mat->getMode()]);
-                        glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                        glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                         glQuadCenter();
                     glEnd();
                 endFrom2D();
@@ -223,7 +223,7 @@ namespace sleek
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(c.getSize().x, c.getSize().y, c.getSize().z);
                 glBegin(GL_QUADS);
-                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                     glCubeCenter();
                 glEnd();
             ObjectRenderEnd();
@@ -243,7 +243,7 @@ namespace sleek
         {
             f32 p = sqrt(radius*radius);
             math::vec2i start = math::vec2i(sin(0*DegToRad)*radius, cos(0*DegToRad)*radius);
-            for(register f32 i = 0; i<360; i += 12)
+            for(f32 i = 0; i<360; i += 12)
             {
                 math::vec2i end = math::vec2i(sin(i*DegToRad)*radius, cos(i*DegToRad)*radius);
                 drawLine(start+pos, end+pos, clr);
@@ -272,7 +272,7 @@ namespace sleek
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                         glBegin(ogl3_render_mode[mat->getMode()]);
-                            glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                            glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                             for(u32 i = 0; i< n; ++i)
                                 glVertex2f(a[i].x,a[i].y);
                         glEnd();
@@ -286,7 +286,7 @@ namespace sleek
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glBegin(ogl3_render_mode[mat->getMode()]);
-                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                     for(u32 i = 0; i< n; ++i)
                         glVertex3f(a[i].x,a[i].y, a[i].z);
                 glEnd();
@@ -322,7 +322,7 @@ namespace sleek
                     glEnable(GL_TEXTURE_2D);
                     glActiveTexture(GL_TEXTURE0_ARB);
                     tex->getIdentifier()->bind();
-                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(tex->getDimension().x,tex->getDimension().y,1);
@@ -344,7 +344,7 @@ namespace sleek
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);
                 tex->getIdentifier()->bind();
-                glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(tex->getDimension().x,tex->getDimension().y,1);
@@ -366,7 +366,7 @@ namespace sleek
                     glEnable(GL_TEXTURE_2D);
                     glActiveTexture(GL_TEXTURE0_ARB);
                     tex->getIdentifier()->bind();
-                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(scl.x,scl.y,scl.z);
@@ -388,7 +388,7 @@ namespace sleek
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);
                 tex->getIdentifier()->bind();
-                glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(scl.x,scl.y,scl.z);
@@ -410,7 +410,7 @@ namespace sleek
                     glEnable(GL_TEXTURE_2D);
                     glActiveTexture(GL_TEXTURE0_ARB);
                     tex->getIdentifier()->bind();
-                    glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                    glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(tex->getDimension().x,tex->getDimension().y,1);
@@ -432,7 +432,7 @@ namespace sleek
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);
                 tex->getIdentifier()->bind();
-                glColor4ub(clr.red, clr.green, clr.blue, clr.alpha);
+                glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(tex->getDimension().x,tex->getDimension().y,1);

@@ -4,6 +4,8 @@ project(SleekThink)
 SET(CMAKE_CXX_FLAGS_RELEASE "-O6 -ffast-math -Os")
 SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g2 -pg -fno-inline-functions -fno-inline ")
 SET(CMAKE_C_FLAGS_DEBUG "-O0 -g2 -pg -fno-inline-functions -fno-inline")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
@@ -97,6 +99,7 @@ set(
   freetype
   Threads::Threads
   -lstdc++fs -lzip
+  -fopenmp
 )
 
 if(X11_FOUND)
@@ -138,17 +141,33 @@ endif(TIFF_FOUND)
 ################################ project app ##################################
 ###############################################################################
 
-file(GLOB_RECURSE metaball  src/examples/metaball/*.cpp src/examples/metaball/*.c src/*.h)
-add_executable(metaball src/examples/metaball/main.cpp ${metaball})
-target_include_directories(metaball PUBLIC src/examples/metaball/ src/sleek/)
-target_link_libraries(metaball sleek-engine sleek-ext ${ALL_LIBS})
+file(GLOB example_dirs RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/src/examples" "${CMAKE_CURRENT_SOURCE_DIR}/src/examples/*")
 
-file(GLOB_RECURSE skinning  src/examples/skinning/*.cpp src/examples/skinning/*.c src/*.h)
-add_executable(skinning src/examples/skinning/main.cpp ${skinning})
-target_include_directories(skinning PUBLIC src/examples/skinning/ src/sleek/)
-target_link_libraries(skinning sleek-engine sleek-ext ${ALL_LIBS})
-
-file(GLOB_RECURSE space_shooter  src/examples/space-shooter/*.cpp src/examples/space-shooter/*.c src/*.h)
-add_executable(space-shooter src/examples/space-shooter/main.cpp ${space_shooter})
-target_include_directories(space-shooter PUBLIC src/examples/space-shooter src/sleek/)
-target_link_libraries(space-shooter sleek-engine sleek-ext ${ALL_LIBS})
+foreach(example ${example_dirs})
+    # Ensure we're dealing with a directory, not a file
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/examples/${example}")
+        # Collect all .cpp and .c files for this example
+        file(GLOB_RECURSE example_sources 
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/examples/${example}/*.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/examples/${example}/*.c"
+        )
+        
+        # Add the main.cpp file explicitly
+        list(APPEND example_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/examples/${example}/main.cpp")
+        
+        # Create the target name
+        set(target_name "example_${example}")
+        
+        # Add the executable
+        add_executable(${target_name} ${example_sources})
+        
+        # Add include directories
+        target_include_directories(${target_name} PUBLIC 
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/examples/${example}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/sleek"
+        )
+        
+        # Link libraries
+        target_link_libraries(${target_name} PRIVATE sleek-engine sleek-ext ${ALL_LIBS})
+    endif()
+endforeach()

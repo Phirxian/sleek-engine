@@ -131,13 +131,15 @@ namespace sleek
             reading = true;
             SDL_Event sdl_event;
 
-            SDL_PollEvent(&sdl_event);
-            SDL_GetMouseState(&current->mouse_pos.x,&current->mouse_pos.y);
+            while(SDL_PollEvent(&sdl_event))
+            {
+                SDL_GetMouseState(&current->mouse_pos.x, &current->mouse_pos.y);
 
-            if(sdl_event.type == SDL_QUIT)
-                current->exit_msg = true;
+                if(sdl_event.type == SDL_QUIT)
+                    current->exit_msg = true;
 
-            keymap(sdl_event, current);
+                keymap(sdl_event, current);
+            }
 
             return Device::run();
         }

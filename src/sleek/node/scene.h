@@ -28,10 +28,10 @@ namespace sleek
                     return shared_from_this();
                 }
 
-                Node *addSceneNode(Node*) noexcept;
+                std::shared_ptr<Node> addSceneNode(std::shared_ptr<Node>) noexcept;
                 u32   getNumberNode() const noexcept { return nd.size(); }
-                Node *getNode(u32 i) const noexcept { return nd[i]; }
-                void removeNode(Node*) noexcept;
+                std::shared_ptr<Node> getNode(u32 i) const noexcept { return nd[i]; }
+                void removeNode(std::shared_ptr<Node>) noexcept;
 
                 void clear() noexcept;
 
@@ -51,7 +51,7 @@ namespace sleek
                 driver::driver *mom;
             private:
                 bool debug_draw;
-                std::vector<Node*> nd;
+                std::vector<std::shared_ptr<Node>> nd;
                 const char *currentScene;
         };
     }

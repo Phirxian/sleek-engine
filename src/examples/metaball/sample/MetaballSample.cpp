@@ -39,18 +39,18 @@ namespace sample
         core->getContext()->createVAO(tmp.get(), sleek::driver::VAO_STREAM, sleek::driver::VAO_STREAM);
 //        core->getContext()->createVAO(tmp.get(), sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
 
-        scene3d::real::Natif *cube = new scene3d::real::Natif(smgr);
+        auto cube = std::make_shared<scene3d::real::Natif>(smgr);
         auto mesh = std::shared_ptr<driver::mesh>(driver::Geometry().createCube({50, 50, 50}));
         core->getContext()->createVAO(mesh.get(), sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
         cube->setPosition({0,0,0});
         cube->setMesh(mesh);
-        cube->setMaterial(buildMaterial(cube, nullptr, "shader/object/default.vert", "shader/object/solid.frag", Sample::material_callback, 0));
+        cube->setMaterial(buildMaterial(cube.get(), nullptr, "shader/object/default.vert", "shader/object/solid.frag", Sample::material_callback, 0));
         cube->getMaterial()->setFaceCulling(driver::rfc_front);
         smgr->addSceneNode(cube);
 
-        node = new scene3d::real::Natif(smgr);
+        node = std::make_shared<scene3d::real::Natif>(smgr);
         node->setPosition({0,0,0});
-        node->setMaterial(buildMaterial(node, nullptr, "shader/object/default.vert", "shader/object/sphere.frag", Sample::material_callback, 1));
+        node->setMaterial(buildMaterial(node.get(), nullptr, "shader/object/default.vert", "shader/object/sphere.frag", Sample::material_callback, 1));
         node->setMesh(tmp);
         smgr->addSceneNode(node);
 

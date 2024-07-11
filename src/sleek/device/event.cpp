@@ -1,4 +1,5 @@
 #include "event.h"
+#include <cstring>
 
 namespace sleek
 {
@@ -20,7 +21,8 @@ namespace sleek
         bool event::manage(input *a) noexcept
         {
             current = a;
-            if(a->exit_msg) exit();
+            if(a->exit_msg)
+                exit();
             //a->clear();
             return false;
         }
@@ -50,10 +52,9 @@ namespace sleek
         void input::operator = (const input &n) noexcept
         {
             type = n.type;
-            for(u16 i = 0; i<MOUSE_CODE_COUNT; ++i)
-                mouse[i] = n.mouse[i];
-            for(u16 i = 0; i<KEY_KEY_CODES_COUNT; ++i)
-                key[i] = n.key[i];
+
+            std::memcpy(mouse, n.mouse, sizeof(*mouse)*MOUSE_CODE_COUNT);
+            std::memcpy(key, n.key, sizeof(*key)*KEY_KEY_CODES_COUNT);
 
             gui.called = n.gui.called;
             gui.type = n.gui.type;
@@ -67,11 +68,8 @@ namespace sleek
         {
             type = EVENT_NOTHINK;
             
-            for(u16 i = 0; i<MOUSE_CODE_COUNT; ++i)
-                mouse[i] = false;
-                
-            for(u16 i = 0; i<KEY_KEY_CODES_COUNT; ++i)
-                key[i] = false;
+            std::memset(mouse, 0, sizeof(*mouse)*MOUSE_CODE_COUNT);
+            std::memset(key, 0, sizeof(*key)*KEY_KEY_CODES_COUNT);
 
             gui.called = 0;
             gui.type = gui::IGT_NOTHINK;

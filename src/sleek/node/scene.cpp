@@ -20,13 +20,13 @@ namespace sleek
 
         /* ***************************************** */
 
-        Node *Scene::addSceneNode(Node *t) noexcept
+        std::shared_ptr<Node> Scene::addSceneNode(std::shared_ptr<Node> t) noexcept
         {
             nd.push_back(t);
             return t;
         }
 
-        void Scene::removeNode(Node *t) noexcept
+        void Scene::removeNode(std::shared_ptr<Node> t) noexcept
         {
             for(auto i = nd.begin(); i != nd.end(); ++i)
             {

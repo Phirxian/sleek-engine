@@ -149,10 +149,10 @@ namespace sample
         core->getContext()->createVAO(*linear_blend, sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
         core->getContext()->createVAO(*dual_quat, sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
 
-        grid = new scene3d::real::Grid(smgr);
+        grid = std::make_shared<scene3d::real::Grid>(smgr);
         grid->setPosition({0,-50,0});
         grid->setMaterial(buildMaterial(
-            grid, nullptr,
+            grid.get(), nullptr,
             "shader/object/default.vert",
             "shader/object/solid.frag",
             Sample::material_callback, 0
@@ -161,10 +161,10 @@ namespace sample
 
         //! Linear Blend Skinning over GPU
 
-        node.push_back(new scene3d::real::Natif(smgr));
+        node.push_back(std::make_shared<scene3d::real::Natif>(smgr));
         node[0]->setPosition({0,50,0});
         node[0]->setMaterial(buildMaterial(
-            node[0], &linear_blend,
+            node[0].get(), &linear_blend,
             "shader/object/linear_blend.vert",
             "shader/object/solid.frag",
             LinearBlend::shader_callback, 1
@@ -174,10 +174,10 @@ namespace sample
 
         //! Dual Quaternion Skinning over GPU
 
-        node.push_back(new scene3d::real::Natif(smgr));
+        node.push_back(std::make_shared<scene3d::real::Natif>(smgr));
         node[1]->setPosition({0,25,0});
         node[1]->setMaterial(buildMaterial(
-            node[1], &dual_quat,
+            node[1].get(), &dual_quat,
             "shader/object/dual_quaternion.vert",
             "shader/object/solid.frag",
             DualQuaternion::shader_callback, 1
@@ -195,10 +195,10 @@ namespace sample
 
         //! Linear Blend Skinning over CPU
 
-        node.push_back(new scene3d::real::Natif(smgr));
+        node.push_back(std::make_shared<scene3d::real::Natif>(smgr));
         node[2]->setPosition({0,0,0});
         node[2]->setMaterial(buildMaterial(
-            node[2], &mesh[0],
+            node[2].get(), &mesh[0],
             "shader/object/default.vert",
             "shader/object/solid.frag",
             Skinning::shader_callback, 1
@@ -208,10 +208,10 @@ namespace sample
 
         //! Dual Quaternion Skinning over CPU
 
-        node.push_back(new scene3d::real::Natif(smgr));
+        node.push_back(std::make_shared<scene3d::real::Natif>(smgr));
         node[3]->setPosition({0,-25,0});
         node[3]->setMaterial(buildMaterial(
-            node[3], &mesh[1],
+            node[3].get(), &mesh[1],
             "shader/object/default.vert",
             "shader/object/solid.frag",
             Skinning::shader_callback, 1
@@ -222,11 +222,11 @@ namespace sample
         //! Dual Quaternion Skinning over CPU
 
         core->getContext()->createVAO(*heart, sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
-        node.push_back(new scene3d::real::Natif(smgr));
+        node.push_back(std::make_shared<scene3d::real::Natif>(smgr));
         node[4]->setPosition({0,15,0});
         node[4]->setScale({50,50,50});
         node[4]->setMaterial(buildMaterial(
-            node[4], &heart,
+            node[4].get(), &heart,
             "shader/object/dual_quaternion.vert",
             "shader/object/solid.frag",
             DualQuaternion::shader_callback, 2

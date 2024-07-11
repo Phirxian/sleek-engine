@@ -64,12 +64,14 @@ namespace sleek
                     return;
 
                 time_stamp.update();
+                
                 if(time_stamp.getTimeMsec() > timespec)
                 {
                     current += time_stamp.getTimeMsec()/timespec; // sync ( ex: time_stamp = 500, timespec = 100; 500/100 = 5; frame += 5 so frame skipped = 5
                     mat->Texture[0] = anim[current % anim.size()]->getIdentifier().get();
                     time_stamp.reset();
                 }
+
                 Billboard::render();
             }
         }

@@ -24,7 +24,7 @@ namespace sample
             float rot = 0.f;
 
             std::vector<std::shared_ptr<sleek::driver::mesh>> mesh;
-            std::vector<sleek::scene3d::real::Natif*> node;
+            std::vector<std::shared_ptr<sleek::scene3d::real::Natif>> node;
 
             LinearBlend linear_blend;
             DualQuaternion dual_quat;

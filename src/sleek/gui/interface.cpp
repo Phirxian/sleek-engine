@@ -140,9 +140,11 @@ namespace sleek
 
             cr->manage(a);
 
-            for(u32 i = gui.size()-1; i<=0; --i)
-                if(gui[i]->manage(a))
+            for(u32 i = 0; i<gui.size(); ++i)
+            {
+                if(gui[gui.size()-i-1]->manage(a))
                     return true;
+            }
 
             return false;
         }

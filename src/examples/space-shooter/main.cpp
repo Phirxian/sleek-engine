@@ -1,11 +1,11 @@
-#include "SpaceShooter.h"
+#include "SpaceShooterManager.h"
 
 using namespace sleek;
 using namespace sleek::device;
 
 int main(int argc, char **argv) noexcept
 {
-    SpaceShooter game;
-    game.run();
+    SpaceShooterManager ssm;
+    ssm.run();
     return 0;
 }

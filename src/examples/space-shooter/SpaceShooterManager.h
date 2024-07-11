@@ -1,17 +1,20 @@
-#ifndef SAMPLE_CORE
-#define SAMPLE_CORE
+#ifndef SPACE_SHOOTER_MANAGER
+#define SPACE_SHOOTER_MANAGER
 
 #include "../sleek/start.h"
 #include "../sleek/driver/mesh.h"
 #include "../sleek/loader/ressource_loader.h"
 #include "../sleek/gui/interface.h"
+#include "../sleek/node/scene.h"
 #include "../sleek/math/math.h"
 
-class SpaceShooter : public sleek::device::event
+#include "SpaceShooterState.h"
+
+class SpaceShooterManager : public sleek::device::event
 {
     public:
-        SpaceShooter() noexcept;
-        virtual ~SpaceShooter() noexcept;
+        SpaceShooterManager() noexcept;
+        virtual ~SpaceShooterManager() noexcept;
 
         sleek::gui::interface* getGui() const noexcept;
         sleek::device::Device* getDevice() const noexcept;
@@ -33,7 +36,11 @@ class SpaceShooter : public sleek::device::event
         std::shared_ptr<sleek::io::filesystem> fs;
         std::shared_ptr<sleek::driver::texture>pointor;
     private:
+        friend class SpaceShooterState;
         sleek::math::timer time;
+        std::shared_ptr<SpaceShooterState> current_state;
+        std::shared_ptr<SpaceShooterState> main_menu;
+        std::shared_ptr<SpaceShooterState> game;
 };
     
 #endif

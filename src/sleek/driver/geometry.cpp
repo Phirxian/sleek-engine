@@ -80,12 +80,12 @@ namespace sleek
         {
             mesh *tmp = new mesh();
                 tmp->vertices.resize(step_x*step_y+1);
-                register unsigned short psize = 0;
-                register float anglex = 0.f, angley = 0.f;
-                for(register float x = 0.f; x<step_x; ++x)
+                unsigned short psize = 0;
+                float anglex = 0.f, angley = 0.f;
+                for(float x = 0.f; x<step_x; ++x)
                 {
                     anglex += radiusxy.x;
-                    for(register float y = 0.f; x<step_y; ++y)
+                    for(float y = 0.f; x<step_y; ++y)
                     {
                         angley += radiusxy.y;
                         tmp->vertices[psize].Pos = math::vec3f(sin(anglex), 0, cos(angley));

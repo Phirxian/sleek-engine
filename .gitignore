@@ -1,3 +1,4 @@
+bin/example_*
 bin/libsleek-ext.a
 bin/libsleek-engine.a
 bin/skinning

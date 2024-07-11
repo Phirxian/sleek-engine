@@ -95,7 +95,7 @@ namespace sleek
 
         math::pixel texture::getPixel(const math::vec2i &pos) const noexcept
         {
-            register unsigned long index = indexof(pos);
+            unsigned long index = indexof(pos);
             
             switch(fmt)
             {
@@ -167,7 +167,7 @@ namespace sleek
         {
             if(fmt == TXFMT_RGB || fmt == TXFMT_RGBA)
             {
-                for(register int i = 0; i<getBufferSize(); i += pitch)
+                for(int i = 0; i<getBufferSize(); i += pitch)
                 {
                     buffer[i+0] = (buffer[i]+buffer[i+1]+buffer[i+2])/3;
                     buffer[i+1] = (buffer[i]+buffer[i+1]+buffer[i+2])/3;
@@ -176,7 +176,7 @@ namespace sleek
             }
             if(fmt == TXFMT_RGB_32F || fmt == TXFMT_RGBA_32F)
             {
-                for(register int i = 0; i<getBufferSize(); i+= pitch)
+                for(int i = 0; i<getBufferSize(); i+= pitch)
                 {
                     float avg = *((float*)(&buffer)+0)
                               + *((float*)(&buffer)+1)
@@ -192,9 +192,9 @@ namespace sleek
         void texture::flipVertical() noexcept
         {
             u8 tmp[pitch];
-            for(register int y=0;y<original.y/2;y++)
+            for(int y=0;y<original.y/2;y++)
             {
-                for(register int x=0;x<original.x;x++)
+                for(int x=0;x<original.x;x++)
                 {
                     // better performance
                     math::pixel px0 = getPixel({x, original.y-y-1});
@@ -203,8 +203,8 @@ namespace sleek
                     setPixel({x, y}, px0);
                     setPixel({x, original.y-y-1}, px1);
                     // less performance again unaligned buffer
-//                    register unsigned long src = (x+(original.y-y-1)*original.x)*pitch;
-//                    register unsigned long dst = (x+y*original.x)*pitch;
+//                    unsigned long src = (x+(original.y-y-1)*original.x)*pitch;
+//                    unsigned long dst = (x+y*original.x)*pitch;
 //
 //                    memcpy(tmp, buffer+src, pitch);
 //                    memcpy(buffer+src, buffer+dst, pitch);
@@ -240,7 +240,7 @@ namespace sleek
             {
                 case TXFMT_RGB:
                 case TXFMT_RGBA:
-                    for(register int i = 0; i<getBufferSize(); i+= pitch)
+                    for(int i = 0; i<getBufferSize(); i+= pitch)
                     {
                         buffer[i+0] = 255-buffer[i+0];
                         buffer[i+1] = 255-buffer[i+1];
@@ -249,7 +249,7 @@ namespace sleek
                 break;
                 case TXFMT_LUMINANCE:
                 case TXFMT_LUMINANCE_ALPHA:
-                    for(register int i = 0; i<getBufferSize(); i+= pitch)
+                    for(int i = 0; i<getBufferSize(); i+= pitch)
                         buffer[i] = 255-buffer[i];
                 break;
 
@@ -257,7 +257,7 @@ namespace sleek
 
                 case TXFMT_LUMINANCE_32F:
                 case TXFMT_LUMINANCE_ALPHA_32F:
-                    for(register int i = 0; i<getBufferSize(); i+= pitch)
+                    for(int i = 0; i<getBufferSize(); i+= pitch)
                     {
                         float &ptr = *(float*)(&buffer[i]);
                         ptr = 1.0-ptr;
@@ -265,7 +265,7 @@ namespace sleek
                 break;
                 case TXFMT_RGB_32F:
                 case TXFMT_RGBA_32F:
-                    for(register int i = 0; i<getBufferSize(); i+= pitch)
+                    for(int i = 0; i<getBufferSize(); i+= pitch)
                     {
                         *((float*)(&buffer)+0) = 1.0-*((float*)(&buffer)+0);
                         *((float*)(&buffer)+1) = 1.0-*((float*)(&buffer)+1);

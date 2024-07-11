@@ -30,6 +30,7 @@ namespace sleek
                     math::timer time_stamp;
                     std::vector<driver::texture*> anim;
             };
+            
             std::vector<driver::texture*> cut_texture_to_array(driver::texture*, u32 width, u32 height, u32 lenght) noexcept;
         }
     }

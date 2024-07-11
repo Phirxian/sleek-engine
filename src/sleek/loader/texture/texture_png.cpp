@@ -131,7 +131,7 @@ namespace sleek
                 //for(register unsigned int i = 0; i < h; ++i)
                 //    row_pointers[i] = (png_bytep)(texels+(i*w*internalFormat));
                 
-                for(register unsigned int i = 0; i < h; ++i)
+                for(unsigned int i = 0; i < h; ++i)
                     row_pointers[i] = (png_bytep)(texels+((h-(i+1))*w*internalFormat));
 
                 png_read_image(png_ptr, row_pointers);

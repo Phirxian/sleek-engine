@@ -21,13 +21,13 @@ namespace sleek
         void timer::pause(bool i) noexcept
         {
             time = std::chrono::steady_clock::now();
-            timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(time - timestart).count();
+            timestamp = std::chrono::duration_cast<std::chrono::nanoseconds>(time - timestart).count() * 1e-6;
         }
 
         void timer::update() noexcept
         {
             time = std::chrono::steady_clock::now();
-            timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(time - timestart).count();
+            timestamp = std::chrono::duration_cast<std::chrono::nanoseconds>(time - timestart).count() * 1e-6;
         }
 
         void timer::reset() noexcept

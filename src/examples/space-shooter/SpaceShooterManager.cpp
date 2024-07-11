@@ -1,7 +1,9 @@
-#include "SpaceShooter.h"
+#include "SpaceShooterManager.h"
 
 #include "../sleek/gui/button.h"
 #include "../sleek/gui/statictext.h"
+#include "MainMenu.h"
+#include "Game.h"
 
 #include <string>
 #include <sstream>
@@ -9,10 +11,10 @@
 
 using namespace sleek;
 
-SpaceShooter::SpaceShooter() noexcept
+SpaceShooterManager::SpaceShooterManager() noexcept
 {
     device::Device_stub info = device::Device_stub(512, 512, 32, false);
-    screen = CreateDeviceWindowManager(device::DWM_X11, info);
+    screen = CreateDeviceWindowManager(device::DWM_SDL, info);
 
     if(screen == nullptr)
     {
@@ -35,11 +37,7 @@ SpaceShooter::SpaceShooter() noexcept
     guienv = sleek::gui::createGUIEnvironment(screen, driver);
     guienv->getCursor()->showCursor(true);
     guienv->getCursor()->showTexture(true);
-
-    auto button = guienv->addButton("Play", {100, 100, 200, 150});
-    button->setTextColor({255,128,0,255});
-    guienv->addCustomFrame(button);
-
+    
     pointor = loader->loadTexture("texture/pointor.bmp");
 
     if(pointor)
@@ -48,44 +46,48 @@ SpaceShooter::SpaceShooter() noexcept
         pointor->getIdentifier()->update();
         guienv->getCursor()->setTexture(pointor);
     }
+
+    game = std::make_shared<Game>(this);
+    main_menu = std::make_shared<MainMenu>(this);
+    current_state = main_menu;
 }
 
-SpaceShooter::~SpaceShooter() noexcept
+SpaceShooterManager::~SpaceShooterManager() noexcept
 {
     screen->setEventReceiver(0);
 }
 
-sleek::gui::interface* SpaceShooter::getGui() const noexcept
+sleek::gui::interface* SpaceShooterManager::getGui() const noexcept
 {
     return guienv.get();
 }
 
-sleek::device::Device* SpaceShooter::getDevice() const noexcept
+sleek::device::Device* SpaceShooterManager::getDevice() const noexcept
 {
     return screen.get();
 }
 
-sleek::driver::driver* SpaceShooter::getDriver() const noexcept
+sleek::driver::driver* SpaceShooterManager::getDriver() const noexcept
 {
     return driver.get();
 }
 
-sleek::driver::context* SpaceShooter::getContext() const noexcept
+sleek::driver::context* SpaceShooterManager::getContext() const noexcept
 {
     return renderer.get();
 }
 
-sleek::loader::loader* SpaceShooter::getLoader() const noexcept
+sleek::loader::loader* SpaceShooterManager::getLoader() const noexcept
 {
     return loader.get();
 }
 
-sleek::io::filesystem* SpaceShooter::getFileSystem() const noexcept
+sleek::io::filesystem* SpaceShooterManager::getFileSystem() const noexcept
 {
     return fs.get();
 }
 
-bool SpaceShooter::manage(sleek::device::input *e) noexcept
+bool SpaceShooterManager::manage(sleek::device::input *e) noexcept
 {
     if(e->type == sleek::device::EVENT_WINDOW_RESIZE)
         renderer->setViewport(screen->getInfo().size);
@@ -101,24 +103,13 @@ bool SpaceShooter::manage(sleek::device::input *e) noexcept
         }
     }
 
-    //pp->manage(e);
-
-    if(guienv->manage(e))
-    {
-        if(e->gui.code == gui::IET_BUTTON_CLICKED)
-            std::cout << "clicked" << std::endl;
+    if(current_state->manage(e))
         return true;
-    }
 
-    //if(scene->manage(e))
-    //    return true;
-
-    event::manage(e);
-
-    return false;
+    return event::manage(e);
 }
 
-void SpaceShooter::update_title() noexcept
+void SpaceShooterManager::update_title() noexcept
 {
     time.update();
     
@@ -136,7 +127,7 @@ void SpaceShooter::update_title() noexcept
     time.reset();
 }
 
-void SpaceShooter::run() noexcept
+void SpaceShooterManager::run() noexcept
 {
     if (screen == nullptr)
         return;
@@ -155,13 +146,9 @@ void SpaceShooter::run() noexcept
 
         renderer->bind();
         renderer->begin(0xFF454545);
-            //pp->begin();
-            //    scene->render();
-            //pp->end();
-
-            //pp->draw();
-
-            guienv->render();
+            current_state->run();
+            //smgr->render();
+            //guienv->render();
         renderer->end();
         
         screen->end();

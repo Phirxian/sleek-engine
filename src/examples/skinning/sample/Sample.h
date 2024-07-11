@@ -47,7 +47,7 @@ namespace sample
             sleek::device::Device *screen;
             sleek::scene3d::Scene *smgr;
             
-            sleek::scene3d::real::Grid *grid;
+            std::shared_ptr<sleek::scene3d::real::Grid> grid;
             std::vector<std::shared_ptr<sleek::driver::texture>> texture;
             
             sleek::math::timer tm;
