@@ -110,7 +110,6 @@ namespace sleek
                             nVertices = 6;
                         }
                         
-                        
                         for(int i=0; i<nVertices; i += 3)
                         {
                             unsigned int j = obj_vertices.size();
@@ -143,6 +142,47 @@ namespace sleek
             #endif
             
             return mesh;
+        }
+
+        bool mesh_obj::write(driver::mesh *m, io::filewriter *out) const noexcept
+        {
+            if (!m || !out)
+                return false;
+
+            // Write vertices
+            for (const auto& vertex : m->vertices)
+            {
+                out->write(
+                    "v " + std::to_string(vertex.Pos.x) + " " 
+                         + std::to_string(vertex.Pos.y) + " "
+                         + std::to_string(vertex.Pos.z) + "\n"
+                    );
+            }
+
+            for (const auto& vertex : m->vertices)
+            {
+                out->write("vt " + std::to_string(vertex.Coord.x) + " " + 
+                                    std::to_string(vertex.Coord.y) + "\n");
+            }
+
+            for (const auto& vertex : m->vertices)
+            {
+                out->write("vn " + std::to_string(vertex.Normal.x) + " " + 
+                                    std::to_string(vertex.Normal.y) + " " + 
+                                    std::to_string(vertex.Normal.z) + "\n");
+            }
+
+            // Write faces
+            for (const auto& index : m->indices)
+            {
+                std::string face = "f";
+                face += " " + std::to_string(index.vertex[0]);
+                face += " " + std::to_string(index.vertex[1]);
+                face += " " + std::to_string(index.vertex[2]);
+                out->write(face + "\n");
+            }
+
+            return true;
         }
 
         bool mesh_obj::match(const std::string &filename) const noexcept

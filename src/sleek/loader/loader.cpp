@@ -62,30 +62,60 @@ namespace sleek
             }
             else
             {
-                rmesh.push_back(new mesh_3ds());
-                rmesh.push_back(new mesh_txt());
-                rmesh.push_back(new mesh_obj());
-
-                wmesh.push_back(new mesh_obj());
-
+                #ifdef texture_loader_blp_support
                 rtexture.push_back(new texture_blp());
-                rtexture.push_back(new texture_bmp());
-                rtexture.push_back(new texture_jpg());
-                rtexture.push_back(new texture_pcx());
-                rtexture.push_back(new texture_pgm());
-                rtexture.push_back(new texture_png());
-                rtexture.push_back(new texture_tga());
-                rtexture.push_back(new texture_tiff());
-
                 wtexture.push_back(new texture_blp());
+                #endif
+
+                #ifdef texture_loader_bmp_support
+                rtexture.push_back(new texture_bmp());
                 wtexture.push_back(new texture_bmp());
+                #endif
+
+                #ifdef texture_loader_jpg_support
+                rtexture.push_back(new texture_jpg());
                 wtexture.push_back(new texture_jpg());
+                #endif
+
+                #ifdef texture_loader_pcx_support
+                rtexture.push_back(new texture_pcx());
                 wtexture.push_back(new texture_pcx());
+                #endif
+
+                #ifdef texture_loader_pgm_support
+                rtexture.push_back(new texture_pgm());
                 wtexture.push_back(new texture_pgm());
+                #endif
+
+                #ifdef texture_loader_png_support
+                rtexture.push_back(new texture_png());
                 wtexture.push_back(new texture_png());
+                #endif
+
+                #ifdef texture_loader_tga_support
+                rtexture.push_back(new texture_tga());
                 wtexture.push_back(new texture_tga());
-                // unsupported
-                //wtexture.push_back(new texture_tiff());
+                #endif
+
+                #ifdef texture_loader_tiff_support
+                rtexture.push_back(new texture_tiff());
+                // unsupported write
+                #endif
+
+                #ifdef mesh_loader_3ds_support
+                rmesh.push_back(new mesh_3ds());
+                // unsupported write
+                #endif
+
+                #ifdef mesh_loader_txt_support
+                rmesh.push_back(new mesh_txt());
+                wmesh.push_back(new mesh_txt());
+                #endif
+
+                #ifdef mesh_loader_obj_support
+                rmesh.push_back(new mesh_obj());
+                wmesh.push_back(new mesh_obj());
+                #endif
             }
         }
         loader::~loader()
@@ -133,6 +163,7 @@ namespace sleek
                     auto writer = (meshwriter*)e;
                     auto file = fs->write(filename);
                     return file ? writer->write(data.get(), file.get()) : false;
+                    // if false, file should be deleted ?
                 }
             }
 
