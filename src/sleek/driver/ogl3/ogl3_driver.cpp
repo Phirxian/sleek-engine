@@ -205,7 +205,7 @@ namespace sleek
                     glTranslatef(pos.x,pos.y,0);
                     glRotatef(rot.x,rot.y,rot.z);
                     glScalef(c.getSize().x, c.getSize().y,1);
-                    glBegin(ogl3_render_mode[mat->getMode()]);
+                    glBegin(GL_QUADS);
                         glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                         glQuadCenter();
                     glEnd();

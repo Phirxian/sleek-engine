@@ -39,7 +39,7 @@ struct PointCloud
 class Simulation
 {
     public:
-        Simulation();
+        Simulation(sleek::driver::texture *);
         ~Simulation();
 
         void handleMouseDown(int x, int y);
@@ -67,4 +67,7 @@ class Simulation
 
         Particle *grabbedParticle;
         glm::vec2 mousePosition;
+
+        std::shared_ptr<sleek::driver::material> solid;
+        sleek::driver::texture *texture;
 };

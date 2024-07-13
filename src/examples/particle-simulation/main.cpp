@@ -39,6 +39,24 @@ class SimulationManager : public device::event
         Simulation *simulation;
 };
 
+void update_title(device::Device *screen, math::timer time) noexcept
+{
+    time.update();
+    
+    if(time.getTimeMsec() < 1000)
+        return;
+        
+    std::string title;
+        title = "Particle Simulation using nanoflann -- Fps(";
+        title += std::to_string(screen->getFpsCounter().getFps());
+        title += ") -- Time(~";
+        title += std::to_string(screen->getFpsCounter().getAvarageTime());
+        title += ")ms";
+    screen->setCaption(title);
+    
+    time.reset();
+}
+
 int main(int argc, char *args[])
 {
     device::Device_stub info = device::Device_stub(SCREEN_WIDTH, SCREEN_HEIGHT, 32, false);
@@ -58,11 +76,19 @@ int main(int argc, char *args[])
     renderer->setViewport(screen->getInfo().size);
     auto driver = renderer->createDriver();
 
-    Simulation simulation;
+    auto fs = io::createFilesystem(io::FILE_SYSTEM_TYPE::FST_STD);
+    auto loader = std::make_shared<sleek::loader::loader>(fs);
+    auto texture = loader->loadTexture("texture/crate.jpg");
+
+    texture->createIdentifier(renderer.get());
+    texture->getIdentifier()->update();
+
+    Simulation simulation(texture.get());
     SimulationManager manager(screen, &simulation);
     screen->setEventReceiver(&manager);
     
     math::timer time;
+    math::timer fps;
 
     while(screen->run())
     {
@@ -80,6 +106,7 @@ int main(int argc, char *args[])
         renderer->end();
         
         screen->end();
+        update_title(screen.get(), fps);
     }
 }
 

@@ -210,8 +210,11 @@ namespace sleek
             }
             else if(a.type == SDL_WINDOWEVENT && a.window.event == SDL_WINDOWEVENT_RESIZED)
             {
-                setVideoSize(math::vec2i{a.window.data1, a.window.data2});
-                i->type = EVENT_WINDOW_RESIZE;
+                if(a.window.data1 && a.window.data2)
+                {
+                    setVideoSize(math::vec2i{a.window.data1, a.window.data2});
+                    i->type = EVENT_WINDOW_RESIZE;
+                }
             }
             else
                 i->type = EVENT_NOTHINK;

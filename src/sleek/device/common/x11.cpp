@@ -217,11 +217,15 @@ namespace sleek
                 {
                     case Expose:
                     case ConfigureNotify:
-                        //if(info.size.x != xev.xconfigurerequest.width || info.size.y != xev.xconfigurerequest.height)
-                            Device::setVideoSize(math::vec2i(xev.xconfigurerequest.width, xev.xconfigurerequest.height));
+                    {
+                        auto newsize = math::vec2i(xev.xconfigurerequest.width, xev.xconfigurerequest.height);
+                        if(newsize.x > 0 || newsize.y > 0)
+                            if(info.size.x != newsize.x || info.size.y != newsize.x)
+                                Device::setVideoSize(newsize);
                         current->type = EVENT_WINDOW_RESIZE;
                         evt->manage(current);
                         current->clear();
+                    }
                     break;
                     case MapNotify:
                     break;

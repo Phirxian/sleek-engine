@@ -207,8 +207,11 @@ namespace sleek
             }
             else if(a.type == SDL_VIDEORESIZE)
             {
-                setVideoSize({a.resize.w, a.resize.h});
-                i->type = EVENT_WINDOW_RESIZE;
+                if(a.resize.w, a.resize.h)
+                {
+                    setVideoSize({a.resize.w, a.resize.h});
+                    i->type = EVENT_WINDOW_RESIZE;
+                }
             }
             else if(a.type == SDL_MOUSEMOTION)
                 i->type = EVENT_MOUSSE_MOVED;

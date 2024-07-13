@@ -18,6 +18,7 @@
             class Device_sdl : public Device
             {
                 public:
+                    [[deprecated]]
                     Device_sdl(const Device_stub&) noexcept;
                     virtual ~Device_sdl() noexcept;
 

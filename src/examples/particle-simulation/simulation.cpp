@@ -1,7 +1,10 @@
 #include "simulation.h"
 
-Simulation::Simulation() : grabbedParticle(nullptr)
+Simulation::Simulation(sleek::driver::texture *texture) : grabbedParticle(nullptr), texture(texture)
 {
+    solid = std::make_shared<sleek::driver::material>();
+    solid->setMaterialRender(sleek::driver::rmt_add);
+
     for(int i = 0; i < MAX_PARTICLES; ++i)
     {
         float x = static_cast<float>(rand() % SCREEN_WIDTH);
@@ -137,9 +140,9 @@ void Simulation::updateFixed(float timeStep, int iterations)
             nanoflann::SearchParameters params;
             const size_t nMatches = index->radiusSearch(&particle->position.x, search_radius * search_radius, ret_matches, params);
 
-            for(size_t i = 0; i < nMatches; i++)
+            for(size_t k = 0; k < nMatches; k++)
             {
-                Particle *neighbor = particles[ret_matches[i].first];
+                Particle *neighbor = particles[ret_matches[k].first];
                 if(particle != neighbor)
                     resolveCollision(*particle, *neighbor);
             }
@@ -202,9 +205,30 @@ void Simulation::interpolateState(float alpha)
 
 void Simulation::render(std::shared_ptr<sleek::driver::driver> driver)
 {
+    driver->setActiveMaterial(solid);
     for(const auto &particle: particles)
-        if (particle == grabbedParticle)
-            driver->drawCircle(particle->interpolatedPosition, PARTICLE_RADIUS, {255,0,0});
+    {
+        if(texture)
+        {
+            sleek::math::vec2i pos = {particle->interpolatedPosition.x-PARTICLE_RADIUS, particle->interpolatedPosition.y-PARTICLE_RADIUS};
+            sleek::math::vec3f scl = {PARTICLE_RADIUS*2, PARTICLE_RADIUS*2, PARTICLE_RADIUS*2};
+
+            if (particle == grabbedParticle)
+                driver->drawTextureScale(texture, pos, {0,0,0}, scl, {1.f, 1.f}, {255,0,0});
+            else
+                driver->drawTextureScale(texture, pos, {0,0,0}, scl, {1.f, 1.f}, {255,255,255});
+        }
         else
-            driver->drawCircle(particle->interpolatedPosition, PARTICLE_RADIUS, {255,255,255});
+        {
+            sleek::math::vec2i ul = particle->interpolatedPosition - PARTICLE_RADIUS;
+            sleek::math::vec2i lr = particle->interpolatedPosition + PARTICLE_RADIUS;
+
+            if (particle == grabbedParticle)
+                driver->drawCube(ul, lr, {0,0,0}, {255,0,0});
+                //driver->drawCircle(particle->interpolatedPosition, PARTICLE_RADIUS, {255,0,0});
+            else
+                driver->drawCube(ul, lr, {0,0,0}, {255,255,255});
+                //driver->drawCircle(particle->interpolatedPosition, PARTICLE_RADIUS, {255,255,255});
+        }
+    }
 }
