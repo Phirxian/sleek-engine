@@ -1,5 +1,7 @@
 #include "Core.h"
 #include "MetaballSample.h"
+#include "../sleek/node/camera/trackball.h"
+#include "../sleek/node/camera/fps.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -54,8 +56,10 @@ namespace sample
         node->setMesh(tmp);
         smgr->addSceneNode(node);
 
+        smgr->setCamera(std::make_shared<scene3d::camera::FPSCamera>(screen));
         smgr->getCamera()->setRotation({0, 1, 0});
         smgr->getCamera()->setTarget({0, 0, 0});
+        smgr->getCamera()->setPosition({2*distance, distance, 2*distance});
     }
 
     MetaballSample::~MetaballSample() noexcept
@@ -65,7 +69,7 @@ namespace sample
     bool MetaballSample::manage(sleek::device::input *a) noexcept
     {
         if(smgr->manage(a))
-            return true;
+            return false;
 
         if(a->type == EVENT_MOUSSE_UP)
         {
@@ -151,12 +155,14 @@ namespace sample
 
         float rot = tm.getTimeMsec()/50.0f;
 
+        /*
         smgr->getCamera()->setPosition(
             math::vec3f(
                 sin(rot/100)*2*distance, distance,
                 cos(rot/100)*2*distance
             )
         );
+        */
 
         smgr->render();
     }

@@ -1,5 +1,8 @@
 #include "trackball.h"
+#include "device/device.h"
+#include <iostream>
 
+#include "glm/gtx/vector_angle.hpp"
 #include "glm/detail/func_geometric.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -11,14 +14,9 @@ namespace sleek
         namespace camera
         {
             TrackballCamera::TrackballCamera(device::Device *dev)
-                : Camera(dev), movementspeed(1.0f), mousesensitivity(1.0)
+                : Camera(dev), sensitivity(2.0f)
             {
-                radius = glm::length(cen-pos);
-                cen = pos + (cen-pos)/radius;
-            }
-
-            TrackballCamera::~TrackballCamera()
-            {
+                radius = 5.f;
             }
 
             bool TrackballCamera::manage(device::input *e) noexcept
@@ -27,12 +25,14 @@ namespace sleek
                 {
                     if(e->mouse[device::MOUSE_LEFT])
                     {
-                        rotstart = getmouseprojectiononball(e->mouse_pos);
+                        std::cout << "rotation start" << std::endl;
+                        rotstart = getmouseonscreen(e->mouse_pos);
                         rotend = rotstart;
                     }
 
                     if(e->mouse[device::MOUSE_RIGHT])
                     {
+                        std::cout << "pan start" << std::endl;
                         panstart = getmouseonscreen(e->mouse_pos);
                         panend = panstart;
                     }
@@ -40,83 +40,62 @@ namespace sleek
 
                 if(e->type == device::EVENT_MOUSSE_MOVED)
                 {
-                    if(e->mouse[device::MOUSE_LEFT])
+                    if(e->key_state[device::KEY_LBUTTON])
                     {
-                        rotend = getmouseprojectiononball(e->mouse_pos);
+                        rotend = getmouseonscreen(e->mouse_pos);
                         rotatecamera();
+                        rotstart = rotend;
                     }
 
-                    if(e->mouse[device::MOUSE_RIGHT])
+                    if(e->key_state[device::KEY_RBUTTON])
                     {
                         panend = getmouseonscreen(e->mouse_pos);
                         pancamera();
+                        panstart = panend;
                     }
                 }
 
                 return Camera::manage(e);
             }
 
-            math::vec3f TrackballCamera::getmouseprojectiononball(math::vec2i pos)
-            {
-                math::vec3f mouseonball = math::vec3f(getmouseonscreen(pos), 1);
-
-                float length = std::max(1.0f, glm::length(mouseonball));
-
-                mouseonball.z = std::sqrt(1-length*length);
-                mouseonball = glm::normalize(mouseonball);
-
-                return mouseonball;
-            }
-
             math::vec2f TrackballCamera::getmouseonscreen(math::vec2i pos)
             {
                 return {
-                    (pos.x - viewport.upperleft.x * 0.5f) / (viewport.lowerright.x * 0.5f),
-                    (pos.y - viewport.upperleft.y * 0.5f) / (viewport.lowerright.y * 0.5f)
+                    pos.x / float(screen->getInfo().size.x),
+                    (pos.y - screen->getInfo().size.y) / float(screen->getInfo().size.y)
                 };
             }
 
             void TrackballCamera::rotatecamera()
             {
-                math::vec3f direction = rotend - rotstart;
+                math::vec3f direction = {rotend.x-rotstart.x, rotend.y-rotstart.y, 1};
+                direction *= sensitivity;
                 float velocity = glm::length(direction);
+                
+                sleek::math::vec4f camera(pos.x, pos.y, pos.z, 1);
+                sleek::math::mat4f transform  = glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, -direction.x, 0.0f)));
+                transform *= glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, 0.0f, direction.y*2)));
+                camera = transform * camera;
 
-                if(velocity > 0.0001)
-                {
-                    /*
-                    math::vec3f axis = glm::cross(rotend, rotstart);
-                    float length = glm::length(axis);
-                    axis = glm::normalize(axis);
-
-                    float angle = std::atan2(length, glm::dot(rotstart, rotend));
-                    math::vec3f f = cen-pos;
-
-                    math::quatf quaternion = glm::angleAxis(angle, axis);
-                    math::vec3f center = pos + f*radius;
-
-                    math::quatf q = glm::rotate(quaternion, f);
-                    f = glm::normalize<float, GLM_Precision>(q);
-                    up = glm::normalize(glm::rotate(quaternion, up));
-
-                    pos = center-f*radius;
-                    cen = center;
-
-                    rotstart  = rotend;
-                    */
-                }
+                setPosition({camera.x, camera.y, camera.z});
             }
 
             void TrackballCamera::pancamera()
             {
-                math::vec2f mov = panend - panstart;
+                math::vec2f mov = (panend - panstart) * sensitivity*sensitivity;
+                
+                auto cen = getTarget();
+                auto up = math::vec3f(0.0f, 1.0f, 0.0f);
+                auto forward = normalize(cen - pos);
+                auto right = normalize(cross(forward, up));
 
-                if(glm::length(mov) != 0.0f)
-                {
-                    mov *= mousesensitivity*movementspeed;
-                    math::vec3f pan = glm::cross(up,cen-pos) * mov.x + up * mov.y;
-                    pos += pan;
-                    panstart = panend;
-                }
+                up = normalize(cross(right, forward));
+                auto pan = (right * mov.x + up * -mov.y) * sensitivity*sensitivity;
+
+                setTarget(cen + pan);
+                setPosition(pos + pan);
+
+                panstart = panend;
             }
         }
     }

@@ -28,6 +28,7 @@ namespace sleek
                       / (f32)screen->getInfo().size.y;
 
                 setViewMode(CVM_PERSPECTIV);
+                updateCameraMatrix();
             }
 
             Camera::~Camera() noexcept
@@ -40,32 +41,31 @@ namespace sleek
                 if(e->type == device::EVENT_WINDOW_RESIZE)
                     setViewMode(mode);
 
-                eye = pos;
-                cen = tar;
-                up = normalize(rot);
-                view = glm::lookAt(eye, cen, up);
-
                 return false;
             }
 
             void Camera::setFovValue(const f32 i) noexcept
             {
                 fovs = i;
+                setViewMode(mode);
             }
 
             void Camera::setFarValue(const f32 i) noexcept
             {
                 fars = i;
+                setViewMode(mode);
             }
 
             void Camera::setNearValue(const f32 i) noexcept
             {
                 nears = i;
+                setViewMode(mode);
             }
 
             void Camera::setAspectRatio(const f32 i) noexcept
             {
                 asps = i;
+                setViewMode(mode);
             }
 
             void Camera::setViewMode(const CAMERA_VIEW_MODE i) noexcept
@@ -84,21 +84,26 @@ namespace sleek
                         nears, fars
                     )
                 };
+
+                need_update = true;
             }
 
             void Camera::setTarget(const math::vec3f &i) noexcept
             {
                 tar = i;
+                need_update = true;
             }
 
             void Camera::setPosition(const math::vec3f &i) noexcept
             {
                 pos = i;
+                need_update = true;
             }
 
             void Camera::setRotation(const math::vec3f &i) noexcept
             {
                 rot = i;
+                need_update = true;
             }
 
             math::mat4f& Camera::getViewMatrix()
@@ -109,11 +114,6 @@ namespace sleek
             math::mat4f& Camera::getProjectionMatrix()
             {
                 return proj;
-            }
-
-            math::aabbox2di Camera::getViewPort() const noexcept
-            {
-                return viewport;
             }
 
             math::vec3f Camera::getPosition() const noexcept
@@ -161,8 +161,22 @@ namespace sleek
                 return fovs;
             }
 
+            void Camera::updateCameraMatrix() noexcept
+            {
+                if(!need_update)
+                    return;
+
+                eye = pos;
+                cen = tar;
+                up = normalize(rot);
+                view = glm::lookAt(eye, cen, up);
+
+                need_update = false;
+            }
+
             void Camera::render() noexcept
             {
+                updateCameraMatrix();
                 glMatrixMode(GL_PROJECTION);
                 glLoadMatrixf(glm::value_ptr(proj*view));
                 glMatrixMode(GL_MODELVIEW);

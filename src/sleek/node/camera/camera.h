@@ -48,7 +48,6 @@ namespace sleek
                     virtual math::mat4f& getViewMatrix();
                     virtual math::mat4f& getProjectionMatrix();
 
-                    virtual math::aabbox2di getViewPort() const noexcept;
                     virtual math::vec3f getPosition() const noexcept;
                     virtual math::vec3f getRotation() const noexcept;
                     virtual math::vec3f getTarget() const noexcept;
@@ -61,8 +60,9 @@ namespace sleek
                     virtual f32 getFarValue() const noexcept;
                     virtual f32 getFovValue() const noexcept;
 
-                    virtual bool manage(device::input*) noexcept;
+                    bool manage(device::input*) noexcept override;
 
+                    virtual void updateCameraMatrix() noexcept;
                     virtual void render() noexcept;
                 protected:
                     Frustum *frust;
@@ -72,9 +72,9 @@ namespace sleek
                     math::mat4f view, proj;
                     math::vec3f pos, rot, tar;
                     math::vec3f eye, cen, up;
-                    math::aabbox2di viewport;
 
                     CAMERA_VIEW_MODE mode;
+                    bool need_update;
             };
         }
     }

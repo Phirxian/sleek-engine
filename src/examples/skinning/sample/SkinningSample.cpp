@@ -237,6 +237,7 @@ namespace sample
 
         smgr->getCamera()->setRotation({0, 1, 0});
         smgr->getCamera()->setTarget({0, 0, 0});
+        smgr->getCamera()->updateCameraMatrix();
     }
 
     SkinningSample::~SkinningSample() noexcept

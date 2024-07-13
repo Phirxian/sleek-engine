@@ -17,20 +17,17 @@ namespace sleek
             {
                 public:
                     TrackballCamera(device::Device*);
-                    virtual ~TrackballCamera();
 
-                    virtual bool manage(device::input*) noexcept;
+                    bool manage(device::input*) noexcept override;
                 protected:
-                    math::vec3f getmouseprojectiononball(math::vec2i);
                     math::vec2f getmouseonscreen(math::vec2i);
                     void rotatecamera();
                     void pancamera();
                 protected:
                     f32 radius;
-                    f32 movementspeed;
-                    f32 mousesensitivity;
-                    math::vec3f rotstart;
-                    math::vec3f rotend;
+                    f32 sensitivity;
+                    math::vec2f rotstart;
+                    math::vec2f rotend;
                     math::vec2f panstart;
                     math::vec2f panend;
             };

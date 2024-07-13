@@ -38,6 +38,8 @@ namespace sleek
                 void enableDebugDraw(bool) noexcept;
                 bool isDebugDraw() const noexcept;
 
+                void setCamera(std::shared_ptr<camera::Camera> camera) noexcept;
+
                 device::Device *getDevice() const noexcept;
                 driver::driver *getDrawManager() const noexcept;
                 camera::Camera *getCamera() const noexcept;
@@ -47,7 +49,7 @@ namespace sleek
                 void render() noexcept;
             protected:
                 device::Device *screen;
-                camera::Camera *cm;
+                std::shared_ptr<camera::Camera> cm;
                 driver::driver *mom;
             private:
                 bool debug_draw;

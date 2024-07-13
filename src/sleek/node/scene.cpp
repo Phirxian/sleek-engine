@@ -8,14 +8,13 @@ namespace sleek
         Scene::Scene(device::Device *s, driver::driver *d) noexcept
             : screen(s), mom(d)
         {
-            cm = new camera::Camera(screen);
+            cm = std::make_shared<camera::Camera>(screen);
 //            setFog(100.f, 1000.f, 0.35f, math::pixel(35,35,35,255));
         }
 
         Scene::~Scene() noexcept
         {
             clear();
-            delete cm;
         }
 
         /* ***************************************** */
@@ -48,9 +47,9 @@ namespace sleek
 
         /* ***************************************** */
 
-        bool Scene::manage(device::input *i) noexcept
+        bool Scene::manage(device::input *e) noexcept
         {
-            return cm->manage(i);
+            return cm->manage(e);
         }
 
         void Scene::render() noexcept
@@ -72,6 +71,12 @@ namespace sleek
             return debug_draw;
         }
 
+        void Scene::setCamera(std::shared_ptr<camera::Camera> camera) noexcept
+        {
+            assert(camera.get() != nullptr);
+            cm = camera;
+        }
+
         device::Device *Scene::getDevice() const noexcept
         {
             return screen;
@@ -84,7 +89,7 @@ namespace sleek
 
         camera::Camera *Scene::getCamera() const noexcept
         {
-            return cm;
+            return cm.get();
         }
     }
 }
