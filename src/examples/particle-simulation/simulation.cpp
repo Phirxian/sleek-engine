@@ -11,14 +11,16 @@ Simulation::Simulation(sleek::driver::texture *texture) : grabbedParticle(nullpt
     std::uniform_real_distribution<float> xDist(0.0f, SCREEN_WIDTH);
     std::uniform_real_distribution<float> yDist(0.0f, SCREEN_HEIGHT / 2);
     std::uniform_real_distribution<float> vDist(-100.0f, 100);
+    std::uniform_real_distribution<float> sDist(MIN_PARTICLE_RADIUS, MAX_PARTICLE_RADIUS);
 
     for(int i = 0; i < MAX_PARTICLES; ++i)
     {
         float x = xDist(gen);
         float y = yDist(gen);
+        float s = sDist(gen);
         float vx = vDist(gen);
         float vy = vDist(gen);
-        Particle *p = new Particle(glm::vec2(x, y), glm::vec2(vx, vy), 10.0f);
+        Particle *p = new Particle(glm::vec2(x, y), glm::vec2(vx, vy), 10.0f, s);
         particles.emplace_back(p);
     }
 
@@ -109,10 +111,10 @@ bool Simulation::checkCollisionWithPlatform(Particle &particle, const StaticPlat
     float minY = platform.position.y - platform.size.y / 2;
     float maxY = platform.position.y + platform.size.y / 2;
 
-    auto lx = particle.position.x + PARTICLE_RADIUS > minX;
-    auto rx = particle.position.x - PARTICLE_RADIUS < maxX;
-    auto ly = particle.position.y + PARTICLE_RADIUS > minY;
-    auto ry = particle.position.y - PARTICLE_RADIUS < maxY;
+    auto lx = particle.position.x + particle.size > minX;
+    auto rx = particle.position.x - particle.size < maxX;
+    auto ly = particle.position.y + particle.size > minY;
+    auto ry = particle.position.y - particle.size < maxY;
 
     return lx && rx && ly && ry;
 }
@@ -125,32 +127,32 @@ void Simulation::resolveCollisionWithPlatform(Particle &particle, const StaticPl
     float maxY = platform.position.y + platform.size.y / 2;
 
     // Determine the closest edge
-    float dxLeft = particle.position.x - (minX - PARTICLE_RADIUS);
-    float dxRight = (maxX + PARTICLE_RADIUS) - particle.position.x;
-    float dyTop = particle.position.y - (minY - PARTICLE_RADIUS);
-    float dyBottom = (maxY + PARTICLE_RADIUS) - particle.position.y;
+    float dxLeft = particle.position.x - (minX - particle.size);
+    float dxRight = (maxX + particle.size) - particle.position.x;
+    float dyTop = particle.position.y - (minY - particle.size);
+    float dyBottom = (maxY + particle.size) - particle.position.y;
 
     float minDistance = std::min(std::min(dxLeft, dxRight), std::min(dyTop, dyBottom));
 
     // Compute the normal and move the particle
     if(minDistance == dxLeft)
     {
-        particle.position.x = minX - PARTICLE_RADIUS;
+        particle.position.x = minX - particle.size;
         particle.velocity.x = -particle.velocity.x * 0.5f;
     }
     else if(minDistance == dxRight)
     {
-        particle.position.x = maxX + PARTICLE_RADIUS;
+        particle.position.x = maxX + particle.size;
         particle.velocity.x = -particle.velocity.x * 0.5f;
     }
     else if(minDistance == dyTop)
     {
-        particle.position.y = minY - PARTICLE_RADIUS;
+        particle.position.y = minY - particle.size;
         particle.velocity.y = -particle.velocity.y * 0.5f;
     }
     else if(minDistance == dyBottom)
     {
-        particle.position.y = maxY + PARTICLE_RADIUS;
+        particle.position.y = maxY + particle.size;
         particle.velocity.y = -particle.velocity.y * 0.5f;
     }
 }
@@ -169,25 +171,25 @@ void Simulation::updateFixed(float timeStep, int iterations)
             particle->update(timeStep / iterations);
 
             // Boundary checks
-            if(particle->position.x - PARTICLE_RADIUS < 0)
+            if(particle->position.x - particle->size < 0)
             {
-                particle->position.x = PARTICLE_RADIUS;
+                particle->position.x = particle->size;
                 particle->velocity.x = -particle->velocity.x * 0.5f; // Dampen the bounce
             }
-            else if(particle->position.x + PARTICLE_RADIUS > SCREEN_WIDTH)
+            else if(particle->position.x + particle->size > SCREEN_WIDTH)
             {
-                particle->position.x = SCREEN_WIDTH - PARTICLE_RADIUS;
+                particle->position.x = SCREEN_WIDTH - particle->size;
                 particle->velocity.x = -particle->velocity.x * 0.5f; // Dampen the bounce
             }
 
-            if(particle->position.y - PARTICLE_RADIUS < 0)
+            if(particle->position.y - particle->size < 0)
             {
-                particle->position.y = PARTICLE_RADIUS;
+                particle->position.y = particle->size;
                 particle->velocity.y = GRAVITY;
             }
-            else if(particle->position.y + PARTICLE_RADIUS > SCREEN_HEIGHT)
+            else if(particle->position.y + particle->size > SCREEN_HEIGHT)
             {
-                particle->position.y = SCREEN_HEIGHT - PARTICLE_RADIUS;
+                particle->position.y = SCREEN_HEIGHT - particle->size;
                 particle->velocity.y = -particle->velocity.y * 0.5f; // Dampen the bounce
             }
 
@@ -210,7 +212,7 @@ void Simulation::updateFixed(float timeStep, int iterations)
             if(particle->isResting)
                 continue;
 
-            const float search_radius = PARTICLE_RADIUS * 2;
+            const float search_radius = MAX_PARTICLE_RADIUS * 2;
             std::vector<nanoflann::ResultItem<unsigned int, float>> ret_matches;
 
             nanoflann::SearchParameters params;
@@ -232,11 +234,11 @@ void Simulation::resolveCollision(Particle &particle, Particle &neighbor)
 {
     glm::vec2 diff = particle.position - neighbor.position;
     float dist = glm::length(diff);
+    float overlap = particle.size + neighbor.size - dist;
 
-    if(dist < PARTICLE_RADIUS * 2)
+    if(overlap >= 0)
     {
         glm::vec2 normal = glm::normalize(diff);
-        float overlap = PARTICLE_RADIUS * 2 - dist;
 
         // Separate particles
         if(!particle.isResting)
@@ -290,8 +292,8 @@ void Simulation::render(std::shared_ptr<sleek::driver::driver> driver)
     {
         if(texture)
         {
-            sleek::math::vec2i pos = {particle->position.x - PARTICLE_RADIUS, particle->position.y - PARTICLE_RADIUS};
-            sleek::math::vec3f scl = {PARTICLE_RADIUS * 2, PARTICLE_RADIUS * 2, PARTICLE_RADIUS * 2};
+            sleek::math::vec2i pos = {particle->position.x - particle->size, particle->position.y - particle->size};
+            sleek::math::vec3f scl = {particle->size * 2, particle->size * 2, particle->size * 2};
 
             if(particle == grabbedParticle)
                 driver->drawTextureScale(texture, pos, {0, 0, 0}, scl, {1.f, 1.f}, {255, 0, 0});
@@ -302,8 +304,8 @@ void Simulation::render(std::shared_ptr<sleek::driver::driver> driver)
         }
         else
         {
-            sleek::math::vec2i ul = particle->position - PARTICLE_RADIUS;
-            sleek::math::vec2i lr = particle->position + PARTICLE_RADIUS;
+            sleek::math::vec2i ul = particle->position - particle->size;
+            sleek::math::vec2i lr = particle->position + particle->size;
 
             if(particle == grabbedParticle)
                 driver->drawCube(ul, lr, {0, 0, 0}, {255, 0, 0});

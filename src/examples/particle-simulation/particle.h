@@ -10,16 +10,18 @@ class Particle
         glm::vec2 interpolatedPosition;
 
         float mass;
+        float size;
         bool isResting;
 
     public:
-        Particle(glm::vec2 pos, glm::vec2 vel, float m)
+        Particle(glm::vec2 pos, glm::vec2 vel, float m, float s)
         {
             position = pos;
             velocity = vel;
             previousPosition = pos;
             interpolatedPosition = pos;
             mass = m;
+            size = s;
             isResting = false;
         }
 
