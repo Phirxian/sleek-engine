@@ -14,20 +14,10 @@ namespace sleek
 {
     namespace gui
     {
-        static const math::pixel theme_color[] = {
-            math::pixel( 25, 25, 25,128), // 0
-            math::pixel(128,255,255,255),
-            math::pixel( 25, 25, 25,100),
-            math::pixel( 25, 25, 25,200),
-            math::pixel(128, 25, 25,128), // 4
-            math::pixel(  0,  0,255,255),
-            math::pixel( 25, 25, 25,150),
-            math::pixel(  0,255,  0,255),
-            math::pixel( 25,128,255,128),
-            math::pixel( 25, 25, 25,255), // 9
-            math::pixel(255,255,255,255),
-            math::pixel(  0,  0,  0,255)
-        };
+        static auto theme_color_bg = math::pixel(24, 28, 47, 255);
+        static auto theme_color_fg = math::pixel(37, 45, 65, 255);
+        static auto theme_color_hover = math::pixel(24, 47, 45, 255);
+        static auto theme_color_border = math::pixel(8, 8, 18, 255);
 
         theme::theme(interface *i) noexcept : mom(i)
         {
@@ -56,7 +46,7 @@ namespace sleek
             mom->getDrawManager()->setActiveMaterial(solid);
             mom->getDrawManager()->drawTexture(
                 cache.get(), i->textpos,
-                {0.f, 0.f, 0.f}, {1.f,1.f},
+                {0.f, 0.f, 0.f}, {1.f, 1.f},
                 i->getTextColor()
             );
         }
@@ -64,35 +54,33 @@ namespace sleek
         void theme::drawWindowMain(window *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color[2 + i->isActive]);
+            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color_bg);
         }
 
         void theme::drawWindowMainHovored(window *i) noexcept
         {
-            drawWindowMain(i);
+            mom->getDrawManager()->setActiveMaterial(solid);
+            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color_fg);
         }
 
         void theme::drawWindowMainMoved(window *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color[6]);
+            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color_fg);
         }
 
         void theme::drawWindowDecoration(window *i) noexcept
         {
-            mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color[1 + i->isActive*6]);
-
-            // title s�parator
-
             math::vec2i a = i->box.getUpperLeft(),
                         b = i->box.getLowerRight();
 
-            a.y += i->title_size;
-            b.y = a.y;
-            b.x -= 1;
+            b.y = a.y + i->title_size;
 
-            mom->getDrawManager()->drawLine(a, b, theme_color[1 + i->isActive*6]);
+            mom->getDrawManager()->setActiveMaterial(solid);
+            mom->getDrawManager()->drawCube({a, b}, {0, 0, 0}, theme_color_bg);
+
+            mom->getDrawManager()->setActiveMaterial(line);
+            mom->getDrawManager()->drawCube({a, b}, {0, 0, 0}, theme_color_border);
         }
 
         void theme::drawWindowDecorationHovored(window *i) noexcept
@@ -120,50 +108,55 @@ namespace sleek
         void theme::drawButton(button *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[0]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_bg);
             mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[1]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_border);
         }
 
         void theme::drawButtonPushed(button *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[4]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_fg);
             mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[9]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_border);
         }
 
         void theme::drawButtonHovored(button *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[8]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_border);
             mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[5]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_fg);
         }
 
         void theme::drawStaticText(statictext *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(0,0,0), theme_color[0]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(0,0,0), theme_color_bg);
             mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(0,0,0), theme_color[1]);
-            drawFont(i);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(0,0,0), theme_color_border);
         }
 
         void theme::drawProgressbar(progressbar *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[0]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_bg);
+
+            float alpha = i->getPercentage();
+            math::aabbox2di pos = i->box;
+            pos.lowerright.x = (1-alpha)*i->box.upperleft.x + alpha*i->box.lowerright.x;
+
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[4]);
+            mom->getDrawManager()->drawCube(pos, math::vec3f(), theme_color_fg);
+
             mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[1]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_border);
         }
 
         void theme::drawScrollbar(scrollbar *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color[0]);
+            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color_bg);
 
             if(i->getOrientation() == SBO_HORIZONTAL)
             {
@@ -173,9 +166,9 @@ namespace sleek
                 };
                 math::vec2i end = {start.x, i->getBoundingBox().lowerright.y};
 
-                mom->getDrawManager()->drawLine({start.x-1, start.y}, {end.x-1, end.y}, theme_color[10]);
-                mom->getDrawManager()->drawLine(start, end, theme_color[11]);
-                mom->getDrawManager()->drawLine({start.x+1, start.y}, {end.x+1, end.y}, theme_color[10]);
+                mom->getDrawManager()->drawLine({start.x-1, start.y}, {end.x-1, end.y}, theme_color_border);
+                mom->getDrawManager()->drawLine(start, end, theme_color_hover);
+                mom->getDrawManager()->drawLine({start.x+1, start.y}, {end.x+1, end.y}, theme_color_border);
             }
             else
             {
@@ -185,21 +178,21 @@ namespace sleek
                 };
                 math::vec2i end = {i->getBoundingBox().lowerright.x, start.y};
 
-                mom->getDrawManager()->drawLine({start.x, start.y-1}, {end.x, end.y-1}, theme_color[10]);
-                mom->getDrawManager()->drawLine(start, end, theme_color[11]);
-                mom->getDrawManager()->drawLine({start.x, start.y+1}, {end.x, end.y+1}, theme_color[10]);
+                mom->getDrawManager()->drawLine({start.x, start.y-1}, {end.x, end.y-1}, theme_color_border);
+                mom->getDrawManager()->drawLine(start, end, theme_color_hover);
+                mom->getDrawManager()->drawLine({start.x, start.y+1}, {end.x, end.y+1}, theme_color_border);
             }
 
             mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color[1]);
+            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color_border);
         }
 
         void theme::drawFrame(frame *i) noexcept
         {
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color[6]);
+            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color_bg);
             mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color[1]);
+            mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_border);
         }
     }
 }

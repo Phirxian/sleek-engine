@@ -17,8 +17,6 @@ namespace sleek
                 virtual void setText(const std::string &t) noexcept;
                 virtual void setFont(std::shared_ptr<font>) noexcept;
 
-                virtual void UpdateFontPos() noexcept;
-
                 virtual bool manage(device::input*) noexcept;
 
                 virtual void render() noexcept;

@@ -17,6 +17,8 @@ namespace sleek
         class mimetype
         {
             public:
+                virtual ~mimetype() = default;
+                
                 virtual const char *getTypeName() const noexcept = 0;
 
                 //! return -1 on failure, or version of the header [0, 1, 2, ...]

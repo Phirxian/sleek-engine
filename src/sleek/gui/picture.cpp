@@ -52,7 +52,7 @@ namespace sleek
         {
             if(!pic) return;
             mom->getDrawManager()->setActiveMaterial(rnd);
-            mom->getDrawManager()->drawTexture(pic.get(), box.getUpperLeft());
+            mom->getDrawManager()->drawTextureCenter(pic.get(), box.getUpperLeft());
         }
     }
 }

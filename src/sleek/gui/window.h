@@ -23,10 +23,11 @@ namespace sleek
                 virtual void render() noexcept;
             protected:
                 std::shared_ptr<button> close;
+                std::shared_ptr<button> collapse;
                 void UpdateFontPos() noexcept;
             private:
                 math::vec2i def;
-                bool isHovored, isMoved;
+                bool isHovored, isMoved, isCollapsed;
                 friend class theme;
 
                 u32 title_size;

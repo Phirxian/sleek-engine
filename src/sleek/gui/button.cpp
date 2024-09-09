@@ -24,18 +24,6 @@ namespace sleek
             return hovored;
         }
 
-        void button::UpdateFontPos() noexcept
-        {
-            textpos = absolute+relative;
-            textpos += box.getSize()/2;
-
-            if(fontcache)
-            {
-                textpos.x -= fontcache->getDimension().x/2;
-                textpos.y -= fontcache->getDimension().y/2 - 2;
-            }
-        }
-
         bool button::manage(device::input* e) noexcept
         {
             bool CHovored = hovored;

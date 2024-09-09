@@ -7,7 +7,7 @@ namespace sleek
     {
         frame::frame(interface *m) noexcept : mom(m)
         {
-            textsize = 24;
+            textsize = 11;
             parent = nullptr;
             show = true;
             isActive = false;
@@ -79,6 +79,8 @@ namespace sleek
         void frame::setTextSize(u32 c) noexcept
         {
             textsize = c;
+            if(text.size() > 0 && ft2)
+                setFontCache(ft2->build(text, textsize));
         }
 
         interface* frame::getGUIEnvironment() const noexcept
@@ -204,12 +206,12 @@ namespace sleek
         void frame::UpdateFontPos() noexcept
         {
             textpos = absolute+relative;
-            textpos += box.getCenter();
+            textpos += box.getSize()/2;
 
             if(fontcache)
             {
                 textpos.x -= fontcache->getDimension().x/2;
-                textpos.y -= fontcache->getDimension().y/2;
+                textpos.y -= fontcache->getDimension().y/2 - 2;
             }
         }
     }

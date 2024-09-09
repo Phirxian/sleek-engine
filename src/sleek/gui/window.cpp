@@ -1,5 +1,6 @@
 #include "interface.h"
 #include "window.h"
+#include <iostream>
 
 namespace sleek
 {
@@ -8,14 +9,23 @@ namespace sleek
         window::window(interface *m) noexcept : frame(m)
         {
             title_size = 20;
-            isHovored = isMoved = false;
+            isHovored = isMoved = isCollapsed = false;
 
             close = std::make_shared<button>(m);
             close->box = math::aabbox2di(math::vec2i(0,0),math::vec2i(10,10));
             close->move({5, 5});
             close->setParent(this);
             close->UpdateAbsolutePosition();
-            close->setText("Close");
+            close->setTextSize(10);
+            close->setText("x");
+
+            collapse = std::make_shared<button>(m);
+            collapse->box = math::aabbox2di(math::vec2i(0,0),math::vec2i(10,10));
+            collapse->move({20, 5});
+            collapse->setParent(this);
+            collapse->UpdateAbsolutePosition();
+            collapse->setTextSize(10);
+            collapse->setText("-");
         }
 
         window::~window() noexcept
@@ -30,11 +40,13 @@ namespace sleek
         void window::UpdateFontPos() noexcept
         {
             textpos = absolute+relative;
+            textpos.x += 50;
+            textpos.y += title_size/2;
 
             if(fontcache)
             {
-                textpos.y += fontcache->getDimension().y+7;
-                textpos.x += 12;
+                textpos.x -= fontcache->getDimension().x/2;
+                textpos.y -= fontcache->getDimension().y/2 - 2;
             }
         }
 
@@ -58,14 +70,26 @@ namespace sleek
 
             if(frame::manage(e))
             {
-                if(e->gui.called == close.get() && e->gui.code == IET_BUTTON_CLICKED)
+                if(e->gui.code == IET_BUTTON_CLICKED)
                 {
-                    e->clear();
-                    e->gui.type = IGT_WINDOW;
-                    e->gui.code = IET_WINDOW_CLOSED;
-                    mom->removeFrame(getptr());
+                    if(e->gui.called == close.get())
+                    {
+                        e->clear();
+                        e->gui.type = IGT_WINDOW;
+                        e->gui.code = IET_WINDOW_CLOSED;
+                        mom->removeFrame(getptr());
+                        return true;
+                    }
+
+                    if(e->gui.called == collapse.get())
+                    {
+                        e->clear();
+                        isCollapsed = !isCollapsed;
+                        isMoved = false;
+                        return true;
+                    }
+                    // event might be fired by children
                 }
-                return true;
             }
 
             if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && box.intersect(e->mouse_pos))
@@ -74,7 +98,6 @@ namespace sleek
                 mom->popFrame(getptr());
                 isActive = true;
             }
-
 
             math::aabbox2di til(
                 box.getUpperLeft(),
@@ -134,26 +157,38 @@ namespace sleek
 
             if(isMoved)
             {
-                mom->getTheme()->drawWindowMainMoved(this);
+                if (!isCollapsed)
+                    mom->getTheme()->drawWindowMainMoved(this);
                 mom->getTheme()->drawWindowDecorationMoved(this);
                 mom->getTheme()->drawWindowTitleMoved(this);
             }
             else if(isHovored)
             {
-                mom->getTheme()->drawWindowMainHovored(this);
+                if (!isCollapsed)
+                    mom->getTheme()->drawWindowMainHovored(this);
                 mom->getTheme()->drawWindowDecorationHovored(this);
                 mom->getTheme()->drawWindowTitleHovored(this);
             }
             else
             {
-                mom->getTheme()->drawWindowMain(this);
+                if (!isCollapsed)
+                    mom->getTheme()->drawWindowMain(this);
                 mom->getTheme()->drawWindowDecoration(this);
                 mom->getTheme()->drawWindowTitle(this);
             }
 
+            //std::cout << "rendered" << std::endl;
+                    UpdateFontPos();
+
             mom->getTheme()->drawFont(this);
-            close->render();
-            renderChild();
+
+            if (!isCollapsed)
+                renderChild();
+            else
+            {
+                close->render();
+                collapse->render();
+            }
         }
     }
 }

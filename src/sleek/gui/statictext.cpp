@@ -24,18 +24,6 @@ namespace sleek
             frame::setFont(i);
         }
 
-        void statictext::UpdateFontPos() noexcept
-        {
-            if(!ft2) return;
-            textpos = absolute+relative;
-
-            if(fontcache)
-            {
-                textpos.y += fontcache->getDimension().y+4;
-                textpos.x += 4;
-            }
-        }
-
         bool statictext::manage(device::input *e) noexcept
         {
             bool CHovored = isHovored;
@@ -61,6 +49,8 @@ namespace sleek
         void statictext::render() noexcept
         {
             mom->getTheme()->drawStaticText(this);
+            mom->getTheme()->drawFont(this);
+            renderChild();
         }
     }
 }

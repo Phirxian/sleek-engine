@@ -2,6 +2,7 @@
 #include "font-ttf.h"
 
 #include "button.h"
+#include "colorpicker.h"
 #include "statictext.h"
 #include "progressbar.h"
 #include "scrollbar.h"
@@ -39,6 +40,14 @@ namespace sleek
             tmp->absolute = b.upperleft;
             tmp->box = b.minimise();
             tmp->setText(t);
+            return tmp;
+        }
+
+        std::shared_ptr<colorpicker> interface::addColorPicker(const math::aabbox2di &b) noexcept
+        {
+            auto tmp = std::make_shared<colorpicker>(this);
+            tmp->absolute = b.upperleft;
+            tmp->box = b.minimise();
             return tmp;
         }
 
@@ -92,7 +101,8 @@ namespace sleek
             auto tmp = std::make_shared<window>(this);
             tmp->absolute = b.upperleft;
             tmp->box = b.minimise();
-            tmp->text = t;
+            tmp->setTextSize(11);
+            tmp->setText(t);
             tmp->box = b;
             return tmp;
         }

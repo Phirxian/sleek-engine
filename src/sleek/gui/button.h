@@ -20,7 +20,6 @@ namespace sleek
                 virtual bool manage(device::input*) noexcept;
                 virtual void render() noexcept;
             protected:
-                virtual void UpdateFontPos() noexcept;
                 bool hovored, pushed;
         };
     }
