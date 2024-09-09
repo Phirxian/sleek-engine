@@ -1,7 +1,7 @@
 #include "../sleek/start.h"
 
-#include "nanoflann.hpp"
 #include "const.h"
+#include "nanoflann.hpp"
 #include "particle.h"
 
 #include <algorithm>
@@ -13,27 +13,38 @@
 
 struct PointCloud
 {
-    std::vector<Particle *> &particles;
+        std::vector<Particle *> &particles;
 
-    PointCloud(std::vector<Particle *> &pts) : particles(pts)
-    {
-    }
+        PointCloud(std::vector<Particle *> &pts) : particles(pts)
+        {
+        }
 
-    inline size_t kdtree_get_point_count() const
-    {
-        return particles.size();
-    }
+        inline size_t kdtree_get_point_count() const
+        {
+            return particles.size();
+        }
 
-    inline float kdtree_get_pt(const size_t idx, const size_t dim) const
-    {
-        float *data = &particles[idx]->position.x;
-        return *(data+dim);
-    }
+        inline float kdtree_get_pt(const size_t idx, const size_t dim) const
+        {
+            float *data = &particles[idx]->position.x;
+            return *(data + dim);
+        }
 
-    template<class BBOX> bool kdtree_get_bbox(BBOX &) const
-    {
-        return false;
-    }
+        template<class BBOX> bool kdtree_get_bbox(BBOX &) const
+        {
+            return false;
+        }
+};
+
+class StaticPlatform
+{
+    public:
+        glm::vec2 position;
+        glm::vec2 size;
+
+        StaticPlatform(glm::vec2 pos, glm::vec2 sz) : position(pos), size(sz)
+        {
+        }
 };
 
 class Simulation
@@ -41,6 +52,10 @@ class Simulation
     public:
         Simulation(sleek::driver::texture *);
         ~Simulation();
+
+        void addStaticPlatform(glm::vec2 position, glm::vec2 size);
+        bool checkCollisionWithPlatform(Particle &particle, const StaticPlatform &platform);
+        void resolveCollisionWithPlatform(Particle &particle, const StaticPlatform &platform);
 
         void handleMouseDown(int x, int y);
         void handleMouseMove(int x, int y);
@@ -51,12 +66,13 @@ class Simulation
         void update(float dt, int iteration = 3);
         void updateFixed(float timeStep, int iterations);
 
-        void resolveCollision(Particle& particle, Particle& neighbor);
+        void resolveCollision(Particle &particle, Particle &neighbor);
         void interpolateState(float alpha);
 
         void render(std::shared_ptr<sleek::driver::driver> renderer);
 
     private:
+        std::vector<StaticPlatform> platforms;
         std::vector<Particle *> particles;
         typedef nanoflann::KDTreeSingleIndexAdaptor<
             nanoflann::L2_Simple_Adaptor<float, PointCloud>, PointCloud, 2 /* dimensionality */

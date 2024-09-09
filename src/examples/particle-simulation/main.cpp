@@ -78,7 +78,7 @@ int main(int argc, char *args[])
 
     auto fs = io::createFilesystem(io::FILE_SYSTEM_TYPE::FST_STD);
     auto loader = std::make_shared<sleek::loader::loader>(fs);
-    auto texture = loader->loadTexture("texture/crate.jpg");
+    auto texture = loader->loadTexture("texture/particle.png");
 
     texture->createIdentifier(renderer.get());
     texture->getIdentifier()->update();
@@ -109,70 +109,3 @@ int main(int argc, char *args[])
         update_title(screen.get(), fps);
     }
 }
-
-/*
-int main(int argc, char *args[])
-{
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window *window = SDL_CreateWindow("Particle Simulation", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-    Simulation simulation;
-
-    bool quit = false;
-    SDL_Event e;
-
-    Uint64 NOW = SDL_GetPerformanceCounter();
-    Uint64 LAST = 0;
-
-    while(!quit)
-    {
-        while(SDL_PollEvent(&e) != 0)
-        {
-            switch(e.type)
-            {
-                case SDL_QUIT:
-                    quit = true;
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    if(e.button.button == SDL_BUTTON_LEFT)
-                    {
-                        simulation.handleMouseDown(e.button.x, e.button.y);
-                        std::cout << "." << std::endl;
-                    }
-                    break;
-                case SDL_MOUSEBUTTONUP:
-                    if(e.button.button == SDL_BUTTON_LEFT)
-                    {
-                        simulation.handleMouseUp();
-                    }
-                    break;
-                case SDL_MOUSEMOTION:
-                    simulation.handleMouseMove(e.motion.x, e.motion.y);
-                    break;
-            }
-        }
-
-        LAST = NOW;
-        NOW = SDL_GetPerformanceCounter();
-        float time_step = ((NOW - LAST) / (double)SDL_GetPerformanceFrequency());
-
-        simulation.update(time_step);
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        simulation.render(renderer);
-
-        SDL_RenderPresent(renderer);
-
-        // SDL_Delay(16);
-    }
-
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
-    return 0;
-}
-*/

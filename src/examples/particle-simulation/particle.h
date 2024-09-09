@@ -30,6 +30,11 @@ class Particle
                 isResting = true;
                 velocity = glm::vec2(0.0f, 0.0f);
             }
+            else
+            {
+                isResting = false;
+            }
+            
             if(!isResting)
             {
                 velocity.y += GRAVITY * time_step;
