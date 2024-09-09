@@ -25,7 +25,7 @@ class Particle
 
         void update(float time_step)
         {
-            if(glm::length(velocity) < VELOCITY_THRESHOLD)
+            if(glm::length(velocity) < VELOCITY_THRESHOLD * time_step)
             {
                 isResting = true;
                 velocity = glm::vec2(0.0f, 0.0f);
@@ -34,12 +34,11 @@ class Particle
             {
                 isResting = false;
             }
+
+            velocity.y += GRAVITY * time_step;
+            velocity *= (1.0f - DAMPING_FACTOR * time_step);
             
             if(!isResting)
-            {
-                velocity.y += GRAVITY * time_step;
-                velocity *= (1.0f - DAMPING_FACTOR * time_step);
                 position += velocity * time_step;
-            }
         }
 };

@@ -183,7 +183,7 @@ void Simulation::updateFixed(float timeStep, int iterations)
             if(particle->position.y - PARTICLE_RADIUS < 0)
             {
                 particle->position.y = PARTICLE_RADIUS;
-                particle->velocity.y = -particle->velocity.y * 0.5f; // Dampen the bounce
+                particle->velocity.y = GRAVITY;
             }
             else if(particle->position.y + PARTICLE_RADIUS > SCREEN_HEIGHT)
             {
