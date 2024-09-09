@@ -25,7 +25,7 @@ namespace sleek
                 event() noexcept;
                 ~event() noexcept;
 
-                virtual void force(input) noexcept;
+                virtual void force(input*) noexcept;
                 virtual bool manage(input*) noexcept;
                 virtual void exit() noexcept;
             protected:

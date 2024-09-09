@@ -14,6 +14,7 @@ class MainMenu : public SpaceShooterState
 
         void run() noexcept;
     private:
+        SpaceShooterManager *ssm;
         std::shared_ptr<sleek::gui::button> play;
         std::shared_ptr<sleek::gui::button> quit;
         sleek::math::timer time;

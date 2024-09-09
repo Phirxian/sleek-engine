@@ -179,8 +179,8 @@ namespace sleek
                 updateCameraMatrix();
                 glMatrixMode(GL_PROJECTION);
                 glLoadMatrixf(glm::value_ptr(proj*view));
-                glMatrixMode(GL_MODELVIEW);
-                glLoadIdentity();
+                //glMatrixMode(GL_MODELVIEW);
+                //glLoadIdentity();
             }
         }
     }

@@ -18,13 +18,19 @@ namespace sleek
                 public:
                     TrackballCamera(device::Device*);
 
+                    void setDistance(f32) noexcept;
+                    f32 getDistance() const noexcept;
+
                     bool manage(device::input*) noexcept override;
+
+                    void updateCameraMatrix() noexcept override;
                 protected:
-                    math::vec2f getmouseonscreen(math::vec2i);
+                    math::vec3f getTrackballVector(const math::vec2f& screenPos);
+                    math::vec2f getMouseOnScreen(math::vec2i);
                     void rotatecamera();
                     void pancamera();
                 protected:
-                    f32 radius;
+                    f32 distance;
                     f32 sensitivity;
                     math::vec2f rotstart;
                     math::vec2f rotend;

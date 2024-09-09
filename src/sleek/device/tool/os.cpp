@@ -57,6 +57,7 @@ namespace sleek
                     }
                     else bytes = readlink("/proc/self/exe", const_cast<char*>(buffer.c_str()), BUFSIZ);
                 #else
+                    bytes = 1;
                     #warning undefined os
                 #endif
 

@@ -52,6 +52,22 @@ SpaceShooterManager::SpaceShooterManager() noexcept
     current_state = main_menu;
 }
 
+void SpaceShooterManager::setState(GameState new_state)
+{
+    switch (new_state)
+    {
+    case GS_MAIN_MENU:
+        current_state = main_menu;
+        break;
+    case GS_GAME:
+        current_state = game;
+        break;
+    
+    default:
+        break;
+    }
+}
+
 SpaceShooterManager::~SpaceShooterManager() noexcept
 {
     screen->setEventReceiver(0);

@@ -40,16 +40,19 @@ bool MainMenu::manage(sleek::device::input *e) noexcept
         if(e->gui.code == gui::IET_BUTTON_CLICKED)
         {
             if(e->gui.called == play.get())
-                std::cout << "play" << std::endl;
+            {
+                mgr->setState(GS_GAME);
+            }
                 
             if(e->gui.called == quit.get())
             {
                 this->exit();
                 e->exit_msg = true;
                 mgr->getDevice()->exit();
-                return true;
+                return false;
             }
         }
+        
         return true;
     }
 

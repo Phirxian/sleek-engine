@@ -8,8 +8,9 @@ namespace sleek
         namespace camera
         {
             FPSCamera::FPSCamera(device::Device *dev)
-                : Camera(dev), movementSpeed(0.5f), mouseSensitivity(0.1f), yaw(-90.0f), pitch(0.0f)
+                : Camera(dev), movementSpeed(2.0f), mouseSensitivity(0.1f), yaw(-90.0f), pitch(0.0f)
             {
+                moveDirection = {0,0,0};
                 front = math::vec3f(0.0f, 0.0f, -1.0f);
                 right = math::vec3f(1.0f, 0.0f, 0.0f);
                 up = math::vec3f(0.0f, 1.0f, 0.0f);
@@ -20,58 +21,69 @@ namespace sleek
             {
                 if (e->type == device::EVENT_MOUSSE_MOVED)
                 {
-                    math::vec2f mouseDelta = getMouseDelta(e->mouse_pos);
-                    rotateCamera(mouseDelta.x, -mouseDelta.y); // Invert Y-axis
+                    math::vec2f delta = math::vec2f(e->mouse_pos.x - lastMousePos.x, e->mouse_pos.y - lastMousePos.y);
+                    // EVENT_MOUSSE_MOVED might be emmited by WarpMouse
+                    if (abs(delta.x)+abs(delta.y) > 0)
+                    {
+                        rotateCamera(delta.x, -delta.y);
+
+                        if (false)
+                            lastMousePos = math::vec2f(e->mouse_pos.x, e->mouse_pos.y);
+                        else
+                        {
+                            lastMousePos = screen->getInfo().size/2;
+                            screen->WarpMouse(screen->getInfo().size/2);
+                        }
+                    }
                 }
 
-                // Handle keyboard input for movement
-                math::vec3f moveDirection(0.0f);
-                if (e->key_state[device::KEY_KEY_W]) moveDirection += front;
-                if (e->key_state[device::KEY_KEY_S]) moveDirection -= front;
-                if (e->key_state[device::KEY_KEY_A]) moveDirection -= right;
-                if (e->key_state[device::KEY_KEY_D]) moveDirection += right;
-                if (e->key_state[device::KEY_SPACE]) moveDirection += up;
-                if (e->key_state[device::KEY_LSHIFT]) moveDirection -= up;
+                if (e->type == device::EVENT_KEY_DOWN || e->type == device::EVENT_KEY_UP)
+                {
+                    // Handle keyboard input for movement
+                    moveDirection = {0,0,0};
 
-                if (glm::length(moveDirection) > 0.0f)
-                    moveCamera(glm::normalize(moveDirection));
+                    if (e->key_state[device::KEY_KEY_W])
+                        moveDirection += front;
+                    if (e->key_state[device::KEY_KEY_S])
+                        moveDirection -= front;
+                    if (e->key_state[device::KEY_KEY_A])
+                        moveDirection -= right;
+                    if (e->key_state[device::KEY_KEY_D])
+                        moveDirection += right;
+                    if (e->key_state[device::KEY_SPACE])
+                        moveDirection += up;
+                    if (e->key_state[device::KEY_LSHIFT])
+                        moveDirection -= up;
+                }
 
                 return Camera::manage(e);
             }
 
-            void FPSCamera::moveCamera(const math::vec3f& direction)
-            {
-                pos += direction * movementSpeed * 0.01f; // * device::Device::getDeltaTime();
-                setPosition(pos);
-            }
-
             void FPSCamera::rotateCamera(float yawOffset, float pitchOffset)
             {
-                yaw += yawOffset * mouseSensitivity;
-                pitch += pitchOffset * mouseSensitivity;
+                yawOffset *= mouseSensitivity;
+                pitchOffset *= mouseSensitivity;
+                yaw += yawOffset;
+                pitch += pitchOffset;
+            }
 
-                // Constrain pitch
-                if (pitch > 89.0f) pitch = 89.0f;
-                if (pitch < -89.0f) pitch = -89.0f;
-
-                // Calculate new front vector
+            void FPSCamera::updateCameraMatrix() noexcept
+            {
                 front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
                 front.y = sin(glm::radians(pitch));
                 front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+                
                 front = glm::normalize(front);
-
-                // Recalculate right and up vectors
                 right = glm::normalize(glm::cross(front, math::vec3f(0.0f, 1.0f, 0.0f)));
-                up = glm::normalize(glm::cross(right, front));
-
-                setTarget(pos + front);
+                up    = glm::normalize(glm::cross(right, front));
+                view =  glm::lookAt(pos, pos+front, up);
             }
 
-            math::vec2f FPSCamera::getMouseDelta(const math::vec2i& currentMousePos)
+            void FPSCamera::render() noexcept
             {
-                math::vec2f delta = math::vec2f(currentMousePos.x - lastMousePos.x, currentMousePos.y - lastMousePos.y);
-                lastMousePos = math::vec2f(currentMousePos.x, currentMousePos.y);
-                return delta;
+                if (glm::length(moveDirection) > 0.0f)
+                    pos += glm::normalize(moveDirection) * movementSpeed;
+                Camera::render();
             }
         }
     }

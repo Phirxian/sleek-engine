@@ -22,12 +22,11 @@ namespace sleek
                     void setMovementSpeed(float speed) { movementSpeed = speed; }
                     void setMouseSensitivity(float sensitivity) { mouseSensitivity = sensitivity; }
 
+                    void updateCameraMatrix() noexcept override;
+                    void render() noexcept override;
                 private:
-                    void moveCamera(const math::vec3f& direction);
                     void rotateCamera(float yaw, float pitch);
                     math::timer timer;
-
-                    math::vec2f getMouseDelta(const math::vec2i& currentMousePos);
 
                     float movementSpeed;
                     float mouseSensitivity;
@@ -36,6 +35,7 @@ namespace sleek
                     float yaw;
                     float pitch;
 
+                    math::vec3f moveDirection;
                     math::vec3f front;
                     math::vec3f right;
                     math::vec3f up;

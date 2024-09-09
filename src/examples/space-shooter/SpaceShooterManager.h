@@ -25,6 +25,8 @@ class SpaceShooterManager : public sleek::device::event
 
         bool manage(sleek::device::input *a) noexcept override;
 
+        void setState(GameState);
+
         void update_title() noexcept;
         void run() noexcept;
     private:

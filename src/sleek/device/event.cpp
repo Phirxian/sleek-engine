@@ -13,9 +13,9 @@ namespace sleek
         {
         }
 
-        void event::force(input a) noexcept
+        void event::force(input *a) noexcept
         {
-            manage(&a);
+            manage(a);
         }
 
         bool event::manage(input *a) noexcept

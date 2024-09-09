@@ -56,10 +56,14 @@ namespace sample
         node->setMesh(tmp);
         smgr->addSceneNode(node);
 
-        smgr->setCamera(std::make_shared<scene3d::camera::FPSCamera>(screen));
-        smgr->getCamera()->setRotation({0, 1, 0});
-        smgr->getCamera()->setTarget({0, 0, 0});
-        smgr->getCamera()->setPosition({2*distance, distance, 2*distance});
+        //auto camera = std::make_shared<scene3d::camera::TrackballCamera>(screen);
+        auto camera = std::make_shared<scene3d::camera::FPSCamera>(screen);
+        //auto camera = smgr->getCamera();
+        camera->setRotation({0, 1, 0});
+        camera->setTarget({0, 0, 0});
+        camera->setPosition({0, distance, 2*distance});
+        //camera->setDistance(distance);
+        smgr->setCamera(camera);
     }
 
     MetaballSample::~MetaballSample() noexcept
@@ -102,7 +106,7 @@ namespace sample
             }
 
             //! vertex buffer object, disable and enable
-            if(a->key[KEY_KEY_Q])
+            if(a->key[KEY_F2])
             {
                 if(tmp->getIdentifier())
                     tmp->setIdentifier(nullptr);
@@ -114,7 +118,7 @@ namespace sample
                 return true;
             }
 
-            if(a->key[KEY_KEY_W])
+            if(a->key[KEY_F1])
             {
                 node->getMaterial()->setWireframe(
                     !node->getMaterial()->getWireframe()
@@ -152,17 +156,6 @@ namespace sample
             if(tmp->getIdentifier())
                 tmp->getIdentifier()->update();
         }
-
-        float rot = tm.getTimeMsec()/50.0f;
-
-        /*
-        smgr->getCamera()->setPosition(
-            math::vec3f(
-                sin(rot/100)*2*distance, distance,
-                cos(rot/100)*2*distance
-            )
-        );
-        */
 
         smgr->render();
     }

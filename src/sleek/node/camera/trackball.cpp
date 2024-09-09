@@ -16,7 +16,20 @@ namespace sleek
             TrackballCamera::TrackballCamera(device::Device *dev)
                 : Camera(dev), sensitivity(2.0f)
             {
-                radius = 5.f;
+                distance = 5.f;
+            }
+
+            void TrackballCamera::setDistance(f32 d) noexcept
+            {
+                distance = d;
+                math::vec3f direction = normalize(pos - getTarget());
+                pos = getTarget() + direction * distance;
+                setPosition(pos);
+            }
+
+            f32 TrackballCamera::getDistance() const noexcept
+            {
+                return distance;
             }
 
             bool TrackballCamera::manage(device::input *e) noexcept
@@ -25,16 +38,26 @@ namespace sleek
                 {
                     if(e->mouse[device::MOUSE_LEFT])
                     {
-                        std::cout << "rotation start" << std::endl;
-                        rotstart = getmouseonscreen(e->mouse_pos);
+                        rotstart = getMouseOnScreen(e->mouse_pos);
                         rotend = rotstart;
                     }
 
                     if(e->mouse[device::MOUSE_RIGHT])
                     {
-                        std::cout << "pan start" << std::endl;
-                        panstart = getmouseonscreen(e->mouse_pos);
+                        panstart = getMouseOnScreen(e->mouse_pos);
                         panend = panstart;
+                    }
+
+                    if(e->mouse[device::MOUSE_WHEEL_UP])
+                    {
+                        distance += sensitivity;
+                        setDistance(distance);
+                    }
+
+                    if(e->mouse[device::MOUSE_WHEEL_DOWN])
+                    {
+                        distance -= sensitivity;
+                        setDistance(distance);
                     }
                 }
 
@@ -42,14 +65,14 @@ namespace sleek
                 {
                     if(e->key_state[device::KEY_LBUTTON])
                     {
-                        rotend = getmouseonscreen(e->mouse_pos);
+                        rotend = getMouseOnScreen(e->mouse_pos);
                         rotatecamera();
                         rotstart = rotend;
                     }
 
                     if(e->key_state[device::KEY_RBUTTON])
                     {
-                        panend = getmouseonscreen(e->mouse_pos);
+                        panend = getMouseOnScreen(e->mouse_pos);
                         pancamera();
                         panstart = panend;
                     }
@@ -58,7 +81,7 @@ namespace sleek
                 return Camera::manage(e);
             }
 
-            math::vec2f TrackballCamera::getmouseonscreen(math::vec2i pos)
+            math::vec2f TrackballCamera::getMouseOnScreen(math::vec2i pos)
             {
                 return {
                     pos.x / float(screen->getInfo().size.x),
@@ -68,16 +91,43 @@ namespace sleek
 
             void TrackballCamera::rotatecamera()
             {
-                math::vec3f direction = {rotend.x-rotstart.x, rotend.y-rotstart.y, 1};
-                direction *= sensitivity;
-                float velocity = glm::length(direction);
+                auto start = getTrackballVector(rotstart);
+                auto end = getTrackballVector(rotend);
+                auto axis = cross(start, end);
+                auto direction = glm::normalize(pos-tar);
                 
-                sleek::math::vec4f camera(pos.x, pos.y, pos.z, 1);
-                sleek::math::mat4f transform  = glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, -direction.x, 0.0f)));
-                transform *= glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, 0.0f, direction.y*2)));
-                camera = transform * camera;
+                sleek::math::vec4f camera(direction.x, direction.y, direction.z, 1);
+                sleek::math::mat4f transform  = glm::toMat4(sleek::math::quatf(glm::vec3(axis.z*2, -axis.x, axis.y*2)));
+                camera = transform * camera * distance;
 
                 setPosition({camera.x, camera.y, camera.z});
+            }
+
+            void TrackballCamera::updateCameraMatrix() noexcept
+            {
+                Camera::updateCameraMatrix();
+            }
+
+            // Helper function to map 2D screen coordinates to 3D trackball coordinates
+            math::vec3f TrackballCamera::getTrackballVector(const math::vec2f& screenPos)
+            {
+                math::vec3f v;
+
+                float d;
+                v.x = (2.0f * screenPos.x - 1.0f);
+                v.y = (1.0f - 2.0f * screenPos.y);
+                v.z = 0.0f;
+                d = length(v);
+
+                if (d >= 1.0f)
+                {
+                    d = 1.0f;
+                    v.z = 0.0f;
+                }
+                else
+                    v.z = sqrtf(1.f - d * d);
+                    
+                return normalize(v);
             }
 
             void TrackballCamera::pancamera()
@@ -90,7 +140,7 @@ namespace sleek
                 auto right = normalize(cross(forward, up));
 
                 up = normalize(cross(right, forward));
-                auto pan = (right * mov.x + up * -mov.y) * sensitivity*sensitivity;
+                auto pan = (right * -mov.x + up * mov.y) * sensitivity*sensitivity;
 
                 setTarget(cen + pan);
                 setPosition(pos + pan);
