@@ -7,9 +7,6 @@ namespace sleek
     {
         cursor::cursor(interface *m) noexcept : mom(m)
         {
-            rnd.reset(new driver::material());
-            rnd->setMaterialRender(driver::rmt_add);
-//            rnd->setMaterialRender(driver::rmt_sub);
             isRender = false;
             showCursor(true);
         }
@@ -81,7 +78,7 @@ namespace sleek
             if(!mom || !isRender || !tex)
                 return;
 
-            mom->getDrawManager()->setActiveMaterial(rnd);
+            mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getAddMaterial());
             mom->getDrawManager()->drawTexture(tex.get(), pos);
         }
     }

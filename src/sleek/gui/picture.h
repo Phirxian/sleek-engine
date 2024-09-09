@@ -23,7 +23,6 @@ namespace sleek
 
                 virtual void render() noexcept;
             private:
-                std::shared_ptr<driver::material> rnd;
                 std::shared_ptr<driver::texture> pic;
                 bool isHovored;
         };

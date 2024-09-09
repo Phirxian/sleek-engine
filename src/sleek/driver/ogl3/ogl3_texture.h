@@ -10,7 +10,6 @@ namespace sleek
     {
         static GLuint ogl3_texture_format[] = {
             //! depth
-
             GL_DEPTH_COMPONENT,
 
             //! rgb
@@ -21,7 +20,6 @@ namespace sleek
             GL_RED,
             GL_RG,
             #endif
-
             GL_RGB,
             GL_RGBA,
 
@@ -29,17 +27,17 @@ namespace sleek
 
             #ifdef GL_LUMINANCE
             GL_LUMINANCE,
+            GL_LUMINANCE_ALPHA,
             #else
             GL_RED,
-            #endif
             GL_RG,
+            #endif
             GL_RGB,
             GL_RGBA
         };
 
         static GLuint ogl3_texture_type[] = {
             //! depth
-
             GL_UNSIGNED_BYTE,
 
             //! rgb

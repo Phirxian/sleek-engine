@@ -1,6 +1,8 @@
 #include "interface.h"
 #include "picture.h"
 
+#include <iostream>
+
 namespace sleek
 {
     namespace gui
@@ -17,8 +19,6 @@ namespace sleek
         void picture::setTexture(std::shared_ptr<driver::texture> i) noexcept
         {
             pic = i;
-            if(pic)
-                box.setSizeFromUpperLeft(i->getDimension());
         }
 
         bool picture::manage(device::input *e) noexcept
@@ -50,9 +50,25 @@ namespace sleek
 
         void picture::render() noexcept
         {
-            if(!pic) return;
-            mom->getDrawManager()->setActiveMaterial(rnd);
-            mom->getDrawManager()->drawTextureCenter(pic.get(), box.getUpperLeft());
+            if(!pic)
+                return;
+
+            auto aspect = pic->getDimension().x / float(pic->getDimension().y);
+
+            auto scl = box.getSize();
+            scl.y = scl.x / aspect;
+
+            frame::render();
+
+            mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getSolidMaterial());
+
+            mom->getDrawManager()->drawTextureScale(
+                pic.get(),
+                {box.getUpperLeft().x, box.getUpperLeft().y + scl.y/3}, // wtf ?
+                {0, 0, 0},
+                {scl.x, scl.y, 0},
+                {1.f, 1.f}
+            );
         }
     }
 }

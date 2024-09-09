@@ -56,8 +56,8 @@ namespace sleek
         void ogl3_texture<false>::update() noexcept
         {
             texture *tmp = static_cast<texture*>(owner);
-            glEnable(GL_TEXTURE_2D);
-            glActiveTexture(GL_TEXTURE0_ARB);
+            //glEnable(GL_TEXTURE_2D);
+            //glActiveTexture(GL_TEXTURE0_ARB);
 
             bind();
 

@@ -80,7 +80,7 @@ namespace sleek
             {
                 e->gui.called = this;
                 e->gui.code = gui::IET_PROGRESSBAR_UPDATED;
-                return true;
+                return false;
             }
 
             return false;

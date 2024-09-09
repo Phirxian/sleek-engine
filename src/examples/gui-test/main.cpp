@@ -25,7 +25,7 @@ class GUITest : public device::event
             guienv->getCursor()->showCursor(true);
             guienv->getCursor()->showTexture(true);
             
-            auto pointor = loader->loadTexture("texture/pointor.bmp");
+            auto pointor = loader->loadTexture("texture/pointor.png");
             auto earth = loader->loadTexture("texture/earth.jpg");
 
             if(pointor)
@@ -51,13 +51,11 @@ class GUITest : public device::event
             auto c = guienv->addStaticText("static text", {100, 300, 200, 350});
             guienv->addCustomFrame(c);
 
-            auto p1 = guienv->addScrollbar(false, {100, 10, 300, 25});
+            auto p1 = guienv->addScrollbar(true, {100, 10, 300, 25});
             guienv->addCustomFrame(p1);
-            auto p2 = guienv->addScrollbar(true, {10, 100, 25, 300});
+            auto p2 = guienv->addScrollbar(false, {20, 100, 35, 300});
             guienv->addCustomFrame(p2);
 
-            auto d = guienv->addPicture(earth, "", {500, 500, 750, 750});
-            guienv->addCustomFrame(c);
 
             progressbar = guienv->addProgressbar("%f", {100, 50, 200, 75});
             guienv->addCustomFrame(progressbar);
@@ -66,6 +64,8 @@ class GUITest : public device::event
             guienv->addCustomFrame(picker);
 
             auto w = guienv->addWindow("title", {500, 00, 750, 250});
+            auto d = guienv->addPicture(earth, "", {5, 25, 240, 220});
+            w->addChild(d);
             guienv->addCustomFrame(w);
         }
 

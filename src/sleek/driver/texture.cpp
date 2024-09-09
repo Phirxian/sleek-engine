@@ -20,10 +20,14 @@ namespace sleek
         texture::texture(const math::vec2i &size, const TextureFormat p, u8 *data) noexcept
             : gpu(nullptr), buffer(0), fmt(p)
         {
+            fmt = p;
             pitch = TextureFormatSize[p];
             component = TextureFormatComponant[p];
             original = size;
-            buffer = data ? data : new u8[getBufferSize()];
+            buffer = new u8[getBufferSize()];
+
+            if (data)
+                std::memcpy(buffer, data, getBufferSize());
         }
 
         texture::~texture() noexcept
@@ -42,7 +46,7 @@ namespace sleek
 
         void texture::setPixel(const math::vec2i &pos, const math::pixel &color) noexcept
         {
-            int idx = (pos.x+pos.y*original.x)*pitch;
+            int idx = indexof(pos);
 
             if(idx > getBufferSize())
                 return;
@@ -51,10 +55,10 @@ namespace sleek
             switch(fmt)
             {
                 case TXFMT_LUMINANCE:
-                    pixel[0] = color.getLuminaissance();
+                    pixel[0] = color.getLuminance();
                 break;
                 case TXFMT_LUMINANCE_ALPHA:
-                    pixel[0] = color.getLuminaissance();
+                    pixel[0] = color.getLuminance();
                     pixel[1] = color.getAlpha();
                 break;
                 case TXFMT_RGB:
@@ -75,10 +79,31 @@ namespace sleek
                 case TXFMT_LUMINANCE_ALPHA_32F:
                 case TXFMT_RGB_32F:
                 case TXFMT_RGBA_32F:
-                {
-                    float *ptr = reinterpret_cast<float*>(pixel);
-                    std::memcpy((float*)(&pixel), ptr, pitch);
-                }
+                    float* floatPixel = reinterpret_cast<float*>(pixel);
+                    switch (fmt)
+                    {
+                        case TXFMT_LUMINANCE_32F:
+                            floatPixel[0] = color.getLuminance();
+                            break;
+                        case TXFMT_LUMINANCE_ALPHA_32F:
+                            floatPixel[0] = color.getLuminance();
+                            floatPixel[1] = color.getAlpha();
+                            break;
+                        case TXFMT_RGB_32F:
+                            floatPixel[0] = color.getRed();
+                            floatPixel[1] = color.getGreen();
+                            floatPixel[2] = color.getBlue();
+                            break;
+                        case TXFMT_RGBA_32F:
+                            floatPixel[0] = color.getRed();
+                            floatPixel[1] = color.getGreen();
+                            floatPixel[2] = color.getBlue();
+                            floatPixel[3] = color.getAlpha();
+                            break;
+                        default:
+                            // Handle unsupported formats
+                            break;
+                    }
                 break;
             }
         }
@@ -95,7 +120,7 @@ namespace sleek
 
         math::pixel texture::getPixel(const math::vec2i &pos) const noexcept
         {
-            unsigned long index = indexof(pos);
+            int index = indexof(pos);
             
             switch(fmt)
             {

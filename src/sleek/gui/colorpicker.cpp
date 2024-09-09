@@ -16,9 +16,6 @@ namespace sleek
             : frame(guienv), background{64, 255, 255, 255}, white{255, 255, 255, 255}, black{0, 0, 0, 255},
               colorpos(0), isGradient(false), isColor(false)
         {
-            mat.reset(new driver::material());
-            mat->setMode(driver::rmd_quad);
-
             close = guienv->addButton("take this color", {5, 140, 85, 156});
             close->setParent(this);
 
@@ -59,7 +56,8 @@ namespace sleek
         }
         void colorpicker::createGradientTexture() noexcept
         {
-            img[1] = std::make_shared<driver::texture>(math::vec2i{15, 151});
+            auto size = math::vec2i{1, 151};
+            img[1] = std::make_shared<driver::texture>(size, driver::TXFMT_RGB);
 
             math::pixel from;
             math::pixel to;
@@ -74,7 +72,7 @@ namespace sleek
                         from, (y-start)/25.f                      \
                     );                                            \
                                                                   \
-                    for(int x=0; x<15; ++x)                       \
+                    for(int x=0; x<1; ++x)                        \
                         img[1]->setPixel({x, y}, c);              \
                 }
 
@@ -242,15 +240,25 @@ namespace sleek
 
             frame::render();
 
-            mom->getDrawManager()->setActiveMaterial(mat);
-            mom->getDrawManager()->drawTexture(img[1].get(), {
-                box.upperleft.x+90,
-                box.upperleft.y+5
-            });
-
-            // 2 draw because the interpolation in the diagonal is not well rendered
+            mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getSolidMaterial());
+            // draw the background
             mom->getDrawManager()->drawCube(colorbox, {0, 0, 0}, black);
+            //mom->getDrawManager()->drawCube(colorbox, {0, 0, 0}, white, color, black, black);
             mom->getDrawManager()->drawCube(colorbox, {0, 0, 0}, white, color, alpha, alpha);
+            
+            mom->getDrawManager()->drawTextureScale(
+                img[1].get(),
+                {box.upperleft.x+90, box.upperleft.y+5},
+                {0, 0, 0},
+                {15, img[1]->getDimension().y, 0},
+                {1.f, 1.f}
+            );
+
+            // right vertical texture
+            //mom->getDrawManager()->drawTexture(img[1].get(), {
+            //    box.upperleft.x+90,
+            //    box.upperleft.y+5
+            //});
 
             {
                 const math::vec2i start =  {box.upperleft.x+90,  box.upperleft.y+5+colorpos};
@@ -273,13 +281,24 @@ namespace sleek
             }
 
             auto scl = pickbox.getSize();
+            auto pickbox_a = pickbox;
+            auto pickbox_b = pickbox;
 
+            pickbox_a.lowerright.y = pickbox_a.upperleft.y + scl.y/2;
+            pickbox_b.upperleft.y = pickbox_b.lowerright.y - scl.y/2;
+
+            // chessboard texture
             mom->getDrawManager()->drawTextureScale(
                 img[0].get(), pickbox.upperleft, {0, 0, 0},
                 {scl.x, scl.y, 0}, {scl.x/16.f, scl.y/16.f}
             );
+
             mom->getDrawManager()->drawCube(
-                pickbox, {0, 0, 0}, pickcolor
+                pickbox_a, {0, 0, 0}, {pickcolor.red, pickcolor.green, pickcolor.blue, 255}
+            );
+
+            mom->getDrawManager()->drawCube(
+                pickbox_b, {0, 0, 0}, pickcolor
             );
         }
     }

@@ -37,17 +37,15 @@ namespace sleek
                 virtual void createGradientTexture() noexcept;
                 virtual void UpdateAbsolutePosition() noexcept;
             protected:
-                std::shared_ptr<button>          close;
-                std::shared_ptr<scrollbar>       scroll;
+                std::shared_ptr<button> close;
+                std::shared_ptr<scrollbar> scroll;
                 std::shared_ptr<driver::texture> img[2];
             protected:
-                math::pixel     pickcolor, color;
-                math::pixel     background, white, black, alpha;
+                math::pixel pickcolor, color;
+                math::pixel background, white, black, alpha;
                 math::aabbox2di colorbox, pickbox, gradient;
                 math::vec2i pickpos;
-                int             colorpos;
-            private:
-                std::shared_ptr<driver::material> mat;
+                int colorpos;
         };
     }
 }

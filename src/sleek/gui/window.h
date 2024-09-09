@@ -25,6 +25,7 @@ namespace sleek
                 std::shared_ptr<button> close;
                 std::shared_ptr<button> collapse;
                 void UpdateFontPos() noexcept;
+                
             private:
                 math::vec2i def;
                 bool isHovored, isMoved, isCollapsed;

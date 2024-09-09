@@ -56,14 +56,20 @@ namespace sleek
             auto tmp = std::make_shared<picture>(this);
             tmp->absolute = b.upperleft;
             tmp->box = b.minimise();
-            tmp->setText(t);
             tmp->setTexture(w);
+            tmp->setText(t);
             return tmp;
         }
 
         std::shared_ptr<scrollbar> interface::addScrollbar(bool horizontal, const math::aabbox2di &pos) noexcept
         {
             auto tmp = std::make_shared<scrollbar>(this);
+
+            if(horizontal)
+                tmp->setOrientation(SBO_HORIZONTAL);
+            else
+                tmp->setOrientation(SBO_VERTICAL);
+
             tmp->absolute = pos.upperleft;
             tmp->box = pos.minimise();
             return tmp;
@@ -153,7 +159,10 @@ namespace sleek
             for(u32 i = 0; i<gui.size(); ++i)
             {
                 if(gui[gui.size()-i-1]->manage(a))
+                {
+                    //std::cout << "event fired by " << gui[gui.size()-i-1]->getType() << std::endl;
                     return true;
+                }
             }
 
             return false;

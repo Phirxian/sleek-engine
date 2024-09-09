@@ -158,16 +158,16 @@ namespace sleek
             if(isMoved)
             {
                 if (!isCollapsed)
-                    mom->getTheme()->drawWindowMainMoved(this);
-                mom->getTheme()->drawWindowDecorationMoved(this);
-                mom->getTheme()->drawWindowTitleMoved(this);
+                    mom->getTheme()->drawWindowMain(this);
+                mom->getTheme()->drawWindowDecoration(this);
+                mom->getTheme()->drawWindowTitle(this);
             }
             else if(isHovored)
             {
                 if (!isCollapsed)
-                    mom->getTheme()->drawWindowMainHovored(this);
-                mom->getTheme()->drawWindowDecorationHovored(this);
-                mom->getTheme()->drawWindowTitleHovored(this);
+                    mom->getTheme()->drawWindowMain(this);
+                mom->getTheme()->drawWindowDecoration(this);
+                mom->getTheme()->drawWindowTitle(this);
             }
             else
             {
@@ -176,9 +176,6 @@ namespace sleek
                 mom->getTheme()->drawWindowDecoration(this);
                 mom->getTheme()->drawWindowTitle(this);
             }
-
-            //std::cout << "rendered" << std::endl;
-                    UpdateFontPos();
 
             mom->getTheme()->drawFont(this);
 

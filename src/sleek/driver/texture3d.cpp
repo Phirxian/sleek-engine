@@ -56,10 +56,10 @@ namespace sleek
             switch(fmt)
             {
                 case TXFMT_LUMINANCE:
-                    pixel[0] = color.getLuminaissance();
+                    pixel[0] = color.getLuminance();
                 break;
                 case TXFMT_LUMINANCE_ALPHA:
-                    pixel[0] = color.getLuminaissance();
+                    pixel[0] = color.getLuminance();
                     pixel[1] = color.getAlpha();
                 break;
                 case TXFMT_RGB:

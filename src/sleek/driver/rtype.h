@@ -28,6 +28,7 @@ namespace sleek
         };
         enum render_material
         {
+            rmt_hard         = 0x000,
             rmt_solid        = 0x001,
             rmt_add          = 0x002,
             rmt_sub          = 0x004,

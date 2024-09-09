@@ -30,8 +30,6 @@ namespace sleek
                 virtual void drawFont(frame*) const noexcept;
 
                 virtual void drawWindowMain(window*) noexcept;
-                virtual void drawWindowMainHovored(window*) noexcept;
-                virtual void drawWindowMainMoved(window*) noexcept;
 
                 virtual void drawWindowDecoration(window*) noexcept;
                 virtual void drawWindowDecorationHovored(window*) noexcept;
@@ -48,10 +46,14 @@ namespace sleek
                 virtual void drawProgressbar(progressbar*) noexcept;
                 virtual void drawScrollbar(scrollbar*) noexcept;
                 virtual void drawFrame(frame*) noexcept;
+
+                std::shared_ptr<driver::material> getLineMaterial() { return line; }
+                std::shared_ptr<driver::material> getSolidMaterial() { return solid; }
+                std::shared_ptr<driver::material> getAddMaterial() { return add; }
             protected:
                 interface *mom;
                 driver::texture *decor[IGT_COUNT*3];
-                std::shared_ptr<driver::material> solid, line;
+                std::shared_ptr<driver::material> solid, line, add;
         };
     }
 }

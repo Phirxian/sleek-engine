@@ -75,11 +75,11 @@ namespace sleek
 
                 inline pixel monochrome_with_alpha() const noexcept
                 {
-                    u8 luminaissance = getLuminaissance();
+                    u8 luminaissance = getLuminance();
                     return pixel(luminaissance,luminaissance,luminaissance,alpha);
                 }
 
-                inline u8 getLuminaissance() const noexcept
+                inline u8 getLuminance() const noexcept
                 {
                     return (red+green+blue)/3;
                 }

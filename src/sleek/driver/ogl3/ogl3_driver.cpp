@@ -3,6 +3,7 @@
 #include "ogl3_driver.h"
 
 #include <cstddef>
+#include <iostream>
 
 static const GLuint ogl3_render_mode[] =
 {
@@ -92,7 +93,7 @@ namespace sleek
         {
             ObjectRenderBegin();
                 beginTo2D();
-                    glColor4ub(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
+                    glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                     glBegin(GL_POINTS);
                         glVertex2f(pos.x, pos.y);
                     glEnd();
@@ -104,7 +105,7 @@ namespace sleek
         {
             if(!src->ready()) return;
             ObjectRenderBegin();
-                glColor4ub(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
+                glColor4f(clr.red/255.f, clr.green/255.f, clr.blue/255.f, clr.alpha/255.f);
                 glBegin(GL_POINTS);
                     glVertex3f(pos.x, pos.y, pos.z);
                 glEnd();
@@ -174,19 +175,19 @@ namespace sleek
                     glBegin(ogl3_render_mode[mat->getMode()]);
                     glNormal3f(0,0,0);
 
-                    glColor4f(lowerleft.red, lowerleft.green, lowerleft.blue, lowerleft.alpha);
+                    glColor4f(lowerleft.red/255.f, lowerleft.green/255.f, lowerleft.blue/255.f, lowerleft.alpha/255.f);
                     glTexCoord3i(0,0,0);
                     glVertex3f(-0.5f, 0.5f,0);
 
-                    glColor4f(upperleft.red, upperleft.green, upperleft.blue, upperleft.alpha);
+                    glColor4f(upperleft.red/255.f, upperleft.green/255.f, upperleft.blue/255.f, upperleft.alpha/255.f);
                     glTexCoord3i(0,1,0);
                     glVertex3f(-0.5f,-0.5f,0);
 
-                    glColor4f(upperright.red, upperright.green, upperright.blue, upperright.alpha);
+                    glColor4f(upperright.red/255.f, upperright.green/255.f, upperright.blue/255.f, upperright.alpha/255.f);
                     glTexCoord3i(1,1,0);
                     glVertex3f( 0.5f,-0.5f,0);
 
-                    glColor4f(lowerright.red, lowerright.green, lowerright.blue, lowerright.alpha);
+                    glColor4f(lowerright.red/255.f, lowerright.green/255.f, lowerright.blue/255.f, lowerright.alpha/255.f);
                     glTexCoord3i(1,0,0);
                     glVertex3f( 0.5f, 0.5f,0);
 
@@ -487,101 +488,103 @@ namespace sleek
 
             ObjectRenderEnd();
         }
-
+        
         void ogl3_driver::setActiveMaterial(std::shared_ptr<material> i) noexcept
         {
             ctx->testError(__LINE__, __FILE__);
-            static void(*_glState[2])(GLenum) = {&glDisable, &glEnable};
 
-            if(mat)
+            // Define function pointers for glEnable and glDisable
+            static void (*_glState[2])(GLenum) = {&glDisable, &glEnable};
+
+            // Unbind previous material if it exists
+            if (mat)
             {
-                if(mat->effect)
+                if (mat->effect)
                     mat->effect->unbind();
 
                 int start = i ? i->Texture.size() : 0;
-                for(int stage = start; stage<mat->Texture.size(); ++stage)
+                for (int stage = start; stage < mat->Texture.size(); ++stage)
                 {
-                    glActiveTexture(GL_TEXTURE0_ARB+stage);
-                    if(mat->Texture[stage])
+                    glActiveTexture(GL_TEXTURE0_ARB + stage);
+                    if (mat->Texture[stage])
                         mat->Texture[stage]->unbind();
                 }
             }
 
             ctx->testError(__LINE__, __FILE__);
 
-            if(i)
+            // Set up new material if provided
+            if (i)
             {
-                _glState[bool(i->ant & ral_polygone)](GL_POLYGON_SMOOTH);
-                _glState[bool(i->ant & ral_line)](GL_LINE_SMOOTH);
-                _glState[bool(i->mat & rmt_solid)](GL_DEPTH_TEST);
-                _glState[bool(i->mat & (rmt_add | rmt_sub))](GL_BLEND);
-                _glState[bool(i->mat & rmt_lighting)](GL_LIGHTING);
-                _glState[bool(i->mat & rmt_fog)](GL_FOG);
-                _glState[bool(i->fac != rfc_off)](GL_CULL_FACE);
+                // Enable/Disable OpenGL states based on material properties
+                //_glState[bool(i->ant & ral_polygone)](GL_POLYGON_SMOOTH);
+                //_glState[bool(i->ant & ral_line)](GL_LINE_SMOOTH);
+                //_glState[bool(i->mat & rmt_solid)](GL_DEPTH_TEST);
+                _glState[1](GL_BLEND);
+                //_glState[bool(i->mat & rmt_lighting)](GL_LIGHTING);
+                //_glState[bool(i->mat & rmt_fog)](GL_FOG);
+                //_glState[bool(i->fac != rfc_off)](GL_CULL_FACE);
 
-                glShadeModel(i->shd & rsd_flat ? GL_FLAT : GL_SMOOTH);
+                // Set shading model
+                //glShadeModel(i->shd & rsd_flat ? GL_FLAT : GL_SMOOTH);
 
-                if(!mat || mat->psize != i->psize)
+                // Update point and line sizes if necessary
+                if (!mat || mat->psize != i->psize)
                 {
-                    // deprecated & performance cost
                     glPointSize(i->psize);
                     glLineWidth(i->psize);
                 }
 
+                // Set polygon mode
                 glPolygonMode(GL_FRONT_AND_BACK, i->wire ? GL_LINE : GL_FILL);
 
-                /////////////////////////////////////////
+                // Define arrays for wire and cull modes
+                static const GLenum _wire[] = {GL_FILL, GL_LINE};
+                static const GLenum _cull[] = {0, GL_BACK, GL_FRONT, 0, GL_FRONT_AND_BACK};
 
-                static const GLenum _wire[] = {
-                    GL_FILL, GL_LINE
-                };
-
-                static const GLenum _cull[] = {
-                    0, GL_BACK,
-                    GL_FRONT, 0,
-                    GL_FRONT_AND_BACK
-                };
-
-                //if(!mat || mat->wire != i->wire)
-                //    glPolygonMode(_cull[i->fac], _wire[i->wire]);
-
-                if(i->fac != rfc_off && (!mat || mat->fac != i->fac))
+                // Update cull face mode if necessary
+                if (i->fac != rfc_off && (!mat || mat->fac != i->fac))
                     glCullFace(_cull[i->fac]);
 
-                /////////////////////////////////////////
-
-                if(!mat || mat->mat != i->mat)
+                // Update blend function if material properties have changed
+                if (!mat || mat->mat != i->mat)
                 {
-                    if(i->mat == rmt_solid)
-                         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    else if(i->mat == rmt_add)
-                         glBlendFunc(GL_ONE, GL_ONE);
-                    else if(i->mat == rmt_sub)
-                         glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
-                    else
-                         glBlendFunc(GL_ONE, GL_ZERO);
+                    switch (i->mat)
+                    {
+                        case rmt_solid:
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                            break;
+                        case rmt_add:
+                            glBlendFunc(GL_ONE, GL_ONE);
+                            break;
+                        case rmt_sub:
+                            glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
+                            break;
+                        default:
+                            glBlendFunc(GL_ONE, GL_ZERO);
+                            break;
+                    }
                 }
 
-                /////////////////////////////////////////
                 ctx->testError(__LINE__, __FILE__);
-                /////////////////////////////////////////
 
-                if(i->effect)
+                // Bind effect or textures of the new material
+                if (i->effect)
                     i->effect->bind();
                 else
                 {
                     int stage = 0;
-                    if(mat)
+                    if (mat)
                     {
                         int end = std::min(mat->Texture.size(), i->Texture.size());
-                        for(; stage<end; ++stage)
+                        for (; stage < end; ++stage)
                         {
-                            if(i->Texture[stage] == mat->Texture[stage])
+                            if (i->Texture[stage] == mat->Texture[stage])
                                 continue;
 
-                            glActiveTextureARB(GL_TEXTURE0_ARB+stage);
+                            glActiveTexture(GL_TEXTURE0_ARB + stage);
 
-                            if(i->Texture[stage])
+                            if (i->Texture[stage])
                                 i->Texture[stage]->bind();
 
                             glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_ADD);
@@ -590,11 +593,11 @@ namespace sleek
 
                     ctx->testError(__LINE__, __FILE__);
 
-                    for(; stage<i->Texture.size(); ++stage)
+                    for (; stage < i->Texture.size(); ++stage)
                     {
-                        glActiveTextureARB(GL_TEXTURE0_ARB+stage);
+                        glActiveTexture(GL_TEXTURE0_ARB + stage);
 
-                        if(i->Texture[stage])
+                        if (i->Texture[stage])
                             i->Texture[stage]->bind();
 
                         glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_ADD);
