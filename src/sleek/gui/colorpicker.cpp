@@ -8,13 +8,15 @@
 #include "../math/math.h"
 #include "../math/function.h"
 
+#include <iostream>
+
 namespace sleek
 {
     namespace gui
     {
         colorpicker::colorpicker(interface *guienv) noexcept
             : frame(guienv), background{64, 255, 255, 255}, white{255, 255, 255, 255}, black{0, 0, 0, 255},
-              colorpos(0), isGradient(false), isColor(false)
+              isGradient(false), isColor(false)
         {
             close = guienv->addButton("take this color", {5, 140, 85, 156});
             close->setParent(this);
@@ -23,10 +25,14 @@ namespace sleek
             scroll->setParent(this);
             scroll->setMin(0);
             scroll->setMax(255);
-            scroll->setValue(255);
+            scroll->setPercentage(0.5);
 
             createAlphaTexture();
             createGradientTexture();
+
+            colorpos = 0;
+            color = img[1]->getPixel({0, 0});
+            recalculatePickedColor();
 
             setPickedColor({255, 64, 64, 128});
         }
@@ -35,7 +41,7 @@ namespace sleek
         }
         void colorpicker::createAlphaTexture() noexcept
         {
-            img[0] = std::make_shared<driver::texture>(math::vec2i{16, 16});
+            img[0] = std::make_shared<driver::texture>(math::vec2i{16, 16}, driver::TXFMT_RGB);
             math::pixel color;
 
             #define square(colorstart, sx, sy, sz, sw)    \
@@ -56,36 +62,25 @@ namespace sleek
         }
         void colorpicker::createGradientTexture() noexcept
         {
-            auto size = math::vec2i{1, 151};
-            img[1] = std::make_shared<driver::texture>(size, driver::TXFMT_RGB);
+            auto size = math::vec2i{1, 150};
+            img[1] = std::make_shared<driver::texture>(size, driver::TXFMT_RGBA);
 
-            math::pixel from;
-            math::pixel to;
-
-            #define interpolate(colorstart, colorend, start, end) \
-                from = colorstart;                                \
-                to = colorend;                                    \
-                                                                  \
-                for(int y=start; y<end; ++y)                      \
-                {                                                 \
-                    math::pixel c = to.getInterpolated(           \
-                        from, (y-start)/25.f                      \
-                    );                                            \
-                                                                  \
-                    for(int x=0; x<1; ++x)                        \
-                        img[1]->setPixel({x, y}, c);              \
+            auto interpolate = [this, size](math::pixel from, math::pixel to, int start, int end)
+            {
+                for (int y = start; y < end; ++y)
+                {
+                    math::pixel c = to.getInterpolated(from, (y - start) / static_cast<float>(end - start));
+                    for (int x = 0; x < size.x; ++x)
+                        img[1]->setPixel({x, y}, c);
                 }
+            };
 
-            interpolate(math::pixel(255, 0,   0), math::pixel(255, 0, 255),   0,  25);
-            interpolate(math::pixel(255, 0, 255), math::pixel(  0, 0, 255),    25,  50);
-
-            interpolate(math::pixel(0,   0, 255), math::pixel(0, 255, 255),  50,  75);
-            interpolate(math::pixel(0, 255, 255), math::pixel(0, 255,   0),  75, 100);
-
-            interpolate(math::pixel(  0, 255, 0), math::pixel(255, 255, 0), 100, 125);
-            interpolate(math::pixel(255, 255, 0), math::pixel(255,   0, 0), 125, 151);
-
-            #undef interpolate
+            interpolate(math::pixel(255, 0, 0), math::pixel(255, 0, 255), 0, 25);
+            interpolate(math::pixel(255, 0, 255), math::pixel(0, 0, 255), 25, 50);
+            interpolate(math::pixel(0, 0, 255), math::pixel(0, 255, 255), 50, 75);
+            interpolate(math::pixel(0, 255, 255), math::pixel(0, 255, 0), 75, 100);
+            interpolate(math::pixel(0, 255, 0), math::pixel(255, 255, 0), 100, 125);
+            interpolate(math::pixel(255, 255, 0), math::pixel(255, 0, 0), 125, 150);
 
             img[1]->createIdentifier(mom->getDrawManager()->getContext().get());
             img[1]->getIdentifier()->update();
@@ -120,7 +115,7 @@ namespace sleek
                 if(pos.y > gradient.lowerright.y)
                     pos.y = gradient.lowerright.y;
 
-                colorpos = pos.y - gradient.upperleft.y;
+                colorpos = std::min(pos.y - gradient.upperleft.y, img[1]->getDimension().y-1);
                 color = img[1]->getPixel({0, colorpos});
                 recalculatePickedColor();
             }
@@ -250,7 +245,7 @@ namespace sleek
                 img[1].get(),
                 {box.upperleft.x+90, box.upperleft.y+5},
                 {0, 0, 0},
-                {15, img[1]->getDimension().y, 0},
+                {15, 150, 0},
                 {1.f, 1.f}
             );
 

@@ -9,8 +9,8 @@
 #include "../sleek/gui/window.h"
 #include <cmath>
 
-const unsigned int SCREEN_WIDTH = 1400;
-const unsigned int SCREEN_HEIGHT = 900;
+const unsigned int SCREEN_WIDTH = 1024;
+const unsigned int SCREEN_HEIGHT = 768;
 
 using namespace sleek;
 
@@ -56,17 +56,19 @@ class GUITest : public device::event
             auto p2 = guienv->addScrollbar(false, {20, 100, 35, 300});
             guienv->addCustomFrame(p2);
 
-
-            progressbar = guienv->addProgressbar("%f", {100, 50, 200, 75});
+            progressbar = guienv->addProgressbar("%f", {100, 40, 300, 55});
             guienv->addCustomFrame(progressbar);
 
-            auto picker = guienv->addColorPicker({500, 300, 610, 462});
-            guienv->addCustomFrame(picker);
 
-            auto w = guienv->addWindow("title", {500, 00, 750, 250});
-            auto d = guienv->addPicture(earth, "", {5, 25, 240, 220});
-            w->addChild(d);
-            guienv->addCustomFrame(w);
+            auto w1 = guienv->addWindow("title", {500, 100, 750, 250});
+            auto d = guienv->addPicture(earth, "", {5, 25, 240, 120});
+            w1->addChild(d);
+            guienv->addCustomFrame(w1);
+
+            auto w2 = guienv->addWindow("title", {250, 120, 370, 310});
+            auto picker = guienv->addColorPicker({5, 25, 115, 185});
+            w2->addChild(picker);
+            guienv->addCustomFrame(w2);
         }
 
         bool manage(sleek::device::input *e) noexcept override

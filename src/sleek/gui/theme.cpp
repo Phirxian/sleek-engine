@@ -152,7 +152,7 @@ namespace sleek
             pos.lowerright.x = (1-alpha)*i->box.upperleft.x + alpha*i->box.lowerright.x;
 
             mom->getDrawManager()->setActiveMaterial(solid);
-            mom->getDrawManager()->drawCube(pos, math::vec3f(), theme_color_fg);
+            mom->getDrawManager()->drawCube(pos, math::vec3f(), theme_color_ligth);
 
             mom->getDrawManager()->setActiveMaterial(line);
             mom->getDrawManager()->drawCube(i->box, math::vec3f(), theme_color_border);
@@ -163,13 +163,20 @@ namespace sleek
             mom->getDrawManager()->setActiveMaterial(solid);
             mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color_ligth);
 
+            auto size = i->getBoundingBox().getSize();
+            auto box = i->getBoundingBox();
+
             if(i->getOrientation() == SBO_HORIZONTAL)
             {
+                box.upperleft.x += size.y;
+                box.lowerright.x -= size.y/2;
+                size.x -= 2*size.y-4;
+
                 math::vec2i start = {
-                    i->getBoundingBox().upperleft.x + 1 + (i->getBoundingBox().getSize().x-2) * i->getPercentage(),
-                    i->getBoundingBox().upperleft.y
+                    box.upperleft.x + 1 + (size.x-2) * i->getPercentage(),
+                    box.upperleft.y
                 };
-                math::vec2i end = {start.x, i->getBoundingBox().lowerright.y};
+                math::vec2i end = {start.x, box.lowerright.y};
 
                 mom->getDrawManager()->drawLine({start.x-1, start.y}, {end.x-1, end.y}, theme_color_border);
                 mom->getDrawManager()->drawLine(start, end, theme_color_hover);
@@ -177,11 +184,15 @@ namespace sleek
             }
             else
             {
+                box.upperleft.y += size.x;
+                box.lowerright.y -= size.x/2;
+                size.y -= 2*size.x-4;
+
                 math::vec2i start = {
-                    i->getBoundingBox().upperleft.x, 
-                    i->getBoundingBox().upperleft.y + 1 + (i->getBoundingBox().getSize().y-2) * i->getPercentage()
+                    box.upperleft.x, 
+                    box.upperleft.y + 1 + (size.y-2) * i->getPercentage()
                 };
-                math::vec2i end = {i->getBoundingBox().lowerright.x, start.y};
+                math::vec2i end = {box.lowerright.x, start.y};
 
                 mom->getDrawManager()->drawLine({start.x, start.y-1}, {end.x, end.y-1}, theme_color_border);
                 mom->getDrawManager()->drawLine(start, end, theme_color_hover);
@@ -189,7 +200,7 @@ namespace sleek
             }
 
             mom->getDrawManager()->setActiveMaterial(line);
-            mom->getDrawManager()->drawCube(i->box, {0, 0, 0}, theme_color_border);
+            mom->getDrawManager()->drawCube(box, {0, 0, 0}, theme_color_border);
         }
 
         void theme::drawFrame(frame *i) noexcept

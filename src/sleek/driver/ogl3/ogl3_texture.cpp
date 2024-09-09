@@ -62,7 +62,7 @@ namespace sleek
             bind();
 
             glTexImage2D(
-                GL_TEXTURE_2D, 0, tmp->getComposantCount(),
+                GL_TEXTURE_2D, 0, ogl3_texture_componantes[tmp->getFormat()],
                 tmp->getDimension().x, tmp->getDimension().y, 0,
                 ogl3_texture_format[tmp->getFormat()],
                 ogl3_texture_type[tmp->getFormat()],
@@ -75,7 +75,7 @@ namespace sleek
         {
             texture *tmp = static_cast<texture*>(owner);
             glTextureImage2DEXT(
-                gl, GL_TEXTURE_2D, 0, tmp->getComposantCount(),
+                gl, GL_TEXTURE_2D, 0, ogl3_texture_componantes[tmp->getFormat()],
                 tmp->getDimension().x, tmp->getDimension().y, 0,
                 ogl3_texture_format[tmp->getFormat()],
                 ogl3_texture_type[tmp->getFormat()],

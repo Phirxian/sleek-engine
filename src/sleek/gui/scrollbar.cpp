@@ -1,5 +1,6 @@
 #include "interface.h"
 #include "scrollbar.h"
+#include "button.h"
 
 #include "../math/function.h"
 
@@ -12,12 +13,45 @@ namespace sleek
             min = 0;
             max = 100;
             per = 0.f;
+            step = 5.f;
             orient = SBO_HORIZONTAL;
             isLeftDown = false;
+
+            add = std::make_shared<button>(m);
+            add->setParent(this);
+            add->setTextSize(14);
+            add->setText("+");
+
+            sub = std::make_shared<button>(m);
+            sub->setSize(math::vec2i(10,10));
+            sub->setParent(this);
+            sub->setTextSize(14);
+            sub->setText("-");
         }
 
         scrollbar::~scrollbar() noexcept
         {
+        }
+
+        void scrollbar::UpdateChildPosition() noexcept
+        {
+            auto size = box.getSize();
+            auto end = size - sub->getBoundingBox().getSize();
+
+            if (orient == SBO_HORIZONTAL)
+            {
+                add->move({end.x, 0});
+                add->setSize(math::vec2i(size.y, size.y));
+                sub->setSize(math::vec2i(size.y, size.y));
+            }
+            else
+            {
+                add->move({0, end.y});
+                add->setSize(math::vec2i(size.x, size.x));
+                sub->setSize(math::vec2i(size.x, size.x));
+            }
+
+            frame::UpdateChildPosition();
         }
 
         void scrollbar::setValue(const s32 i) noexcept
@@ -35,6 +69,11 @@ namespace sleek
             max = i;
         }
 
+        void scrollbar::setStep(const s32 i) noexcept
+        {
+            step = i;
+        }
+
         void scrollbar::setOrientation(SCROLL_BAR_ORIANTATION i)
         {
             orient = i;
@@ -47,7 +86,7 @@ namespace sleek
 
         void scrollbar::setPercentage(const f32 i) noexcept
         {
-            per = i;
+            per = math::clamp(i, 0.f, 1.0f);
         }
 
         f32 scrollbar::getPercentage() const noexcept
@@ -70,12 +109,37 @@ namespace sleek
             return min + (max-min)*per;
         }
 
+        s32 scrollbar::getStep() const noexcept
+        {
+            return step;
+        }
+
         bool scrollbar::manage(device::input *e) noexcept
         {
             bool CHovored = isHovored;
 
             if(frame::manage(e))
-                return true;
+            {
+                if(e->gui.code == IET_BUTTON_CLICKED)
+                {
+                    if(e->gui.called == add.get())
+                    {
+                        setPercentage(getPercentage()+getStep()/100.f);
+                        std::cout << getValue() << std::endl;
+                        std::cout << getPercentage() << std::endl;
+                        isLeftDown = false;
+                        return true;
+                    }
+
+                    if(e->gui.called == sub.get())
+                    {
+                        setPercentage(getPercentage()-getStep()/100.f);
+                        std::cout << getValue() << std::endl;
+                        isLeftDown = false;
+                        return true;
+                    }
+                }
+            }
 
             if(e->type == device::EVENT_MOUSSE_MOVED)
                 isHovored = box.intersect(e->mouse_pos);
@@ -98,25 +162,39 @@ namespace sleek
             if(isLeftDown)
             {
                 auto pos = e->mouse_pos;
+                auto size = box.getSize();
+                auto clickable = box;
 
                 if(orient == SBO_HORIZONTAL)
                 {
-                     per = math::clamp(pos.x, box.upperleft.x, box.lowerright.x);
-                     per -= box.upperleft.x;
-                     per /= float(box.getSize().x);
+                    clickable.upperleft.x += size.y;
+                    clickable.lowerright.x -= size.y;
+
+                    if (clickable.intersect(pos))
+                    {
+                        per = math::clamp(pos.x, clickable.upperleft.x, clickable.lowerright.x);
+                        per -= clickable.upperleft.x;
+                        per /= float(box.getSize().x - 2*size.y);
+                        e->gui.called = this;
+                        e->gui.code = gui::IET_SCROLLBAR_UPDATED;
+                        return true;
+                    }
                 }
                 else
                 {
-                     per = math::clamp(pos.y, box.upperleft.y, box.lowerright.y);
-                     per -= box.upperleft.y;
-                     per /= float(box.getSize().y);
+                    clickable.upperleft.y += size.x;
+                    clickable.lowerright.y -= size.x;
+
+                    if (clickable.intersect(pos))
+                    {
+                        per = math::clamp(pos.y, clickable.upperleft.y, clickable.lowerright.y);
+                        per -= clickable.upperleft.y;
+                        per /= float(box.getSize().y - 2*size.x);
+                        e->gui.called = this;
+                        e->gui.code = gui::IET_SCROLLBAR_UPDATED;
+                        return true;
+                    }
                 }
-
-                //std::cout << std::to_string(per) << std::endl;
-
-                e->gui.called = this;
-                e->gui.code = gui::IET_SCROLLBAR_UPDATED;
-                return true;
             }
 
             return false;

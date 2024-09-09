@@ -7,6 +7,8 @@ namespace sleek
 {
     namespace gui
     {
+        class button;
+
         enum SCROLL_BAR_ORIANTATION
         {
             SBO_VERTICAL,
@@ -25,6 +27,7 @@ namespace sleek
                 virtual void setOrientation(SCROLL_BAR_ORIANTATION);
                 virtual SCROLL_BAR_ORIANTATION getOrientation();
 
+                virtual void setStep(const s32) noexcept;
                 virtual void setValue(const s32) noexcept;
                 virtual void setMin(const s32) noexcept;
                 virtual void setMax(const s32) noexcept;
@@ -34,12 +37,19 @@ namespace sleek
                 virtual s32 getMin() const noexcept;
                 virtual s32 getMax() const noexcept;
                 virtual s32 getValue() const noexcept;
+                virtual s32 getStep() const noexcept;
 
                 virtual bool manage(device::input*) noexcept;
 
                 virtual void render() noexcept;
+
+            protected:
+                virtual void UpdateChildPosition() noexcept;
+
             private:
-                s32 min, max;
+                std::shared_ptr<button> add;
+                std::shared_ptr<button> sub;
+                s32 min, max, step;
                 f32 per;
                 SCROLL_BAR_ORIANTATION orient;
                 bool isHovored, isLeftDown;

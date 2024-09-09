@@ -138,6 +138,11 @@ namespace sleek
             return textsize;
         }
 
+        void frame::setSize(math::vec2i size) noexcept
+        {
+            box.setSizeFromUpperLeft(size);
+        }
+        
         void frame::move(math::vec2i p) noexcept
         {
             if(parent) relative = p;

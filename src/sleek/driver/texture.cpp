@@ -21,8 +21,9 @@ namespace sleek
             : gpu(nullptr), buffer(0), fmt(p)
         {
             fmt = p;
-            pitch = TextureFormatSize[p];
-            component = TextureFormatComponant[p];
+            bpp = 1 + 3*(p >= 5);
+            pitch = TextureFormatSize[p-1] * bpp;
+            component = TextureFormatComponant[p-1];
             original = size;
             buffer = new u8[getBufferSize()];
 
@@ -46,9 +47,10 @@ namespace sleek
 
         void texture::setPixel(const math::vec2i &pos, const math::pixel &color) noexcept
         {
-            int idx = indexof(pos);
+            // int idx = indexof(pos);
+            int idx = (pos.x + pos.y*original.x)*pitch;
 
-            if(idx > getBufferSize())
+            if(idx >= getBufferSize())
                 return;
 
             u8* pixel = &buffer[idx];

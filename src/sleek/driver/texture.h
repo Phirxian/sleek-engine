@@ -119,6 +119,7 @@ namespace sleek
                 TextureFormat fmt;
                 u8 component;
                 u8 pitch;
+                u8 bpp;
         };
 
         using texture_ptr = std::shared_ptr<texture>;

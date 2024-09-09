@@ -56,6 +56,7 @@ namespace sleek
                 virtual void setFontCache(std::shared_ptr<driver::texture>) noexcept;
                 std::shared_ptr<driver::texture> getFontCache() const noexcept;
 
+                virtual void setSize(math::vec2i) noexcept;
                 virtual void move(math::vec2i) noexcept;
                 virtual bool manage(device::input*) noexcept;
 

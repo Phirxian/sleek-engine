@@ -55,20 +55,28 @@ namespace sleek
 
             auto aspect = pic->getDimension().x / float(pic->getDimension().y);
 
+            auto size = box.getSize();
             auto scl = box.getSize();
-            scl.y = scl.x / aspect;
+            
+            if (aspect > 1)
+                scl.x = scl.y * aspect;
+            else
+                scl.y = scl.x / aspect;
 
             frame::render();
-
             mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getSolidMaterial());
 
             mom->getDrawManager()->drawTextureScale(
                 pic.get(),
-                {box.getUpperLeft().x, box.getUpperLeft().y + scl.y/3}, // wtf ?
+                {
+                    box.getUpperLeft().x + (size.x-scl.x)/2 + 1,
+                    box.getUpperLeft().y + (size.y-scl.y)/2 + 1
+                },
                 {0, 0, 0},
-                {scl.x, scl.y, 0},
+                {scl.x-2, scl.y-2, 0},
                 {1.f, 1.f}
             );
+
         }
     }
 }
