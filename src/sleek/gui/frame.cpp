@@ -193,12 +193,10 @@ namespace sleek
 
         void frame::renderChild() noexcept
         {
+            mom->getDrawManager()->pushScissor(box);
             for(u32 i = 0; i<child.size(); ++i)
-            {
-                //! TODO clipping seem not working
-                mom->getDrawManager()->getContext()->createScissorContext(box);
                 child[i]->render();
-            }
+            mom->getDrawManager()->popScissor();
         }
 
         void frame::UpdateAbsolutePosition() noexcept

@@ -43,16 +43,6 @@ namespace sleek
         class driver;
         class mesh;
 
-        class scissor
-        {
-            public:
-                scissor(math::aabbox2di box) : box(box)
-                {
-                }
-                virtual ~scissor() = default;
-                math::aabbox2di box;
-        };
-
         class context : public std::enable_shared_from_this<context>
         {
             public:
@@ -60,8 +50,6 @@ namespace sleek
                 ~context() noexcept;
 
                 virtual RENDER_CONTEXT getType() const noexcept = 0;
-
-                virtual scissor createScissorContext(math::aabbox2di) const noexcept = 0;
 
                 virtual std::shared_ptr<driver>     createDriver() noexcept = 0;
                 virtual std::shared_ptr<texture>    createScreenshot(const math::aabbox2du&) const noexcept = 0;

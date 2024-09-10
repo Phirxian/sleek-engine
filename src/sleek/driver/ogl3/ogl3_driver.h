@@ -17,6 +17,11 @@ namespace sleek
             public:
                 ogl3_driver(std::shared_ptr<device::Device>, std::shared_ptr<context>) noexcept;
                 virtual ~ogl3_driver() noexcept;
+                
+                virtual void pushScissor(math::aabbox2di box);
+                virtual math::aabbox2di popScissor();
+                virtual void updateScissor() const noexcept;
+                virtual void clearScissor();
 
                 virtual void drawPixel(const math::vec2i, const math::pixel c = {}) const noexcept;
                 virtual void drawPixel(const math::vec3f, const math::pixel c = {}) const noexcept;

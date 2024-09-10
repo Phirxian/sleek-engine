@@ -64,7 +64,7 @@ class GUITest : public device::event
             guienv->addCustomFrame(check);
 
             auto w1 = guienv->addWindow(L"title", {500, 100, 750, 250});
-            auto d = guienv->addPicture(earth, L"", {5, 25, 240, 120});
+            auto d = guienv->addPicture(earth, L"", {5, 25, 340, 220});
             w1->addChild(d);
             guienv->addCustomFrame(w1);
 

@@ -78,7 +78,7 @@ namespace sleek
             if(!mom || !isRender || !tex)
                 return;
 
-            mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getAddMaterial());
+            mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getSolidMaterial());
             mom->getDrawManager()->drawTexture(tex.get(), pos);
         }
     }

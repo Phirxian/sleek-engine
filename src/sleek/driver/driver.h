@@ -36,6 +36,10 @@ namespace sleek
                     return shared_from_this();
                 }
 
+                virtual void pushScissor(math::aabbox2di box);
+                virtual math::aabbox2di popScissor();
+                virtual void clearScissor();
+
                 virtual void drawPixel(const math::vec2i, const math::pixel c = {}) const noexcept = 0;
                 virtual void drawPixel(const math::vec3f, const math::pixel c = {}) const noexcept = 0;
                 virtual void drawLine(const math::vec2i, const math::vec2i, const math::pixel c = {}) const noexcept = 0;
@@ -79,6 +83,7 @@ namespace sleek
 
                 virtual std::shared_ptr<context> getContext();
             protected:
+                std::vector<math::aabbox2di> scissor;
                 std::shared_ptr<device::Device> src;
                 std::shared_ptr<context> ctx;
                 std::shared_ptr<material> mat;

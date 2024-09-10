@@ -34,6 +34,22 @@ namespace sleek
 
                 virtual ~aabbox2d(){}
 
+                inline void srink(int i)
+                {
+                    upperleft.x += i;
+                    upperleft.y += i;
+                    lowerright.x -= i;
+                    lowerright.y -= i;
+                }
+
+                inline void grow(int i)
+                {
+                    upperleft.x -= i;
+                    upperleft.y -= i;
+                    lowerright.x += i;
+                    lowerright.y += i;
+                }
+
                 inline void clear() { upperleft = lowerright = vec2<T>((T)0, (T)0); }
                 inline void setUpperLeft(const vec2<T> &a) { upperleft = a; }
                 inline void setLowerRight(const vec2<T> &a){ lowerright = a; }

@@ -45,7 +45,6 @@ namespace sleek
 */
 
             hovored = box.intersect(e->mouse_pos);
-            pushed = e->mouse[device::MOUSE_LEFT] && hovored;
 
             if(e->type == device::EVENT_MOUSSE_UP && e->mouse[device::MOUSE_LEFT])
             {
@@ -59,6 +58,8 @@ namespace sleek
                 pushed = false;
             }
 
+            pushed = e->key_state[device::KEY_LBUTTON] && hovored;
+            
             if(CPushed != pushed && pushed)
             {
                 e->gui.called = this;

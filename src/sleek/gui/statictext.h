@@ -12,6 +12,7 @@ namespace sleek
             public:
                 statictext(interface*) noexcept;
                 ~statictext() noexcept;
+                
                 virtual INTERFACE_GUI_CODE getType() const noexcept { return IGT_STATICTEXT; }
 
                 virtual bool manage(device::input*) noexcept;

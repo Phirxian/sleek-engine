@@ -18,5 +18,27 @@ namespace sleek
         {
             return ctx;
         }
+
+        void driver::pushScissor(math::aabbox2di box)
+        {
+            scissor.push_back(box);
+        }
+
+        math::aabbox2di driver::popScissor()
+        {
+            if (scissor.size())
+            {
+                auto last = scissor[scissor.size()-1];
+                scissor.pop_back();
+                return last;
+            }
+
+            return {0,0,0,0};
+        }
+
+        void driver::clearScissor()
+        {
+            scissor.clear();
+        }
     }
 }

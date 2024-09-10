@@ -13,7 +13,7 @@ namespace sleek
             isChecked = false;
             check = std::make_shared<button>(m);
             //check->box = math::aabbox2di(math::vec2i(0,0),math::vec2i(10,10));
-            check->move({0, 0});
+            check->move({1, 0});
             check->setParent(this);
             check->setTextSize(10);
             //check->setText(L"\uF00D");

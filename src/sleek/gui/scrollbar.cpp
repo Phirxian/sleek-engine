@@ -38,17 +38,16 @@ namespace sleek
         void scrollbar::UpdateChildPosition() noexcept
         {
             auto size = box.getSize();
-            auto end = size - sub->getBoundingBox().getSize();
 
             if (orient == SBO_HORIZONTAL)
             {
-                add->move({end.x, 0});
+                add->move({size.x - size.y, 0});
                 add->setSize(math::vec2i(size.y, size.y));
                 sub->setSize(math::vec2i(size.y, size.y));
             }
             else
             {
-                add->move({0, end.y});
+                add->move({0, size.y - size.x});
                 add->setSize(math::vec2i(size.x, size.x));
                 sub->setSize(math::vec2i(size.x, size.x));
             }

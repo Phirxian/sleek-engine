@@ -64,8 +64,10 @@ namespace sleek
                 scl.y = scl.x / aspect;
 
             frame::render();
+            
             mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getSolidMaterial());
 
+            //mom->getDrawManager()->pushScissor(box);
             mom->getDrawManager()->drawTextureScale(
                 pic.get(),
                 {
@@ -76,7 +78,7 @@ namespace sleek
                 {scl.x-2, scl.y-2, 0},
                 {1.f, 1.f}
             );
-
+            //mom->getDrawManager()->popScissor();
         }
     }
 }

@@ -53,6 +53,52 @@ namespace sleek
             glDeleteLists(cubec, 1);
         }
 
+        void ogl3_driver::pushScissor(math::aabbox2di box)
+        {
+            glEnable(GL_SCISSOR_TEST);
+            driver::pushScissor(box);
+            updateScissor();
+        }
+
+        math::aabbox2di ogl3_driver::popScissor()
+        {
+            auto removed = driver::popScissor();
+            updateScissor();
+            return removed;
+        }
+
+        void ogl3_driver::updateScissor() const noexcept
+        {
+            if (scissor.size())
+            {
+                glEnable(GL_SCISSOR_TEST);
+
+                auto last = scissor[scissor.size()-1];
+
+                last.upperleft.x -= 1;
+                last.upperleft.y -= 1;
+                last.lowerright.x += 1;
+                last.lowerright.y += 1;
+
+                auto size = last.getSize();
+
+                glScissor(
+                    last.upperleft.x,
+                    ctx->getViewport().y - last.upperleft.y - size.y,
+                    size.x,
+                    size.y
+                );
+            }
+            else
+                glDisable(GL_SCISSOR_TEST);
+        }
+
+        void ogl3_driver::clearScissor()
+        {
+            driver::clearScissor();
+            glDisable(GL_SCISSOR_TEST);
+        }
+
         void ogl3_driver::beginTo2D() const noexcept
         {
             glMatrixMode(GL_PROJECTION);
@@ -64,6 +110,7 @@ namespace sleek
             glLoadIdentity();
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
+            updateScissor();
         }
 
         void ogl3_driver::endFrom2D() const noexcept

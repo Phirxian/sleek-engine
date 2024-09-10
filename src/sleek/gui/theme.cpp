@@ -169,7 +169,7 @@ namespace sleek
             if(i->getOrientation() == SBO_HORIZONTAL)
             {
                 box.upperleft.x += size.y;
-                box.lowerright.x -= size.y/2;
+                box.lowerright.x -= size.y;
                 size.x -= 2*size.y-4;
 
                 math::vec2i start = {
@@ -185,7 +185,7 @@ namespace sleek
             else
             {
                 box.upperleft.y += size.x;
-                box.lowerright.y -= size.x/2;
+                box.lowerright.y -= size.x;
                 size.y -= 2*size.x-4;
 
                 math::vec2i start = {

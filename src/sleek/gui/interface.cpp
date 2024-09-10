@@ -260,7 +260,11 @@ namespace sleek
             mom->beginTo2D();
 
             for(u32 i = 0; i<gui.size(); ++i)
+            {
                 gui[i]->render();
+                mom->clearScissor();
+            }
+            
             cr->render();
 
             mom->endFrom2D();
