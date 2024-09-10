@@ -34,20 +34,41 @@ namespace sleek
 
                 virtual ~aabbox2d(){}
 
-                inline void srink(int i)
+                inline aabbox2d<T> srink(int i)
                 {
-                    upperleft.x += i;
-                    upperleft.y += i;
-                    lowerright.x -= i;
-                    lowerright.y -= i;
+                    auto box = aabbox2d<T>{upperleft, lowerright};
+                    box.upperleft.x += i;
+                    box.upperleft.y += i;
+                    box.lowerright.x -= i;
+                    box.lowerright.y -= i;
+                    return box;
                 }
 
-                inline void grow(int i)
+                inline aabbox2d<T> grow(int i)
                 {
-                    upperleft.x -= i;
-                    upperleft.y -= i;
-                    lowerright.x += i;
-                    lowerright.y += i;
+                    auto box = aabbox2d<T>{upperleft, lowerright};
+                    box.upperleft.x -= i;
+                    box.upperleft.y -= i;
+                    box.lowerright.x += i;
+                    box.lowerright.y += i;
+                    return box;
+                }
+
+                inline aabbox2d<T> clip(const aabbox2d<T>& other) const
+                {
+                    vec2<T> upperleft = this->upperleft;
+                    vec2<T> lowerright = this->lowerright;
+
+                    upperleft.x = std::max(upperleft.x, other.upperleft.x);
+                    upperleft.y = std::max(upperleft.y, other.upperleft.y);
+                    lowerright.x = std::min(lowerright.x, other.lowerright.x);
+                    lowerright.y = std::min(lowerright.y, other.lowerright.y);
+
+                    // Check if the resulting box is valid (i.e., not empty)
+                    if (upperleft.x <= lowerright.x && upperleft.y <= lowerright.y)
+                        return aabbox2d<T>(upperleft, lowerright);
+                    else
+                        return aabbox2d<T>();
                 }
 
                 inline void clear() { upperleft = lowerright = vec2<T>((T)0, (T)0); }
@@ -98,6 +119,7 @@ namespace sleek
             public:
                 vec2<T> upperleft, lowerright;
         };
+
         template <typename T>
         class aabbox3d
         {

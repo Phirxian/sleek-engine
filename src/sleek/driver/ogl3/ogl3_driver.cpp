@@ -74,12 +74,7 @@ namespace sleek
                 glEnable(GL_SCISSOR_TEST);
 
                 auto last = scissor[scissor.size()-1];
-
-                last.upperleft.x -= 1;
-                last.upperleft.y -= 1;
-                last.lowerright.x += 1;
-                last.lowerright.y += 1;
-
+                last = last.grow(1);
                 auto size = last.getSize();
 
                 glScissor(

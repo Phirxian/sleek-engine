@@ -21,6 +21,8 @@ namespace sleek
 
         void driver::pushScissor(math::aabbox2di box)
         {
+            if (scissor.size())
+                box = box.clip(scissor[scissor.size()-1]);
             scissor.push_back(box);
         }
 

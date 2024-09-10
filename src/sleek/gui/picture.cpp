@@ -10,10 +10,21 @@ namespace sleek
         picture::picture(interface *m) noexcept : frame(m), pic(0)
         {
             isHovored = false;
+            isScalable = true;
         }
 
         picture::~picture() noexcept
         {
+        }
+
+        void picture::setScalable(bool i) noexcept
+        {
+            isScalable = i;
+        }
+
+        bool picture::getScalable() const noexcept
+        {
+            return isScalable;
         }
 
         void picture::setTexture(std::shared_ptr<driver::texture> i) noexcept
@@ -58,27 +69,30 @@ namespace sleek
             auto size = box.getSize();
             auto scl = box.getSize();
             
-            if (aspect > 1)
-                scl.x = scl.y * aspect;
-            else
-                scl.y = scl.x / aspect;
+            if (!isScalable)
+            {
+                if (aspect > 1)
+                    scl.x = scl.y * aspect;
+                else
+                    scl.y = scl.x / aspect;
+            }
 
             frame::render();
             
             mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getSolidMaterial());
 
-            //mom->getDrawManager()->pushScissor(box);
+            mom->getDrawManager()->pushScissor(box.grow(1));
             mom->getDrawManager()->drawTextureScale(
                 pic.get(),
                 {
-                    box.getUpperLeft().x + (size.x-scl.x)/2 + 1,
-                    box.getUpperLeft().y + (size.y-scl.y)/2 + 1
+                    box.getUpperLeft().x + (size.x-scl.x)/2,
+                    box.getUpperLeft().y + (size.y-scl.y)/2 +1
                 },
                 {0, 0, 0},
                 {scl.x-2, scl.y-2, 0},
                 {1.f, 1.f}
             );
-            //mom->getDrawManager()->popScissor();
+            mom->getDrawManager()->clearScissor();
         }
     }
 }

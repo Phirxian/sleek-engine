@@ -41,12 +41,14 @@ namespace sleek
 
             if (orient == SBO_HORIZONTAL)
             {
+                sub->move({1, 0});
                 add->move({size.x - size.y, 0});
                 add->setSize(math::vec2i(size.y, size.y));
                 sub->setSize(math::vec2i(size.y, size.y));
             }
             else
             {
+                sub->move({0, 0});
                 add->move({0, size.y - size.x});
                 add->setSize(math::vec2i(size.x, size.x));
                 sub->setSize(math::vec2i(size.x, size.x));

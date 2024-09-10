@@ -193,7 +193,8 @@ namespace sleek
 
         void frame::renderChild() noexcept
         {
-            mom->getDrawManager()->pushScissor(box);
+            //! TODO inspect why grow(1)
+            mom->getDrawManager()->pushScissor(box.grow(1));
             for(u32 i = 0; i<child.size(); ++i)
                 child[i]->render();
             mom->getDrawManager()->popScissor();

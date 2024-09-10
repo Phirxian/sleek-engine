@@ -63,9 +63,12 @@ class GUITest : public device::event
             auto check = guienv->addCheckbox(L"Something to enable", {100, 60, 300, 75});
             guienv->addCustomFrame(check);
 
-            auto w1 = guienv->addWindow(L"title", {500, 100, 750, 250});
-            auto d = guienv->addPicture(earth, L"", {5, 25, 340, 220});
-            w1->addChild(d);
+            auto w1 = guienv->addWindow(L"title", {500, 100, 750, 330});
+            auto i1 = guienv->addPicture(earth, L"", {5, 25, 240, 120});
+            auto i2 = guienv->addPicture(earth, L"", {5, 125, 240, 220});
+            i2->setScalable(false);
+            w1->addChild(i1);
+            w1->addChild(i2);
             guienv->addCustomFrame(w1);
 
             auto w2 = guienv->addWindow(L"title", {250, 120, 370, 310});
