@@ -15,7 +15,7 @@ namespace sleek
     namespace gui
     {
         static auto theme_color_fg = math::pixel(24, 28, 47, 255);
-        static auto theme_color_bg = math::pixel(37, 45, 65, 255);
+        static auto theme_color_bg = math::pixel(37, 45, 65, 200);
         static auto theme_color_ligth = math::pixel(124, 147, 145, 255);
         static auto theme_color_hover = math::pixel(24, 47, 45, 255);
         static auto theme_color_border = math::pixel(8, 8, 18, 255);

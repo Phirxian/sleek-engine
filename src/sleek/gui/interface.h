@@ -16,6 +16,7 @@ namespace sleek
         class scrollbar;
         class progressbar;
         class button;
+        class checkbox;
         class statictext;
         class window;
 
@@ -31,7 +32,8 @@ namespace sleek
                 }
 
                 std::shared_ptr<frame>       addFrame(const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
-                std::shared_ptr<colorpicker> addColorPicker(const math::aabbox2di &b) noexcept;
+                std::shared_ptr<checkbox>    addCheckbox(const std::wstring &text = L"", const math::aabbox2di &b = math::aabbox2di()) noexcept;
+                std::shared_ptr<colorpicker> addColorPicker(const math::aabbox2di &b = math::aabbox2di()) noexcept;
                 std::shared_ptr<picture>     addPicture(std::shared_ptr<driver::texture>, const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
                 std::shared_ptr<scrollbar>   addScrollbar(bool horizontal, const math::aabbox2di &pos = math::aabbox2di()) noexcept;
                 std::shared_ptr<progressbar> addProgressbar(const std::wstring &text = L"%f%%", const math::aabbox2di &pos = math::aabbox2di()) noexcept;

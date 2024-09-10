@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <cstring>
 
+#define build_key(size, glyphe) (size<<16 | glyphe)
+
 namespace sleek
 {
     namespace gui
@@ -62,7 +64,7 @@ namespace sleek
                 face->glyph->bitmap.buffer + glyph.width * glyph.height
             );
 
-            long long key = size<<32 +  c;
+            long long key = build_key(size, c);
             glyph_cache[key] = glyph;
         }
 
@@ -86,7 +88,7 @@ namespace sleek
                     continue;
                 }
 
-                long long key = font_size<<32 +  c;
+                long long key = build_key(font_size, c);
 
                 if(glyph_cache.find(key) == glyph_cache.end())
                     cacheGlyph(font_size, c);
@@ -124,7 +126,7 @@ namespace sleek
                     continue;
                 }
 
-                long long key = font_size<<32 +  c;
+                long long key = build_key(font_size, c);
 
                 if(glyph_cache.find(key) == glyph_cache.end())
                     cacheGlyph(font_size, c);

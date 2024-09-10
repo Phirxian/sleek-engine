@@ -6,6 +6,7 @@
 #include "../sleek/gui/progressbar.h"
 #include "../sleek/gui/picture.h"
 #include "../sleek/gui/colorpicker.h"
+#include "../sleek/gui/checkbox.h"
 #include "../sleek/gui/window.h"
 #include <cmath>
 
@@ -59,6 +60,8 @@ class GUITest : public device::event
             progressbar = guienv->addProgressbar(L"%f", {100, 40, 300, 55});
             guienv->addCustomFrame(progressbar);
 
+            auto check = guienv->addCheckbox(L"Something to enable", {100, 60, 300, 75});
+            guienv->addCustomFrame(check);
 
             auto w1 = guienv->addWindow(L"title", {500, 100, 750, 250});
             auto d = guienv->addPicture(earth, L"", {5, 25, 240, 120});

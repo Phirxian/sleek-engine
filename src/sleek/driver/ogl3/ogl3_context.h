@@ -8,6 +8,13 @@ namespace sleek
 {
     namespace driver
     {
+        class ogl3_scissor : public scissor
+        {
+            public:
+                ogl3_scissor(math::aabbox2di);
+                virtual ~ogl3_scissor();
+        };
+
         class ogl3_context : public context
         {
             public:
@@ -18,6 +25,8 @@ namespace sleek
                 {
                     return RCTX_OGL3;
                 }
+
+                virtual scissor createScissorContext(math::aabbox2di) const noexcept;
 
                 virtual std::shared_ptr<driver>  createDriver() noexcept;
                 virtual std::shared_ptr<texture> createScreenshot(const math::aabbox2du&) const noexcept;

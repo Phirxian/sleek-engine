@@ -22,8 +22,12 @@ namespace sleek
         void frame::setFontCache(std::shared_ptr<driver::texture> i) noexcept
         {
             fontcache = i;
-            i->createIdentifier(mom->getDrawManager()->getContext().get());
-            i->getIdentifier()->update();
+            if (i)
+            {
+                i->createIdentifier(mom->getDrawManager()->getContext().get());
+                i->getIdentifier()->update();
+                UpdateFontPos();
+            }
         }
 
         std::shared_ptr<driver::texture> frame::getFontCache() const noexcept
@@ -56,6 +60,8 @@ namespace sleek
             ft2 = i;
             if(text.size() > 0 && ft2)
                 setFontCache(ft2->build(text, textsize));
+            else
+                setFontCache(nullptr);
         }
 
         void frame::setParent(frame *i) noexcept
@@ -69,6 +75,8 @@ namespace sleek
             text = t;
             if(text.size() > 0 && ft2)
                 setFontCache(ft2->build(text, textsize));
+            else
+                setFontCache(nullptr);
         }
 
         void frame::setTextColor(const math::pixel &c) noexcept
@@ -81,6 +89,8 @@ namespace sleek
             textsize = c;
             if(text.size() > 0 && ft2)
                 setFontCache(ft2->build(text, textsize));
+            else
+                setFontCache(nullptr);
         }
 
         interface* frame::getGUIEnvironment() const noexcept
@@ -184,7 +194,11 @@ namespace sleek
         void frame::renderChild() noexcept
         {
             for(u32 i = 0; i<child.size(); ++i)
+            {
+                //! TODO clipping seem not working
+                mom->getDrawManager()->getContext()->createScissorContext(box);
                 child[i]->render();
+            }
         }
 
         void frame::UpdateAbsolutePosition() noexcept
@@ -196,6 +210,7 @@ namespace sleek
             box.setUpperLeft(absolute + relative);
             box.setSizeFromUpperLeft(size);
             UpdateChildPosition();
+            UpdateFontPos();
         }
 
         void frame::UpdateChildPosition() noexcept

@@ -13,6 +13,18 @@ namespace sleek
 {
     namespace driver
     {
+        ogl3_scissor::ogl3_scissor(math::aabbox2di box) : scissor(box)
+        {
+            auto size = box.getSize();
+            glEnable(GL_SCISSOR_TEST);
+            glScissor(box.upperleft.x, box.upperleft.y, size.x, size.y);
+        }
+
+        ogl3_scissor::~ogl3_scissor()
+        {
+            glDisable(GL_SCISSOR_TEST);
+        }
+
         ogl3_context::ogl3_context(std::shared_ptr<device::Device> &d, std::shared_ptr<context> s) noexcept
             : context(d, s), dsa(false), txarray(false), tx3d(false)
         {
@@ -133,6 +145,11 @@ namespace sleek
                     wglDeleteContext(cx);
                 #endif
             }
+        }
+
+        scissor ogl3_context::createScissorContext(math::aabbox2di box) const noexcept
+        {
+            return std::move(ogl3_scissor(box));
         }
 
         int ogl3_context::queryHardwareLimitation(int i) const noexcept

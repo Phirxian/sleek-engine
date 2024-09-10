@@ -2,6 +2,7 @@
 #include "font-ttf.h"
 
 #include "button.h"
+#include "checkbox.h"
 #include "colorpicker.h"
 #include "statictext.h"
 #include "progressbar.h"
@@ -41,6 +42,15 @@ namespace sleek
             tmp->absolute = b.upperleft;
             tmp->box = b.minimise();
             tmp->setText(t);
+            return tmp;
+        }
+
+        std::shared_ptr<checkbox> interface::addCheckbox(const std::wstring &text, const math::aabbox2di &b) noexcept
+        {
+            auto tmp = std::make_shared<checkbox>(this);
+            tmp->absolute = b.upperleft;
+            tmp->box = b.minimise();
+            tmp->setText(text);
             return tmp;
         }
 

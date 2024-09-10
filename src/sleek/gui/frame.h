@@ -62,6 +62,11 @@ namespace sleek
 
                 void* user[gui_frame_userdata];
 
+                virtual void UpdateAbsolutePosition() noexcept;
+                virtual void UpdateChildPosition() noexcept;
+                virtual void UpdateFontPos() noexcept;
+
+                virtual void renderChild() noexcept;
                 virtual void render() noexcept;
             protected:
                 frame() noexcept {}
@@ -79,12 +84,6 @@ namespace sleek
                 std::wstring text;
                 math::pixel textcolor;
                 u32 textsize;
-
-                virtual void renderChild() noexcept;
-
-                virtual void UpdateAbsolutePosition() noexcept;
-                virtual void UpdateChildPosition() noexcept;
-                virtual void UpdateFontPos() noexcept;
             private:
                 friend class window;
                 friend class theme;
