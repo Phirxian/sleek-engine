@@ -37,7 +37,7 @@ namespace sleek
                 virtual void setFont(std::shared_ptr<font>) noexcept;
                 virtual void setVisible(bool) noexcept;
                 virtual void setParent(frame*) noexcept;
-                virtual void setText(std::string) noexcept;
+                virtual void setText(std::wstring) noexcept;
                 virtual void setTextSize(u32) noexcept;
                 virtual void setTextColor(const math::pixel&) noexcept;
                 virtual void setScale(math::vec2i) noexcept;
@@ -46,7 +46,7 @@ namespace sleek
 
                 virtual math::aabbox2di& getBoundingBox() noexcept;
                 virtual math::vec2i getScale() const noexcept;
-                virtual const std::string& getText() const noexcept;
+                virtual const std::wstring& getText() const noexcept;
                 virtual frame* getParent() const noexcept;
                 virtual std::shared_ptr<font> getFont() const noexcept;
                 virtual math::pixel getTextColor() const noexcept;
@@ -76,7 +76,7 @@ namespace sleek
                 math::vec2i relative, absolute, textpos;
                 math::aabbox2di box;
 
-                std::string text;
+                std::wstring text;
                 math::pixel textcolor;
                 u32 textsize;
 

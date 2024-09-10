@@ -14,9 +14,6 @@ namespace sleek
                 ~statictext() noexcept;
                 virtual INTERFACE_GUI_CODE getType() const noexcept { return IGT_STATICTEXT; }
 
-                virtual void setText(const std::string &t) noexcept;
-                virtual void setFont(std::shared_ptr<font>) noexcept;
-
                 virtual bool manage(device::input*) noexcept;
 
                 virtual void render() noexcept;

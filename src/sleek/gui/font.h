@@ -20,7 +20,7 @@ namespace sleek
                     return shared_from_this();
                 }
 
-                virtual std::shared_ptr<driver::texture> build(const std::string &, int font_size) noexcept = 0;
+                virtual std::shared_ptr<driver::texture> build(const std::wstring &, int font_size) noexcept = 0;
                 
                 std::string getFilename() const noexcept;
             protected:

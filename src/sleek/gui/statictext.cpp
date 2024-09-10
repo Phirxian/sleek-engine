@@ -13,17 +13,7 @@ namespace sleek
         statictext::~statictext() noexcept
         {
         }
-
-        void statictext::setText(const std::string &t) noexcept
-        {
-            frame::setText(t);
-        }
-
-        void statictext::setFont(std::shared_ptr<font> i) noexcept
-        {
-            frame::setFont(i);
-        }
-
+        
         bool statictext::manage(device::input *e) noexcept
         {
             bool CHovored = isHovored;

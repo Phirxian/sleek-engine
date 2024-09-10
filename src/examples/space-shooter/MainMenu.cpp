@@ -16,11 +16,11 @@ MainMenu::MainMenu(SpaceShooterManager *mgr) noexcept
     : SpaceShooterState(mgr)
 {
 
-    play = guienv->addButton("Play", {100, 100, 200, 150});
+    play = guienv->addButton(L"Play", {100, 100, 200, 150});
     play->setTextColor({255,128,0,255});
     guienv->addCustomFrame(play);
 
-    quit = guienv->addButton("Exit", {100, 250, 200, 300});
+    quit = guienv->addButton(L"Exit", {100, 250, 200, 300});
     quit->setTextColor({255,128,0,255});
     guienv->addCustomFrame(quit);
     //pp->manage(e);

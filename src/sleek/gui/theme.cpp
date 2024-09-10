@@ -76,7 +76,7 @@ namespace sleek
 
             if (i->isMoved)
                 mom->getDrawManager()->drawCube({a, b}, {0, 0, 0}, theme_color_border);
-            else if (i->isHovored)
+            else if (i->isActive)
                 mom->getDrawManager()->drawCube({a, b}, {0, 0, 0}, theme_color_hover);
             else
                 mom->getDrawManager()->drawCube({a, b}, {0, 0, 0}, theme_color_fg);

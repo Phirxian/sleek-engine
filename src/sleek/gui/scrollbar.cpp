@@ -19,14 +19,16 @@ namespace sleek
 
             add = std::make_shared<button>(m);
             add->setParent(this);
-            add->setTextSize(14);
-            add->setText("+");
+            add->setTextSize(10);
+            add->setFont(m->getIconsFont());
 
             sub = std::make_shared<button>(m);
             sub->setSize(math::vec2i(10,10));
             sub->setParent(this);
-            sub->setTextSize(14);
-            sub->setText("-");
+            sub->setTextSize(10);
+            sub->setFont(m->getIconsFont());
+            
+            setOrientation(SBO_HORIZONTAL);
         }
 
         scrollbar::~scrollbar() noexcept
@@ -77,6 +79,16 @@ namespace sleek
         void scrollbar::setOrientation(SCROLL_BAR_ORIANTATION i)
         {
             orient = i;
+            if(orient == SBO_HORIZONTAL)
+            {
+                add->setText(L"\uF054");
+                sub->setText(L"\uF053");
+            }
+            else
+            {
+                add->setText(L"\uF078");
+                sub->setText(L"\uF077");
+            }
         }
 
         SCROLL_BAR_ORIANTATION scrollbar::getOrientation()
@@ -125,17 +137,18 @@ namespace sleek
                     if(e->gui.called == add.get())
                     {
                         setPercentage(getPercentage()+getStep()/100.f);
-                        std::cout << getValue() << std::endl;
-                        std::cout << getPercentage() << std::endl;
                         isLeftDown = false;
+                        e->gui.called = this;
+                        e->gui.code = gui::IET_SCROLLBAR_UPDATED;
                         return true;
                     }
 
                     if(e->gui.called == sub.get())
                     {
                         setPercentage(getPercentage()-getStep()/100.f);
-                        std::cout << getValue() << std::endl;
                         isLeftDown = false;
+                        e->gui.called = this;
+                        e->gui.code = gui::IET_SCROLLBAR_UPDATED;
                         return true;
                     }
                 }

@@ -18,7 +18,7 @@ namespace sleek
             : frame(guienv), background{64, 255, 255, 255}, white{255, 255, 255, 255}, black{0, 0, 0, 255},
               isGradient(false), isColor(false)
         {
-            close = guienv->addButton("take this color", {5, 140, 85, 156});
+            close = guienv->addButton(L"take this color", {5, 140, 85, 156});
             close->setParent(this);
 
             scroll = guienv->addScrollbar(true, {5, 125, 85, 135});
@@ -31,6 +31,8 @@ namespace sleek
             createGradientTexture();
 
             colorpos = 0;
+            pickpos.x = colorbox.lowerright.x-1;
+            pickpos.y = colorbox.lowerright.y-1;
             color = img[1]->getPixel({0, 0});
             recalculatePickedColor();
 
@@ -186,7 +188,7 @@ namespace sleek
             pickpos.x = hsv.y*80.f;
             pickpos.y = 80-(hsv.z)*80.f;
 
-            color = img[1]->getPixel({0, colorpos});
+            color = c;
             color.setAlpha(255);
 
             alpha = color;

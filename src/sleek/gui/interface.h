@@ -30,14 +30,14 @@ namespace sleek
                     return shared_from_this();
                 }
 
-                std::shared_ptr<frame>       addFrame(const std::string &text = "", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
+                std::shared_ptr<frame>       addFrame(const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
                 std::shared_ptr<colorpicker> addColorPicker(const math::aabbox2di &b) noexcept;
-                std::shared_ptr<picture>     addPicture(std::shared_ptr<driver::texture>, const std::string &text = "", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
+                std::shared_ptr<picture>     addPicture(std::shared_ptr<driver::texture>, const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
                 std::shared_ptr<scrollbar>   addScrollbar(bool horizontal, const math::aabbox2di &pos = math::aabbox2di()) noexcept;
-                std::shared_ptr<progressbar> addProgressbar(const std::string &text = "%f%%", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
-                std::shared_ptr<button>      addButton(const std::string &text = "", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
-                std::shared_ptr<statictext>  addStaticText(const std::string &text = "", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
-                std::shared_ptr<window>      addWindow(const std::string &text = "", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
+                std::shared_ptr<progressbar> addProgressbar(const std::wstring &text = L"%f%%", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
+                std::shared_ptr<button>      addButton(const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
+                std::shared_ptr<statictext>  addStaticText(const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
+                std::shared_ptr<window>      addWindow(const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
 
                 void setTheme(std::shared_ptr<theme>) noexcept;
                 void addCustomFrame(std::shared_ptr<frame>) noexcept;
@@ -46,6 +46,7 @@ namespace sleek
 
                 std::shared_ptr<theme> getTheme() const noexcept;
                 std::shared_ptr<font> getInternalFont() const noexcept;
+                std::shared_ptr<font> getIconsFont() const noexcept;
                 std::shared_ptr<font> getFont(const std::string&) noexcept;
 
                 bool manage(device::input*) noexcept;
@@ -68,7 +69,7 @@ namespace sleek
             private:
                 friend class frame;
                 std::vector<std::shared_ptr<font>> fontcache;
-                std::shared_ptr<font> internal;
+                std::shared_ptr<font> internal, icons;
                 std::shared_ptr<theme> custom, interne;
                 std::shared_ptr<cursor> cr;
         };

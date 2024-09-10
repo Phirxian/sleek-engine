@@ -22,7 +22,7 @@ namespace sleek
         {
             struct CachedGlyph
             {
-                std::vector<u8> bitmap;
+                std::vector<wchar_t> bitmap;
                 int width;
                 int height;
                 int bearingX;
@@ -35,17 +35,17 @@ namespace sleek
                 font_ttf(interface*, const std::string &ttf) noexcept;
                 ~font_ttf();
 
-                math::vec2i getTextDimensions(const std::string& text, int font_size);
+                math::vec2i getTextDimensions(const std::wstring& text, int font_size);
 
-                virtual std::shared_ptr<driver::texture> build(const std::string &, int font_size) noexcept;
+                virtual std::shared_ptr<driver::texture> build(const std::wstring &, int font_size) noexcept;
 
             protected:
                 void cacheGlyph(int size, int c);
-                void draw(std::shared_ptr<driver::texture> buffer, const std::string& text, int font_size, math::vec2i padding);
+                void draw(std::shared_ptr<driver::texture> buffer, const std::wstring& text, int font_size, math::vec2i padding);
 
             private:
-                // font size << 8 + character
-                std::map<int, CachedGlyph> glyph_cache;
+                // font size << 32 + character
+                std::map<long long, CachedGlyph> glyph_cache;
                 FT_Library library;
                 FT_Face face;
         };

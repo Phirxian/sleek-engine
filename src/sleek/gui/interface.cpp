@@ -25,6 +25,7 @@ namespace sleek
             cr = std::make_shared<cursor>(this);
             //internal = std::make_shared<font>(this, nullptr, 0);
             internal = std::make_shared<font_ttf>(this, "font/Raleway-Regular.ttf");
+            icons = std::make_shared<font_ttf>(this, "font/FontAwesome.ttf");
             interne = std::make_shared<theme>(this);
             custom = interne;
         }
@@ -34,7 +35,7 @@ namespace sleek
             clear();
         }
 
-        std::shared_ptr<frame> interface::addFrame(const std::string &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<frame> interface::addFrame(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<frame>(this);
             tmp->absolute = b.upperleft;
@@ -51,7 +52,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<picture> interface::addPicture(std::shared_ptr<driver::texture> w, const std::string &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<picture> interface::addPicture(std::shared_ptr<driver::texture> w, const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<picture>(this);
             tmp->absolute = b.upperleft;
@@ -75,7 +76,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<progressbar> interface::addProgressbar(const std::string &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<progressbar> interface::addProgressbar(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<progressbar>(this);
             tmp->absolute = b.upperleft;
@@ -84,7 +85,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<button> interface::addButton(const std::string &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<button> interface::addButton(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<button>(this);
             tmp->absolute = b.upperleft;
@@ -93,7 +94,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<statictext> interface::addStaticText(const std::string &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<statictext> interface::addStaticText(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<statictext>(this);
             tmp->absolute = b.upperleft;
@@ -102,7 +103,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<window> interface::addWindow(const std::string &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<window> interface::addWindow(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<window>(this);
             tmp->absolute = b.upperleft;
@@ -124,6 +125,12 @@ namespace sleek
         std::shared_ptr<theme> interface::getTheme() const noexcept
         {
             return custom;
+        }
+
+
+        std::shared_ptr<font> interface::getIconsFont() const noexcept
+        {
+            return icons;
         }
 
         std::shared_ptr<font> interface::getInternalFont() const noexcept

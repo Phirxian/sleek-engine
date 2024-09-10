@@ -41,14 +41,14 @@ class GUITest : public device::event
                 earth->getIdentifier()->update();
             }
 
-            auto a = guienv->addButton("Button", {100, 100, 200, 150});
+            auto a = guienv->addButton(L"Button", {100, 100, 200, 150});
             a->setTextColor({255,128,0,255});
             guienv->addCustomFrame(a);
 
-            auto b = guienv->addFrame("not displayed", {100, 200, 200, 250});
+            auto b = guienv->addFrame(L"not displayed", {100, 200, 200, 250});
             guienv->addCustomFrame(b);
 
-            auto c = guienv->addStaticText("static text", {100, 300, 200, 350});
+            auto c = guienv->addStaticText(L"static text", {100, 300, 200, 350});
             guienv->addCustomFrame(c);
 
             auto p1 = guienv->addScrollbar(true, {100, 10, 300, 25});
@@ -56,16 +56,16 @@ class GUITest : public device::event
             auto p2 = guienv->addScrollbar(false, {20, 100, 35, 300});
             guienv->addCustomFrame(p2);
 
-            progressbar = guienv->addProgressbar("%f", {100, 40, 300, 55});
+            progressbar = guienv->addProgressbar(L"%f", {100, 40, 300, 55});
             guienv->addCustomFrame(progressbar);
 
 
-            auto w1 = guienv->addWindow("title", {500, 100, 750, 250});
-            auto d = guienv->addPicture(earth, "", {5, 25, 240, 120});
+            auto w1 = guienv->addWindow(L"title", {500, 100, 750, 250});
+            auto d = guienv->addPicture(earth, L"", {5, 25, 240, 120});
             w1->addChild(d);
             guienv->addCustomFrame(w1);
 
-            auto w2 = guienv->addWindow("title", {250, 120, 370, 310});
+            auto w2 = guienv->addWindow(L"title", {250, 120, 370, 310});
             auto picker = guienv->addColorPicker({5, 25, 115, 185});
             w2->addChild(picker);
             guienv->addCustomFrame(w2);
@@ -106,6 +106,24 @@ class GUITest : public device::event
         std::shared_ptr<sleek::gui::progressbar> progressbar;
 };
 
+void update_title(device::Device *screen, math::timer time) noexcept
+{
+    time.update();
+    
+    if(time.getTimeMsec() < 1000)
+        return;
+        
+    std::string title;
+        title = "GUI test -- Fps(";
+        title += std::to_string(screen->getFpsCounter().getFps());
+        title += ") -- Time(~";
+        title += std::to_string(screen->getFpsCounter().getAvarageTime());
+        title += ")ms";
+    screen->setCaption(title);
+    
+    time.reset();
+}
+
 int main(int argc, char *args[])
 {
     device::Device_stub info = device::Device_stub(SCREEN_WIDTH, SCREEN_HEIGHT, 32, false);
@@ -129,6 +147,7 @@ int main(int argc, char *args[])
     screen->setEventReceiver(&manager);
     
     math::timer time;
+    math::timer fps;
 
     while(screen->run())
     {
@@ -146,5 +165,6 @@ int main(int argc, char *args[])
         renderer->end();
         
         screen->end();
+        update_title(screen.get(), fps);
     }
 }

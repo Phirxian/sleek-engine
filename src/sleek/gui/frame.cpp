@@ -64,7 +64,7 @@ namespace sleek
             i->addChild(getptr());
         }
 
-        void frame::setText(std::string t) noexcept
+        void frame::setText(std::wstring t) noexcept
         {
             text = t;
             if(text.size() > 0 && ft2)
@@ -123,7 +123,7 @@ namespace sleek
             return ft2;
         }
 
-        const std::string& frame::getText() const noexcept
+        const std::wstring& frame::getText() const noexcept
         {
             return text;
         }

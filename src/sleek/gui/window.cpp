@@ -17,7 +17,8 @@ namespace sleek
             close->setParent(this);
             close->UpdateAbsolutePosition();
             close->setTextSize(10);
-            close->setText("x");
+            close->setText(L"\uF00D");
+            close->setFont(m->getIconsFont());
 
             collapse = std::make_shared<button>(m);
             collapse->box = math::aabbox2di(math::vec2i(0,0),math::vec2i(10,10));
@@ -25,7 +26,8 @@ namespace sleek
             collapse->setParent(this);
             collapse->UpdateAbsolutePosition();
             collapse->setTextSize(10);
-            collapse->setText("-");
+            collapse->setText(L"\uF068");
+            collapse->setFont(m->getIconsFont());
         }
 
         window::~window() noexcept
@@ -92,13 +94,6 @@ namespace sleek
                 }
             }
 
-            if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && box.intersect(e->mouse_pos))
-            {
-                mom->unActiveElement();
-                mom->popFrame(getptr());
-                isActive = true;
-            }
-
             math::aabbox2di til(
                 box.getUpperLeft(),
                 math::vec2i(
@@ -109,6 +104,14 @@ namespace sleek
 
             if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && til.intersect(e->mouse_pos))
                 isMoved = true;
+
+            if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && box.intersect(e->mouse_pos))
+            {
+                mom->unActiveElement();
+                mom->popFrame(getptr());
+                isActive = true;
+                return true;
+            }
 
             if(e->type == device::EVENT_MOUSSE_UP)
                 isMoved = false;

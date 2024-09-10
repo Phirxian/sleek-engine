@@ -32,7 +32,7 @@ namespace sleek
             FT_Done_FreeType(library);
         }
 
-        std::shared_ptr<driver::texture> font_ttf::build(const std::string &text, int font_size) noexcept
+        std::shared_ptr<driver::texture> font_ttf::build(const std::wstring &text, int font_size) noexcept
         {
             math::vec2i padding = {2,2};
             auto size = getTextDimensions(text, font_size);
@@ -62,11 +62,11 @@ namespace sleek
                 face->glyph->bitmap.buffer + glyph.width * glyph.height
             );
 
-            int key = size<<8 +  c;
+            long long key = size<<32 +  c;
             glyph_cache[key] = glyph;
         }
 
-        math::vec2i font_ttf::getTextDimensions(const std::string& text, int font_size)
+        math::vec2i font_ttf::getTextDimensions(const std::wstring& text, int font_size)
         {
             FT_Set_Pixel_Sizes(face, 0, font_size);
 
@@ -76,7 +76,7 @@ namespace sleek
             int maxDescender = 0;
             int line_count = 1;
 
-            for(char c : text)
+            for(int c : text)
             {
                 if(c == '\n')
                 {
@@ -86,7 +86,7 @@ namespace sleek
                     continue;
                 }
 
-                int key = font_size<<8 +  c;
+                long long key = font_size<<32 +  c;
 
                 if(glyph_cache.find(key) == glyph_cache.end())
                     cacheGlyph(font_size, c);
@@ -103,7 +103,7 @@ namespace sleek
             };
         }
 
-        void font_ttf::draw(std::shared_ptr<driver::texture> image, const std::string& text, int font_size, math::vec2i padding)
+        void font_ttf::draw(std::shared_ptr<driver::texture> image, const std::wstring& text, int font_size, math::vec2i padding)
         {
             math::vec2i size = image->getDimension();
             u8 *buffer = image->getBuffer();
@@ -115,7 +115,7 @@ namespace sleek
             int y = maxAscent - maxDescent;
             int line = 0;
 
-            for(char c : text)
+            for(wchar_t c : text)
             {
                 if(c == '\n')
                 {
@@ -124,7 +124,7 @@ namespace sleek
                     continue;
                 }
 
-                int key = font_size<<8 +  c;
+                long long key = font_size<<32 +  c;
 
                 if(glyph_cache.find(key) == glyph_cache.end())
                     cacheGlyph(font_size, c);
