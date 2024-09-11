@@ -18,10 +18,7 @@ namespace sample
             void render() noexcept;
             
         private:
-            sleek::f32 distance;
             bool rotation = 0;
-            float pitch = 0.f;
-            float rot = 0.f;
 
             std::vector<std::shared_ptr<sleek::driver::mesh>> mesh;
             std::vector<std::shared_ptr<sleek::scene3d::real::Natif>> node;

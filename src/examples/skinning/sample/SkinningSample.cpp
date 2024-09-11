@@ -1,6 +1,8 @@
 #include "Core.h"
 #include "SkinningSample.h"
 
+#include "../sleek/node/camera/trackball.h"
+
 #include <iostream>
 #include <unistd.h>
 #include <GL/gl.h>
@@ -123,7 +125,7 @@ namespace sample
     }
 
     SkinningSample::SkinningSample(Core *mom) noexcept
-        : Sample(mom), rotation(true), distance(100), rot(-32*5), pitch(3*5),
+        : Sample(mom), rotation(true),
           linear_blend(std::shared_ptr<driver::mesh>(driver::Geometry().createCylindre(10.f, 100.f, 40.f, 100.f)), &define_cylinder_bone),
           dual_quat(std::shared_ptr<driver::mesh>(driver::Geometry().createCylindre(10.f, 100.f, 40.f, 100.f)), &define_cylinder_bone),
           heart(mom->getLoader()->loadMesh("mesh/heart.obj"), &define_heart_bone)
@@ -235,9 +237,11 @@ namespace sample
         node[4]->setMesh(heart.getptr());
         smgr->addSceneNode(node[4]);
 
-        smgr->getCamera()->setRotation({0, 1, 0});
-        smgr->getCamera()->setTarget({0, 0, 0});
-        smgr->getCamera()->updateCameraMatrix();
+        auto camera = std::make_shared<scene3d::camera::TrackballCamera>(screen);
+        camera->setRotation({0, 1, 0});
+        camera->setTarget({0, 0, 0});
+        camera->setPosition({0, 100, 2*50});
+        smgr->setCamera(camera);
     }
 
     SkinningSample::~SkinningSample() noexcept
@@ -248,20 +252,6 @@ namespace sample
     {
         if(smgr->manage(a))
             return true;
-
-        if(a->type == EVENT_MOUSSE_UP)
-        {
-            if(a->mouse[MOUSE_WHEEL_DOWN])
-            {
-                distance *= 1.25;
-                return true;
-            }
-            if(a->mouse[MOUSE_WHEEL_UP])
-            {
-                distance *= 0.75;
-                return true;
-            }
-        }
 
         if(a->type == EVENT_KEY_DOWN)
         {
@@ -276,29 +266,6 @@ namespace sample
             if(a->key[KEY_SPACE])
             {
                 rotation = !rotation;
-                return true;
-            }
-
-            //! camera
-
-            if(a->key[KEY_LEFT])
-            {
-                rot -= 5.f;
-                return true;
-            }
-            if(a->key[KEY_RIGHT])
-            {
-                rot += 5.f;
-                return true;
-            }
-            if(a->key[KEY_DOWN])
-            {
-                pitch -= 5;
-                return true;
-            }
-            if(a->key[KEY_UP])
-            {
-                pitch += 5;
                 return true;
             }
             
@@ -362,15 +329,6 @@ namespace sample
             if(node[4]->getEnable())
                 heart.animate(time);
         }
-
-        smgr->getCamera()->setTarget({0, 15, 0});
-
-        sleek::math::vec4f camera(distance, 0, 0, 1);
-        sleek::math::mat4f transform  = glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, rot/100, 0.0f)));
-                           transform *= glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, 0.0f, pitch/100)));
-        camera = transform * camera;
-
-        smgr->getCamera()->setPosition(sleek::math::vec3f(camera.x, camera.y, camera.z));
 
         smgr->render();
     }

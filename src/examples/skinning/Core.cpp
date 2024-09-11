@@ -28,7 +28,7 @@ namespace sample
     Core::Core() noexcept
     {
         device::Device_stub info = device::Device_stub(512,512,32,false);
-        screen = CreateDeviceWindowManager(device::DWM_X11, info);
+        screen = CreateDeviceWindowManager(device::DWM_GLFW3, info);
 
         if (screen == nullptr)
         {
@@ -123,6 +123,9 @@ namespace sample
 
     bool Core::manage(sleek::device::input *a) noexcept
     {
+        if(scene->manage(a))
+            return true;
+
         if(a->type == sleek::device::EVENT_WINDOW_RESIZE)
             renderer->setViewport(screen->getInfo().size);
 
@@ -138,9 +141,6 @@ namespace sample
         pp->manage(a);
 
         if(guienv->manage(a))
-            return true;
-
-        if(scene->manage(a))
             return true;
 
         event::manage(a);

@@ -16,7 +16,7 @@ namespace sample
         smgr = new sleek::scene3d::Scene(screen, mom->getDriver());
 
         auto grid = std::make_shared<scene3d::real::Grid>(smgr);
-        grid->setMaterial(buildMaterial(grid.get(), nullptr, "shader/object/default.vert", "shader/object/solid.frag", Sample::material_callback, 0));
+        grid->setMaterial(buildMaterial(grid.get(), nullptr, "shader/object/default.vert", "shader/object/default.frag", Sample::material_callback, 0));
         smgr->addSceneNode(grid);
     }
 

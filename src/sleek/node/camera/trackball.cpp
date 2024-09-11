@@ -4,6 +4,7 @@
 #include "device/device.h"
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 #include "glm/gtx/vector_angle.hpp"
 #include "glm/detail/func_geometric.hpp"
@@ -17,7 +18,7 @@ namespace sleek
         namespace camera
         {
             TrackballCamera::TrackballCamera(device::Device *dev)
-                : Camera(dev), sensitivity(2.0f)
+                : Camera(dev), sensitivity(2.0f), isRotating(false), isMoving(false)
             {
             }
 
@@ -39,12 +40,14 @@ namespace sleek
                 {
                     if(e->mouse[device::MOUSE_LEFT])
                     {
+                        isRotating = true;
                         rotstart = getMouseOnScreen(e->mouse_pos);
                         rotend = rotstart;
                     }
 
                     if(e->mouse[device::MOUSE_RIGHT])
                     {
+                        isMoving = true;
                         panstart = getMouseOnScreen(e->mouse_pos);
                         panend = panstart;
                     }
@@ -62,16 +65,25 @@ namespace sleek
                     }
                 }
 
+                if(e->type == device::EVENT_MOUSSE_UP)
+                {
+                    if(e->mouse[device::MOUSE_LEFT])
+                        isRotating = false;
+
+                    if(e->mouse[device::MOUSE_RIGHT])
+                        isMoving = false;
+                }
+
                 if(e->type == device::EVENT_MOUSSE_MOVED)
                 {
-                    if(e->key_state[device::KEY_LBUTTON])
+                    if(isRotating)
                     {
                         rotend = getMouseOnScreen(e->mouse_pos);
                         rotatecamera();
                         rotstart = rotend;
                     }
 
-                    if(e->key_state[device::KEY_RBUTTON])
+                    if(isMoving)
                     {
                         panend = getMouseOnScreen(e->mouse_pos);
                         pancamera();
@@ -103,7 +115,7 @@ namespace sleek
                     pitch = -1.56;
                 
                 sleek::math::vec4f camera(glm::length(tar-pos), 0, 0, 1);
-                sleek::math::mat4f transform  = glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, yaw, 0.0f)));
+                sleek::math::mat4f transform = glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, yaw, 0.0f)));
                 transform *= glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, 0.0f, pitch)));
                 camera = transform * camera;
 
@@ -112,6 +124,17 @@ namespace sleek
 
             void TrackballCamera::updateCameraMatrix() noexcept
             {
+                math::vec3f vector = pos - tar;
+                vector = glm::normalize(vector);
+                pitch = glm::asin(vector.y);
+                yaw = -std::atan2(vector.z, vector.x);
+
+                if (pitch > 1.56f)
+                    pitch = 1.56f;
+
+                if (pitch < -1.56f)
+                    pitch = -1.56f;
+
                 // distance = glm::length(pos-tar);
                 Camera::updateCameraMatrix();
             }

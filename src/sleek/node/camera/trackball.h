@@ -32,6 +32,7 @@ namespace sleek
                 protected:
                     f32 yaw, pitch;
                     f32 sensitivity;
+                    bool isRotating, isMoving;
                     math::vec2f rotstart;
                     math::vec2f rotend;
                     math::vec2f panstart;

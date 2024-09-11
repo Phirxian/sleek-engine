@@ -28,7 +28,7 @@ namespace sample
     Core::Core() noexcept
     {
         device::Device_stub info = device::Device_stub(512,512,32,false);
-        screen = CreateDeviceWindowManager(device::DWM_X11, info);
+        screen = CreateDeviceWindowManager(device::DWM_GLFW3, info);
 
         if (screen == nullptr)
         {

@@ -14,7 +14,7 @@ using namespace device;
 namespace sample
 {
     MetaballSample::MetaballSample(Core *mom) noexcept
-        : Sample(mom), rotation(true), distance(50), metaball(40)
+        : Sample(mom), rotation(true),  metaball(40)
     {
         smgr = new sleek::scene3d::Scene(screen, mom->getDriver());
 
@@ -56,12 +56,12 @@ namespace sample
         node->setMesh(tmp);
         smgr->addSceneNode(node);
 
-        auto camera = std::make_shared<scene3d::camera::TrackballCamera>(screen);
-        //auto camera = std::make_shared<scene3d::camera::FPSCamera>(screen);
+        //auto camera = std::make_shared<scene3d::camera::TrackballCamera>(screen);
+        auto camera = std::make_shared<scene3d::camera::FPSCamera>(screen);
         //auto camera = smgr->getCamera();
         camera->setRotation({0, 1, 0});
         camera->setTarget({0, 0, 0});
-        camera->setPosition({0, distance, 2*distance});
+        camera->setPosition({0, 50, 2*50});
         //camera->setDistance(distance);
         smgr->setCamera(camera);
     }
@@ -74,20 +74,6 @@ namespace sample
     {
         if(smgr->manage(a))
             return false;
-
-        if(a->type == EVENT_MOUSSE_UP)
-        {
-            if(a->mouse[MOUSE_WHEEL_DOWN])
-            {
-                distance *= 1.25;
-                return true;
-            }
-            if(a->mouse[MOUSE_WHEEL_UP])
-            {
-                distance *= 0.75;
-                return true;
-            }
-        }
 
         if(a->type == EVENT_KEY_DOWN)
         {
