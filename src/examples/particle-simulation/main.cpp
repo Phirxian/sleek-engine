@@ -100,8 +100,8 @@ int main(int argc, char *args[])
             time.update();
             float delta = time.getTimeSec();
             time.reset();
-
-            simulation.update(delta);
+            // speedup the simulation
+            simulation.update(delta*3);
             simulation.render(driver);
         renderer->end();
         
