@@ -139,36 +139,6 @@ namespace sleek
                 Camera::updateCameraMatrix();
             }
 
-            // Helper function to map 2D screen coordinates to 3D trackball coordinates
-            math::vec3f TrackballCamera::getTrackballVector(const math::vec2f& screenPos)
-            {
-                math::vec3f v;
-
-                // Map 2D screen coordinates to 3D trackball coordinates
-                v.x = (2.0f * screenPos.x - 1.0f);
-                v.y = (1.0f - 2.0f * screenPos.y);
-                v.z = 0.0f;
-
-                // Calculate the magnitude of the vector
-                float d = length(v);
-
-                // Check if the point is outside the trackball
-                if (d >= 1.0f)
-                {
-                    v.z = 0.0f;
-                    d = 1.0f;
-                }
-                else
-                    v.z = sqrtf(1.0f - d * d);
-
-                if (d > 0.0f)
-                    v = normalize(v);
-                else
-                    v = math::vec3f(0.0f, 0.0f, 0.0f);
-
-                return v;
-            }
-
             void TrackballCamera::pancamera()
             {
                 math::vec2f mov = (panend - panstart) * sensitivity*sensitivity;

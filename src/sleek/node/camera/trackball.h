@@ -25,7 +25,6 @@ namespace sleek
 
                     void updateCameraMatrix() noexcept override;
                 protected:
-                    math::vec3f getTrackballVector(const math::vec2f& screenPos);
                     math::vec2f getMouseOnScreen(math::vec2i);
                     void rotatecamera();
                     void pancamera();
