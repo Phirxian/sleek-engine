@@ -11,10 +11,23 @@
 
 using namespace sleek;
 
+static void material_callback(sleek::driver::shader *i) noexcept
+{
+    auto *node = static_cast<sleek::scene3d::Node*>(i->user[0]);
+    auto *camera = node->getScene()->getCamera();
+
+    i->setVariable("model",      node->getModelMatrix());
+    i->setVariable("view",       camera->getViewMatrix());
+    i->setVariable("projection", camera->getProjectionMatrix());
+
+    if (i->getLinkFromMaterial() && i->getLinkFromMaterial()->Texture.size())
+        i->setTexture("base", i->getLinkFromMaterial()->Texture[0], 0);
+};
+
 SpaceShooterManager::SpaceShooterManager() noexcept
 {
     device::Device_stub info = device::Device_stub(512, 512, 32, false);
-    screen = CreateDeviceWindowManager(device::DWM_SDL, info);
+    screen = CreateDeviceWindowManager(device::DWM_GLFW3, info);
 
     if(screen == nullptr)
     {
@@ -49,7 +62,45 @@ SpaceShooterManager::SpaceShooterManager() noexcept
 
     game = std::make_shared<Game>(this);
     main_menu = std::make_shared<MainMenu>(this);
-    current_state = main_menu;
+    current_state = game;
+}
+
+std::shared_ptr<sleek::driver::material> SpaceShooterManager::buildMaterial(
+    sleek::scene3d::Node *node, void *user,
+    std::string filename_vert, std::string filename_frag,
+    sleek::driver::shader_callback callback, std::shared_ptr<sleek::driver::texture> texture
+) noexcept
+{
+    auto shade = getContext()->createShader();
+    auto mat = std::make_shared<driver::material>();
+
+    mat->setMode(driver::rmd_polygon);
+    mat->setShadeModel(driver::rsd_flat);
+    mat->setMaterialRender(driver::rmt_solid);
+    mat->setShader(shade);
+
+    if(texture && texture->getIdentifier())
+        mat->Texture.push_back(texture->getIdentifier().get());
+
+    auto vert = getFileSystem()->read(filename_vert);
+    auto frag = getFileSystem()->read(filename_frag);
+
+    shade->attacheShader(driver::shd_vert, vert->readAll(), "main");
+    shade->attacheShader(driver::shd_frag, frag->readAll(), "main");
+    // used to get information from material (like texture binding) by callback
+    shade->setLinkToMaterial(mat.get());
+    // used to get model view
+    shade->user[0] = node;
+    shade->user[1] = user;
+
+    shade->compileShader();
+
+    if (callback)
+        shade->setCallback(callback);
+    else
+        shade->setCallback(material_callback);
+
+    return mat;
 }
 
 void SpaceShooterManager::setState(GameState new_state)

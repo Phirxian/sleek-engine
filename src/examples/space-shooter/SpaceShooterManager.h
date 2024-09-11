@@ -23,6 +23,12 @@ class SpaceShooterManager : public sleek::device::event
         sleek::loader::loader* getLoader() const noexcept;
         sleek::io::filesystem* getFileSystem() const noexcept;
 
+        std::shared_ptr<sleek::driver::material> buildMaterial(
+            sleek::scene3d::Node *node, void *user,
+            std::string filename_vert, std::string filename_frag,
+            sleek::driver::shader_callback callback, std::shared_ptr<sleek::driver::texture> texture
+        ) noexcept;
+
         bool manage(sleek::device::input *a) noexcept override;
 
         void setState(GameState);
