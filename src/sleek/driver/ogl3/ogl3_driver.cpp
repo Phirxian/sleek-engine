@@ -559,16 +559,16 @@ namespace sleek
             if (i)
             {
                 // Enable/Disable OpenGL states based on material properties
-                //_glState[bool(i->ant & ral_polygone)](GL_POLYGON_SMOOTH);
-                //_glState[bool(i->ant & ral_line)](GL_LINE_SMOOTH);
-                //_glState[bool(i->mat & rmt_solid)](GL_DEPTH_TEST);
+                _glState[bool(i->ant & ral_polygone)](GL_POLYGON_SMOOTH);
+                _glState[bool(i->ant & ral_line)](GL_LINE_SMOOTH);
+                _glState[bool(i->mat & rmt_solid)](GL_DEPTH_TEST);
                 _glState[1](GL_BLEND);
-                //_glState[bool(i->mat & rmt_lighting)](GL_LIGHTING);
-                //_glState[bool(i->mat & rmt_fog)](GL_FOG);
-                //_glState[bool(i->fac != rfc_off)](GL_CULL_FACE);
+                _glState[bool(i->mat & rmt_lighting)](GL_LIGHTING);
+                _glState[bool(i->mat & rmt_fog)](GL_FOG);
+                _glState[bool(i->fac != rfc_off)](GL_CULL_FACE);
 
                 // Set shading model
-                //glShadeModel(i->shd & rsd_flat ? GL_FLAT : GL_SMOOTH);
+                glShadeModel(i->shd & rsd_flat ? GL_FLAT : GL_SMOOTH);
 
                 // Update point and line sizes if necessary
                 if (!mat || mat->psize != i->psize)
