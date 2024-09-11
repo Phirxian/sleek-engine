@@ -1,5 +1,8 @@
+#define GLM_Precision glm::precision::mediump
+
 #include "trackball.h"
 #include "device/device.h"
+#include <algorithm>
 #include <iostream>
 
 #include "glm/gtx/vector_angle.hpp"
@@ -16,20 +19,18 @@ namespace sleek
             TrackballCamera::TrackballCamera(device::Device *dev)
                 : Camera(dev), sensitivity(2.0f)
             {
-                distance = 5.f;
             }
 
             void TrackballCamera::setDistance(f32 d) noexcept
             {
-                distance = d;
                 math::vec3f direction = normalize(pos - getTarget());
-                pos = getTarget() + direction * distance;
+                pos = getTarget() + direction * std::max(1.f, d);
                 setPosition(pos);
             }
 
             f32 TrackballCamera::getDistance() const noexcept
             {
-                return distance;
+                return glm::length(tar-pos);
             }
 
             bool TrackballCamera::manage(device::input *e) noexcept
@@ -50,13 +51,13 @@ namespace sleek
 
                     if(e->mouse[device::MOUSE_WHEEL_UP])
                     {
-                        distance += sensitivity;
+                        float distance = getDistance() + sensitivity;
                         setDistance(distance);
                     }
 
                     if(e->mouse[device::MOUSE_WHEEL_DOWN])
                     {
-                        distance -= sensitivity;
+                        float distance = getDistance() - sensitivity;
                         setDistance(distance);
                     }
                 }
@@ -91,20 +92,27 @@ namespace sleek
 
             void TrackballCamera::rotatecamera()
             {
-                auto start = getTrackballVector(rotstart);
-                auto end = getTrackballVector(rotend);
-                auto axis = cross(start, end);
-                auto direction = glm::normalize(pos-tar);
-                
-                sleek::math::vec4f camera(direction.x, direction.y, direction.z, 1);
-                sleek::math::mat4f transform  = glm::toMat4(sleek::math::quatf(glm::vec3(axis.z*2, -axis.x, axis.y*2)));
-                camera = transform * camera * distance;
+                math::vec2f mov = (rotend - rotstart) * sensitivity*sensitivity;
 
-                setPosition({camera.x, camera.y, camera.z});
+                yaw += mov.x;
+                pitch += mov.y;
+                
+                if (pitch > 1.56)
+                    pitch = 1.56;
+                if (pitch < -1.56)
+                    pitch = -1.56;
+                
+                sleek::math::vec4f camera(glm::length(tar-pos), 0, 0, 1);
+                sleek::math::mat4f transform  = glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, yaw, 0.0f)));
+                transform *= glm::toMat4(sleek::math::quatf(glm::vec3(0.0f, 0.0f, pitch)));
+                camera = transform * camera;
+
+                setPosition(math::vec3f(camera.x, camera.y, camera.z) + tar);
             }
 
             void TrackballCamera::updateCameraMatrix() noexcept
             {
+                // distance = glm::length(pos-tar);
                 Camera::updateCameraMatrix();
             }
 
@@ -113,21 +121,29 @@ namespace sleek
             {
                 math::vec3f v;
 
-                float d;
+                // Map 2D screen coordinates to 3D trackball coordinates
                 v.x = (2.0f * screenPos.x - 1.0f);
                 v.y = (1.0f - 2.0f * screenPos.y);
                 v.z = 0.0f;
-                d = length(v);
 
+                // Calculate the magnitude of the vector
+                float d = length(v);
+
+                // Check if the point is outside the trackball
                 if (d >= 1.0f)
                 {
-                    d = 1.0f;
                     v.z = 0.0f;
+                    d = 1.0f;
                 }
                 else
-                    v.z = sqrtf(1.f - d * d);
-                    
-                return normalize(v);
+                    v.z = sqrtf(1.0f - d * d);
+
+                if (d > 0.0f)
+                    v = normalize(v);
+                else
+                    v = math::vec3f(0.0f, 0.0f, 0.0f);
+
+                return v;
             }
 
             void TrackballCamera::pancamera()

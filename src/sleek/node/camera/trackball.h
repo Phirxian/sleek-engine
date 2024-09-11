@@ -30,7 +30,7 @@ namespace sleek
                     void rotatecamera();
                     void pancamera();
                 protected:
-                    f32 distance;
+                    f32 yaw, pitch;
                     f32 sensitivity;
                     math::vec2f rotstart;
                     math::vec2f rotend;
