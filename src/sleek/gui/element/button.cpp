@@ -57,7 +57,7 @@ namespace sleek
             // Handle key events for active frame
             if (mom->getActiveFrame() == this)
             {
-                pushed = e->key_state[device::KEY_SPACE];
+                pushed |= e->key_state[device::KEY_SPACE];
 
                 if (e->type == device::EVENT_KEY_UP && e->key[device::KEY_SPACE])
                 {

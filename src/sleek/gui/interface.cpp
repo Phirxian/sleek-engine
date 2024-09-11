@@ -23,6 +23,7 @@ namespace sleek
 
         interface::interface(std::shared_ptr<device::Device> s, std::shared_ptr<driver::driver> d) noexcept : screen(s), mom(d)
         {
+            active = nullptr;
             cr = std::make_shared<cursor>(this);
             //internal = std::make_shared<font>(this, nullptr, 0);
             internal = std::make_shared<font_ttf>(this, "font/Raleway-Regular.ttf");
