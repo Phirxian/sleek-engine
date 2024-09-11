@@ -119,7 +119,7 @@ namespace sleek
 
         void ogl3_driver::ObjectRenderBegin() const noexcept
         {
-            glPushMatrix();
+            //glPushMatrix();
             if(mat && mat->effect)
                 mat->effect->update();
             ctx->testError(-1, "shader_callback");
@@ -128,7 +128,7 @@ namespace sleek
 
         void ogl3_driver::ObjectRenderEnd() const noexcept
         {
-            glPopMatrix();
+            //glPopMatrix();
         }
 
         void ogl3_driver::drawPixel(const math::vec2i pos, const math::pixel clr) const noexcept

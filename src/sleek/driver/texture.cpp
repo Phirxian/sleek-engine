@@ -178,7 +178,7 @@ namespace sleek
 
         std::shared_ptr<identifier> texture::getIdentifier() const noexcept
         {
-            return gpu->getptr();
+            return gpu;
         }
 
         /* ***************************************** */
