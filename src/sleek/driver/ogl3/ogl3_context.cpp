@@ -125,6 +125,7 @@ namespace sleek
             printf("GL_MAX_DRAW_BUFFERS: %d\n", queryHardwareLimitation(GL_MAX_DRAW_BUFFERS));
 
             printf("=========================================================================\n");
+            testError(__LINE__, __FILE__);
         }
 
         ogl3_context::~ogl3_context() noexcept
@@ -360,7 +361,7 @@ namespace sleek
         {
             glClearColor((f32)(color.red/255.f),(f32)(color.green/255.f),(f32)(color.blue/255.f),(f32)(color.alpha/255.f));
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glPushMatrix();
+            //glPushMatrix();
             glStencilFunc(GL_ALWAYS, 0x0, 0x4);
             glStencilMask(0x4);
             glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -373,7 +374,7 @@ namespace sleek
         void ogl3_context::end() noexcept
         {
             testError(__LINE__, __FILE__);
-            glPopMatrix();
+            //glPopMatrix();
             glFlush();
             glDisable(GL_TEXTURE_2D);
         }
