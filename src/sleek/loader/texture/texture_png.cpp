@@ -142,8 +142,21 @@ namespace sleek
                 auto tmp = std::make_shared<driver::texture>(math::vec2i(w, h), (driver::TextureFormat)internalFormat);
                 memccpy(tmp->getBuffer(), (u8*)texels, 1, tmp->getBufferSize());
 
-                tmp->flipVertical();
+                //! png seem use BGR data ?
+                if(color_type == PNG_COLOR_TYPE_RGB || color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+                {
+                    for (unsigned x = 0; x<w; ++x)
+                    {
+                        for (unsigned y = 0; y<h; ++y)
+                        {
+                            auto pixel = tmp->getPixel({x,y});
+                            auto new_pixel = math::pixel{pixel.blue, pixel.green, pixel.red, pixel.alpha};
+                            tmp->setPixel({x,y}, new_pixel);
+                        }
+                    }
+                }
 
+                tmp->flipVertical();
                 return tmp;
             #else
                 return nullptr;

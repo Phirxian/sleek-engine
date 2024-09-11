@@ -29,6 +29,18 @@ namespace sleek
             TXFMT_RGB_32F = 7,
             TXFMT_RGBA_32F = 8
         };
+
+        static const char* TextureFormatName[] = {
+            "LUMINANCE",
+            "LUMINANCE_ALPHA",
+            "RGB",
+            "RGBA",
+            "LUMINANCE_32F",
+            "LUMINANCE_ALPHA_32F",
+            "RGB_32F",
+            "RGBA_32F"
+        };
+
         class context;
         class identifier;
         class texture : public std::enable_shared_from_this<texture>

@@ -44,6 +44,7 @@ namespace sleek
                 std::cout
                     << "\t vec2{" << ptr->getDimension().x << ", " << ptr->getDimension().y << "}"
                     << "\t bits{" << ptr->getPitch()*8 << "}"
+                    << "\t format{" << driver::TextureFormatName[ptr->getFormat()-1] << "}"
                     << std::endl;
             }
             else
