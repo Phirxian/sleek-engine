@@ -2,8 +2,8 @@
 
 #include "MainMenu.h"
 
-#include "../sleek/gui/button.h"
-#include "../sleek/gui/statictext.h"
+#include "../sleek/gui/element/button.h"
+#include "../sleek/gui/element/statictext.h"
 #include "Ship.h"
 
 #include <string>

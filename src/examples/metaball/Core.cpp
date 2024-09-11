@@ -1,7 +1,7 @@
 #include "Core.h"
 
-#include "../sleek/gui/button.h"
-#include "../sleek/gui/statictext.h"
+#include "../sleek/gui/element/button.h"
+#include "../sleek/gui/element/statictext.h"
 
 #include "sample/MetaballSample.h"
 

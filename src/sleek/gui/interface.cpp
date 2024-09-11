@@ -1,14 +1,14 @@
 #include "interface.h"
-#include "font-ttf.h"
+#include "font/font-ttf.h"
 
-#include "button.h"
-#include "checkbox.h"
-#include "colorpicker.h"
-#include "statictext.h"
-#include "progressbar.h"
-#include "scrollbar.h"
-#include "picture.h"
-#include "window.h"
+#include "element/button.h"
+#include "element/checkbox.h"
+#include "element/colorpicker.h"
+#include "element/statictext.h"
+#include "element/progressbar.h"
+#include "element/scrollbar.h"
+#include "element/picture.h"
+#include "element/window.h"
 
 #include <algorithm>
 

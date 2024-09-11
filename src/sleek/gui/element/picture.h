@@ -2,7 +2,7 @@
 #define GUI_PICTURE
 
 #include "frame.h"
-#include "../driver/texture.h"
+#include "../../driver/texture.h"
 
 namespace sleek
 {

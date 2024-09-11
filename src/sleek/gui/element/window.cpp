@@ -1,6 +1,5 @@
-#include "interface.h"
+#include "../interface.h"
 #include "window.h"
-#include <iostream>
 
 namespace sleek
 {

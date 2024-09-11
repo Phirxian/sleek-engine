@@ -1,4 +1,4 @@
-#include "interface.h"
+#include "../interface.h"
 #include "button.h"
 
 namespace sleek

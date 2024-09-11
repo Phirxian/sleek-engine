@@ -1,7 +1,7 @@
 #include "SpaceShooterManager.h"
 
-#include "../sleek/gui/button.h"
-#include "../sleek/gui/statictext.h"
+#include "../sleek/gui/element/button.h"
+#include "../sleek/gui/element/statictext.h"
 #include "MainMenu.h"
 #include "Game.h"
 

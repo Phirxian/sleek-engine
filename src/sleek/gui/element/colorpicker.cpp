@@ -1,12 +1,12 @@
 #include "colorpicker.h"
 
-#include "interface.h"
+#include "../interface.h"
 #include "scrollbar.h"
 #include "button.h"
 
-#include "../driver/texture.h"
-#include "../math/math.h"
-#include "../math/function.h"
+#include "../../driver/texture.h"
+#include "../../math/math.h"
+#include "../../math/function.h"
 
 #include <iostream>
 

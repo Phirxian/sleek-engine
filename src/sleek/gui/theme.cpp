@@ -2,13 +2,13 @@
 #include "../driver/driver.h"
 #include "theme.h"
 
-#include "button.h"
-#include "font.h"
-#include "picture.h"
-#include "progressbar.h"
-#include "statictext.h"
-#include "window.h"
-#include "scrollbar.h"
+#include "font/font.h"
+#include "element/button.h"
+#include "element/picture.h"
+#include "element/progressbar.h"
+#include "element/statictext.h"
+#include "element/window.h"
+#include "element/scrollbar.h"
 
 namespace sleek
 {

@@ -1,4 +1,4 @@
-#include "interface.h"
+#include "../interface.h"
 #include "frame.h"
 
 namespace sleek
@@ -216,7 +216,6 @@ namespace sleek
         {
             for(u32 i = 0; i<child.size(); ++i)
             {
-                child[i]->absolute = absolute;
                 child[i]->UpdateAbsolutePosition();
                 child[i]->UpdateFontPos();
             }

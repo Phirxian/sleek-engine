@@ -1,8 +1,7 @@
 #ifndef INTERFACE
 #define INTERFACE
 
-#include "font.h"
-#include "frame.h"
+#include "element/frame.h"
 #include "theme.h"
 #include "cursor.h"
 #include "../driver/fbo.h"
@@ -11,6 +10,7 @@ namespace sleek
 {
     namespace gui
     {
+        class font;
         class colorpicker;
         class picture;
         class scrollbar;

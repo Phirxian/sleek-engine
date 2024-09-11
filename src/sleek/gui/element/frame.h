@@ -1,13 +1,13 @@
 #ifndef GUI_FRAME
 #define GUI_FRAME
 
-#include "font.h"
-#include "type.h"
-#include "../compile.h"
-#include "../driver/texture.h"
-#include "../driver/material.h"
-#include "../device/event.h"
-#include "../reference.h"
+#include "../font/font.h"
+#include "../type.h"
+#include "../../compile.h"
+#include "../../driver/texture.h"
+#include "../../driver/material.h"
+#include "../../device/event.h"
+#include "../../reference.h"
 
 namespace sleek
 {

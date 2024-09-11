@@ -1,4 +1,4 @@
-#include "interface.h"
+#include "../interface.h"
 #include "font-ttf.h"
 
 #include <ft2build.h>

@@ -1,8 +1,8 @@
-#include "interface.h"
+#include "../interface.h"
 #include "scrollbar.h"
 #include "button.h"
 
-#include "../math/function.h"
+#include "../../math/function.h"
 
 namespace sleek
 {

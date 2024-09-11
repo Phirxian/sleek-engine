@@ -1,8 +1,9 @@
 #ifndef GUI_FONT
 #define GUI_FONT
 
-#include "../driver/texture.h"
-#include "../math/aabbox.h"
+#include "../../driver/texture.h"
+#include "../../math/aabbox.h"
+
 namespace sleek
 {
     namespace gui

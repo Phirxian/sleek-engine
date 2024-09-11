@@ -1,13 +1,13 @@
 #include "../sleek/start.h"
 #include "../sleek/gui/interface.h"
-#include "../sleek/gui/button.h"
-#include "../sleek/gui/statictext.h"
-#include "../sleek/gui/scrollbar.h"
-#include "../sleek/gui/progressbar.h"
-#include "../sleek/gui/picture.h"
-#include "../sleek/gui/colorpicker.h"
-#include "../sleek/gui/checkbox.h"
-#include "../sleek/gui/window.h"
+#include "../sleek/gui/element/button.h"
+#include "../sleek/gui/element/statictext.h"
+#include "../sleek/gui/element/scrollbar.h"
+#include "../sleek/gui/element/progressbar.h"
+#include "../sleek/gui/element/picture.h"
+#include "../sleek/gui/element/colorpicker.h"
+#include "../sleek/gui/element/checkbox.h"
+#include "../sleek/gui/element/window.h"
 #include <cmath>
 
 const unsigned int SCREEN_WIDTH = 1024;

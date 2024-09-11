@@ -1,4 +1,4 @@
-#include "interface.h"
+#include "../interface.h"
 #include "statictext.h"
 
 namespace sleek
@@ -38,6 +38,7 @@ namespace sleek
 
         void statictext::render() noexcept
         {
+            if(!show) return;
             mom->getTheme()->drawStaticText(this);
             mom->getTheme()->drawFont(this);
             renderChild();

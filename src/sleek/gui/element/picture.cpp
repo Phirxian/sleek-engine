@@ -1,4 +1,4 @@
-#include "interface.h"
+#include "../interface.h"
 #include "picture.h"
 
 #include <iostream>
@@ -61,6 +61,11 @@ namespace sleek
 
         void picture::render() noexcept
         {
+            if(!show)
+                return;
+                
+            frame::render();
+
             if(!pic)
                 return;
 
@@ -77,7 +82,6 @@ namespace sleek
                     scl.y = scl.x / aspect;
             }
 
-            frame::render();
             
             mom->getDrawManager()->setActiveMaterial(mom->getTheme()->getSolidMaterial());
 
