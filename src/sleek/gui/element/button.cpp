@@ -38,6 +38,9 @@ namespace sleek
 
             hovored = box.intersect(e->mouse_pos);
 
+            if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT])
+                pushed = hovored;
+
             if(e->type == device::EVENT_MOUSSE_UP && e->mouse[device::MOUSE_LEFT])
             {
                 if(hovored && pushed)
@@ -52,7 +55,6 @@ namespace sleek
                 pushed = false;
             }
 
-            pushed = e->key_state[device::KEY_LBUTTON] && hovored;
 
             // Handle key events for active frame
             if (mom->getActiveFrame() == this)
