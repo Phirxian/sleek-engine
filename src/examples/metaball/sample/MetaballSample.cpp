@@ -56,8 +56,8 @@ namespace sample
         node->setMesh(tmp);
         smgr->addSceneNode(node);
 
-        //auto camera = std::make_shared<scene3d::camera::TrackballCamera>(screen);
-        auto camera = std::make_shared<scene3d::camera::FPSCamera>(screen);
+        auto camera = std::make_shared<scene3d::camera::TrackballCamera>(screen);
+        //auto camera = std::make_shared<scene3d::camera::FPSCamera>(screen);
         //auto camera = smgr->getCamera();
         camera->setRotation({0, 1, 0});
         camera->setTarget({0, 0, 0});
