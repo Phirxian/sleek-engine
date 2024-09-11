@@ -93,18 +93,25 @@ namespace sleek
                 }
             }
 
-            math::aabbox2di til(
+            math::aabbox2di til = {
                 box.getUpperLeft(),
                 math::vec2i(
                     box.getUpperLeft().x+box.getSize().x,
                     box.getUpperLeft().y+title_size
                 )
-            );
+            };
+
+            math::aabbox2di window_box;
+            
+            if (isCollapsed)
+                window_box = til;
+            else
+                window_box = box;
 
             if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && til.intersect(e->mouse_pos))
                 isMoved = true;
 
-            if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && box.intersect(e->mouse_pos))
+            if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && window_box.intersect(e->mouse_pos))
             {
                 mom->unActiveElement();
                 mom->popFrame(getptr());
@@ -119,8 +126,8 @@ namespace sleek
             {
                 if(!isMoved)
                 {
-                    isHovored = box.intersect(e->mouse_pos);
-                    def = e->mouse_pos-box.getUpperLeft();
+                    isHovored = window_box.intersect(e->mouse_pos);
+                    def = e->mouse_pos-window_box.getUpperLeft();
                 }
                 else
                 {

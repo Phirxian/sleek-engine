@@ -41,6 +41,7 @@ namespace sleek
                 virtual void setTextSize(u32) noexcept;
                 virtual void setTextColor(const math::pixel&) noexcept;
                 virtual void setScale(math::vec2i) noexcept;
+                virtual void setSize(math::vec2i) noexcept;
 
                 virtual interface* getGUIEnvironment() const noexcept;
 
@@ -56,7 +57,6 @@ namespace sleek
                 virtual void setFontCache(std::shared_ptr<driver::texture>) noexcept;
                 std::shared_ptr<driver::texture> getFontCache() const noexcept;
 
-                virtual void setSize(math::vec2i) noexcept;
                 virtual void move(math::vec2i) noexcept;
                 virtual bool manage(device::input*) noexcept;
 
