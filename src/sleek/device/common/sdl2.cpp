@@ -179,11 +179,6 @@ namespace sleek
         void Device_sdl2::keymap(const SDL_Event &a, input *i) noexcept
         {
             bool val = false;
-            auto setkey = [i, val](int k)
-            {
-                i->key_state[k] = val;
-                i->key[k] = true;
-            };
             
             /** event type **/
             if(a.type == SDL_KEYDOWN)
@@ -194,6 +189,7 @@ namespace sleek
             else if(a.type == SDL_KEYUP)
             {
                 i->type = EVENT_KEY_UP;
+                val = false;
             }
             else if(a.type == SDL_MOUSEBUTTONDOWN)
             {
@@ -203,10 +199,12 @@ namespace sleek
             else if(a.type == SDL_MOUSEBUTTONUP)
             {
                 i->type = EVENT_MOUSSE_UP;
+                val = false;
             }
             else if(a.type == SDL_MOUSEMOTION)
             {
                 i->type = EVENT_MOUSSE_MOVED;
+                val = false;
             }
             else if(a.type == SDL_WINDOWEVENT && a.window.event == SDL_WINDOWEVENT_RESIZED)
             {
@@ -220,141 +218,141 @@ namespace sleek
                 i->type = EVENT_NOTHINK;
 
             /** mouse event **/
-            if(a.button.button == SDL_BUTTON_LEFT) { i->mouse[MOUSE_LEFT] = true; val = true; setkey(KEY_LBUTTON); }
-            if(a.button.button == SDL_BUTTON_MIDDLE) { i->mouse[MOUSE_MIDDLE] = true; val = true; setkey(KEY_MBUTTON); }
-            if(a.button.button == SDL_BUTTON_RIGHT) { i->mouse[MOUSE_RIGHT] = true; val = true; setkey(KEY_RBUTTON); }
+            if(a.button.button == SDL_BUTTON_LEFT) { i->mouse[MOUSE_LEFT] = true; val = true; i->setkey(KEY_LBUTTON, val); }
+            if(a.button.button == SDL_BUTTON_MIDDLE) { i->mouse[MOUSE_MIDDLE] = true; val = true; i->setkey(KEY_MBUTTON, val); }
+            if(a.button.button == SDL_BUTTON_RIGHT) { i->mouse[MOUSE_RIGHT] = true; val = true; i->setkey(KEY_RBUTTON, val); }
             /** key event **/
-//                if(a.key.keysym.sym == SDLK_C) setkey(KEY_CANCEL);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_XBUTTON1);
-//                if(a.key.keysym.sym == SDLK_X) setkey(KEY_XBUTTON2);
-//                if(a.key.keysym.sym == SDLK_B) setkey(KEY_BACK);
-            if(a.key.keysym.sym == SDLK_TAB) setkey(KEY_TAB);
-            if(a.key.keysym.sym == SDLK_CLEAR) setkey(KEY_CLEAR);
-            if(a.key.keysym.sym == SDLK_RETURN) setkey(KEY_RETURN);
-            if(a.key.keysym.sym == SDLK_RSHIFT || a.key.keysym.sym == SDLK_LSHIFT) setkey(KEY_SHIFT);
-            if(a.key.keysym.sym == SDLK_RCTRL || a.key.keysym.sym == SDLK_LCTRL) setkey(KEY_CONTROL);
-            if(a.key.keysym.sym == SDLK_MENU) setkey(KEY_MENU);
-            if(a.key.keysym.sym == SDLK_PAUSE) setkey(KEY_PAUSE);
-//                if(a.key.keysym.sym == SDLK_C) setkey(KEY_CAPITAL);
-//                if(a.key.keysym.sym == SDLK_K) setkey(KEY_KANA);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_HANGUEL);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_HANGUL);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_JUNJA);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_FINAL);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_HANJA);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_KANJI);
-            if(a.key.keysym.sym == SDLK_ESCAPE) setkey(KEY_ESCAPE);
-//                if(a.key.keysym.sym == SDLK_C) setkey(KEY_CONVERT);
-//                if(a.key.keysym.sym == SDLK_N) setkey(KEY_NONCONVERT);
-//                if(a.key.keysym.sym == SDLK_A) setkey(KEY_ACCEPT);
-            if(a.key.keysym.sym == SDLK_MODE) setkey(KEY_MODECHANGE);
-            if(a.key.keysym.sym == SDLK_SPACE) setkey(KEY_SPACE);
-//                if(a.key.keysym.sym == SDLK_P) setkey(KEY_PRIOR);
-//                if(a.key.keysym.sym == SDLK_N) setkey(KEY_NEXT);
-            if(a.key.keysym.sym == SDLK_END) setkey(KEY_END);
-            if(a.key.keysym.sym == SDLK_HOME) setkey(KEY_HOME);
-            if(a.key.keysym.sym == SDLK_LEFT) setkey(KEY_LEFT);
-            if(a.key.keysym.sym == SDLK_UP) setkey(KEY_UP);
-            if(a.key.keysym.sym == SDLK_RIGHT) setkey(KEY_RIGHT);
-            if(a.key.keysym.sym == SDLK_DOWN) setkey(KEY_DOWN);
-//                if(a.key.keysym.sym == SDLK_S) setkey(KEY_SELECT);
-//            if(a.key.keysym.sym == SDLK_PRINT) setkey(KEY_PRINT);
-//                if(a.key.keysym.sym == SDLK_E) setkey(KEY_EXECUT);
-//                if(a.key.keysym.sym == SDLK_S) setkey(KEY_SNAPSHOT);
-            if(a.key.keysym.sym == SDLK_INSERT) setkey(KEY_INSERT);
-            if(a.key.keysym.sym == SDLK_DELETE) setkey(KEY_DELETE);
-            if(a.key.keysym.sym == SDLK_HELP) setkey(KEY_HELP);
-            if(a.key.keysym.sym == SDLK_0) setkey(KEY_KEY_0);
-            if(a.key.keysym.sym == SDLK_1) setkey(KEY_KEY_1);
-            if(a.key.keysym.sym == SDLK_2) setkey(KEY_KEY_2);
-            if(a.key.keysym.sym == SDLK_3) setkey(KEY_KEY_3);
-            if(a.key.keysym.sym == SDLK_4) setkey(KEY_KEY_4);
-            if(a.key.keysym.sym == SDLK_5) setkey(KEY_KEY_5);
-            if(a.key.keysym.sym == SDLK_6) setkey(KEY_KEY_6);
-            if(a.key.keysym.sym == SDLK_7) setkey(KEY_KEY_7);
-            if(a.key.keysym.sym == SDLK_8) setkey(KEY_KEY_8);
-            if(a.key.keysym.sym == SDLK_9) setkey(KEY_KEY_9);
-            if(a.key.keysym.sym == SDLK_a) setkey(KEY_KEY_A);
-            if(a.key.keysym.sym == SDLK_b) setkey(KEY_KEY_B);
-            if(a.key.keysym.sym == SDLK_c) setkey(KEY_KEY_C);
-            if(a.key.keysym.sym == SDLK_d) setkey(KEY_KEY_D);
-            if(a.key.keysym.sym == SDLK_e) setkey(KEY_KEY_E);
-            if(a.key.keysym.sym == SDLK_f) setkey(KEY_KEY_F);
-            if(a.key.keysym.sym == SDLK_g) setkey(KEY_KEY_G);
-            if(a.key.keysym.sym == SDLK_h) setkey(KEY_KEY_H);
-            if(a.key.keysym.sym == SDLK_i) setkey(KEY_KEY_I);
-            if(a.key.keysym.sym == SDLK_j) setkey(KEY_KEY_J);
-            if(a.key.keysym.sym == SDLK_k) setkey(KEY_KEY_K);
-            if(a.key.keysym.sym == SDLK_l) setkey(KEY_KEY_L);
-            if(a.key.keysym.sym == SDLK_m) setkey(KEY_KEY_M);
-            if(a.key.keysym.sym == SDLK_n) setkey(KEY_KEY_N);
-            if(a.key.keysym.sym == SDLK_o) setkey(KEY_KEY_O);
-            if(a.key.keysym.sym == SDLK_p) setkey(KEY_KEY_P);
-            if(a.key.keysym.sym == SDLK_q) setkey(KEY_KEY_Q);
-            if(a.key.keysym.sym == SDLK_r) setkey(KEY_KEY_R);
-            if(a.key.keysym.sym == SDLK_s) setkey(KEY_KEY_S);
-            if(a.key.keysym.sym == SDLK_t) setkey(KEY_KEY_T);
-            if(a.key.keysym.sym == SDLK_u) setkey(KEY_KEY_U);
-            if(a.key.keysym.sym == SDLK_v) setkey(KEY_KEY_V);
-            if(a.key.keysym.sym == SDLK_w) setkey(KEY_KEY_W);
-            if(a.key.keysym.sym == SDLK_x) setkey(KEY_KEY_X);
-            if(a.key.keysym.sym == SDLK_y) setkey(KEY_KEY_Y);
-            if(a.key.keysym.sym == SDLK_z) setkey(KEY_KEY_Z);
-//            if(a.key.keysym.sym == SDLK_LMETA) setkey(KEY_LWIN);
-//            if(a.key.keysym.sym == SDLK_RMETA) setkey(KEY_RWIN);
-//                if(a.key.keysym.sym == SDLK_A) setkey(KEY_APPS);
-//                if(a.key.keysym.sym == SDLK_S) setkey(KEY_SLEEP);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD0);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD1);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD2);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD3);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD4);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD5);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD6);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD7);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD8);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_NUMPAD9);
-            if(a.key.keysym.sym == SDLK_ASTERISK) setkey(KEY_MULTIPLY);
-//                if(a.key.keysym.sym == SDLK_) setkey(KEY_ADD);
-//                if(a.key.keysym.sym == SDLK_s) setkey(KEY_SEPARATOR);
-            if(a.key.keysym.sym == SDLK_MINUS) setkey(KEY_SUBTRACT);
-//                if(a.key.keysym.sym == SDLK_D) setkey(KEY_DECIMAL);
-            if(a.key.keysym.sym == SDLK_SLASH) setkey(KEY_DIVIDE);
-            if(a.key.keysym.sym == SDLK_F1) setkey(KEY_F1);
-            if(a.key.keysym.sym == SDLK_F2) setkey(KEY_F2);
-            if(a.key.keysym.sym == SDLK_F3) setkey(KEY_F3);
-            if(a.key.keysym.sym == SDLK_F4) setkey(KEY_F4);
-            if(a.key.keysym.sym == SDLK_F5) setkey(KEY_F5);
-            if(a.key.keysym.sym == SDLK_F6) setkey(KEY_F6);
-            if(a.key.keysym.sym == SDLK_F7) setkey(KEY_F7);
-            if(a.key.keysym.sym == SDLK_F8) setkey(KEY_F8);
-            if(a.key.keysym.sym == SDLK_F9) setkey(KEY_F9);
-            if(a.key.keysym.sym == SDLK_F10) setkey(KEY_F10);
-            if(a.key.keysym.sym == SDLK_F11) setkey(KEY_F11);
-            if(a.key.keysym.sym == SDLK_F12) setkey(KEY_F12);
-            if(a.key.keysym.sym == SDLK_F13) setkey(KEY_F13);
-            if(a.key.keysym.sym == SDLK_F14) setkey(KEY_F14);
-            if(a.key.keysym.sym == SDLK_F15) setkey(KEY_F15);
-//            if(a.key.keysym.sym == SDLK_NUMLOCK) setkey(KEY_NUMLOCK);
-//            if(a.key.keysym.sym == SDLK_SCROLLOCK) setkey(KEY_SCROLL);
-            if(a.key.keysym.sym == SDLK_LSHIFT) setkey(KEY_LSHIFT);
-            if(a.key.keysym.sym == SDLK_RSHIFT) setkey(KEY_RSHIFT);
-            if(a.key.keysym.sym == SDLK_LCTRL) setkey(KEY_LCONTROL);
-            if(a.key.keysym.sym == SDLK_RCTRL) setkey(KEY_RCONTROL);
-//            if(a.key.keysym.sym == SDLK_LMETA) setkey(KEY_LMENU);
-//            if(a.key.keysym.sym == SDLK_RMETA) setkey(KEY_RMENU);
-            if(a.key.keysym.sym == SDLK_PLUS) setkey(KEY_PLUS);
-            if(a.key.keysym.sym == SDLK_COMMA) setkey(KEY_COMMA);
-            if(a.key.keysym.sym == SDLK_MINUS) setkey(KEY_MINUS);
-            if(a.key.keysym.sym == SDLK_PERIOD) setkey(KEY_PERIOD);
-            if(a.key.keysym.sym == SDLK_AT) setkey(KEY_ATTN);
-//                if(a.key.keysym.sym == SDLK_c) setkey(KEY_CRSEL);
-//                if(a.key.keysym.sym == SDLK_E) setkey(KEY_EXSEL);
-//                if(a.key.keysym.sym == SDLK_E) setkey(KEY_EREOF);
-//                if(a.key.keysym.sym == SDLK_P) setkey(KEY_PLAY);
-//                if(a.key.keysym.sym == SDLK_Z) setkey(KEY_ZOOM);
-            if(a.key.keysym.sym == SDLK_PAGEUP) setkey(KEY_PA1);
-            if(a.key.keysym.sym == SDLK_CLEAR) setkey(KEY_OEM_CLEAR);
+//                if(a.key.keysym.sym == SDLK_C) i->setkey(KEY_CANCEL, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_XBUTTON1, val);
+//                if(a.key.keysym.sym == SDLK_X) i->setkey(KEY_XBUTTON2, val);
+//                if(a.key.keysym.sym == SDLK_B) i->setkey(KEY_BACK, val);
+            if(a.key.keysym.sym == SDLK_TAB) i->setkey(KEY_TAB, val);
+            if(a.key.keysym.sym == SDLK_CLEAR) i->setkey(KEY_CLEAR, val);
+            if(a.key.keysym.sym == SDLK_RETURN) i->setkey(KEY_RETURN, val);
+            if(a.key.keysym.sym == SDLK_RSHIFT || a.key.keysym.sym == SDLK_LSHIFT) i->setkey(KEY_SHIFT, val);
+            if(a.key.keysym.sym == SDLK_RCTRL || a.key.keysym.sym == SDLK_LCTRL) i->setkey(KEY_CONTROL, val);
+            if(a.key.keysym.sym == SDLK_MENU) i->setkey(KEY_MENU, val);
+            if(a.key.keysym.sym == SDLK_PAUSE) i->setkey(KEY_PAUSE, val);
+//                if(a.key.keysym.sym == SDLK_C) i->setkey(KEY_CAPITAL, val);
+//                if(a.key.keysym.sym == SDLK_K) i->setkey(KEY_KANA, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_HANGUEL, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_HANGUL, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_JUNJA, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_FINAL, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_HANJA, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_KANJI, val);
+            if(a.key.keysym.sym == SDLK_ESCAPE) i->setkey(KEY_ESCAPE, val);
+//                if(a.key.keysym.sym == SDLK_C) i->setkey(KEY_CONVERT, val);
+//                if(a.key.keysym.sym == SDLK_N) i->setkey(KEY_NONCONVERT, val);
+//                if(a.key.keysym.sym == SDLK_A) i->setkey(KEY_ACCEPT, val);
+            if(a.key.keysym.sym == SDLK_MODE) i->setkey(KEY_MODECHANGE, val);
+            if(a.key.keysym.sym == SDLK_SPACE) i->setkey(KEY_SPACE, val);
+//                if(a.key.keysym.sym == SDLK_P) i->setkey(KEY_PRIOR, val);
+//                if(a.key.keysym.sym == SDLK_N) i->setkey(KEY_NEXT, val);
+            if(a.key.keysym.sym == SDLK_END) i->setkey(KEY_END, val);
+            if(a.key.keysym.sym == SDLK_HOME) i->setkey(KEY_HOME, val);
+            if(a.key.keysym.sym == SDLK_LEFT) i->setkey(KEY_LEFT, val);
+            if(a.key.keysym.sym == SDLK_UP) i->setkey(KEY_UP, val);
+            if(a.key.keysym.sym == SDLK_RIGHT) i->setkey(KEY_RIGHT, val);
+            if(a.key.keysym.sym == SDLK_DOWN) i->setkey(KEY_DOWN, val);
+//                if(a.key.keysym.sym == SDLK_S) i->setkey(KEY_SELECT, val);
+//            if(a.key.keysym.sym == SDLK_PRINT) i->setkey(KEY_PRINT, val);
+//                if(a.key.keysym.sym == SDLK_E) i->setkey(KEY_EXECUT, val);
+//                if(a.key.keysym.sym == SDLK_S) i->setkey(KEY_SNAPSHOT, val);
+            if(a.key.keysym.sym == SDLK_INSERT) i->setkey(KEY_INSERT, val);
+            if(a.key.keysym.sym == SDLK_DELETE) i->setkey(KEY_DELETE, val);
+            if(a.key.keysym.sym == SDLK_HELP) i->setkey(KEY_HELP, val);
+            if(a.key.keysym.sym == SDLK_0) i->setkey(KEY_KEY_0, val);
+            if(a.key.keysym.sym == SDLK_1) i->setkey(KEY_KEY_1, val);
+            if(a.key.keysym.sym == SDLK_2) i->setkey(KEY_KEY_2, val);
+            if(a.key.keysym.sym == SDLK_3) i->setkey(KEY_KEY_3, val);
+            if(a.key.keysym.sym == SDLK_4) i->setkey(KEY_KEY_4, val);
+            if(a.key.keysym.sym == SDLK_5) i->setkey(KEY_KEY_5, val);
+            if(a.key.keysym.sym == SDLK_6) i->setkey(KEY_KEY_6, val);
+            if(a.key.keysym.sym == SDLK_7) i->setkey(KEY_KEY_7, val);
+            if(a.key.keysym.sym == SDLK_8) i->setkey(KEY_KEY_8, val);
+            if(a.key.keysym.sym == SDLK_9) i->setkey(KEY_KEY_9, val);
+            if(a.key.keysym.sym == SDLK_a) i->setkey(KEY_KEY_A, val);
+            if(a.key.keysym.sym == SDLK_b) i->setkey(KEY_KEY_B, val);
+            if(a.key.keysym.sym == SDLK_c) i->setkey(KEY_KEY_C, val);
+            if(a.key.keysym.sym == SDLK_d) i->setkey(KEY_KEY_D, val);
+            if(a.key.keysym.sym == SDLK_e) i->setkey(KEY_KEY_E, val);
+            if(a.key.keysym.sym == SDLK_f) i->setkey(KEY_KEY_F, val);
+            if(a.key.keysym.sym == SDLK_g) i->setkey(KEY_KEY_G, val);
+            if(a.key.keysym.sym == SDLK_h) i->setkey(KEY_KEY_H, val);
+            if(a.key.keysym.sym == SDLK_i) i->setkey(KEY_KEY_I, val);
+            if(a.key.keysym.sym == SDLK_j) i->setkey(KEY_KEY_J, val);
+            if(a.key.keysym.sym == SDLK_k) i->setkey(KEY_KEY_K, val);
+            if(a.key.keysym.sym == SDLK_l) i->setkey(KEY_KEY_L, val);
+            if(a.key.keysym.sym == SDLK_m) i->setkey(KEY_KEY_M, val);
+            if(a.key.keysym.sym == SDLK_n) i->setkey(KEY_KEY_N, val);
+            if(a.key.keysym.sym == SDLK_o) i->setkey(KEY_KEY_O, val);
+            if(a.key.keysym.sym == SDLK_p) i->setkey(KEY_KEY_P, val);
+            if(a.key.keysym.sym == SDLK_q) i->setkey(KEY_KEY_Q, val);
+            if(a.key.keysym.sym == SDLK_r) i->setkey(KEY_KEY_R, val);
+            if(a.key.keysym.sym == SDLK_s) i->setkey(KEY_KEY_S, val);
+            if(a.key.keysym.sym == SDLK_t) i->setkey(KEY_KEY_T, val);
+            if(a.key.keysym.sym == SDLK_u) i->setkey(KEY_KEY_U, val);
+            if(a.key.keysym.sym == SDLK_v) i->setkey(KEY_KEY_V, val);
+            if(a.key.keysym.sym == SDLK_w) i->setkey(KEY_KEY_W, val);
+            if(a.key.keysym.sym == SDLK_x) i->setkey(KEY_KEY_X, val);
+            if(a.key.keysym.sym == SDLK_y) i->setkey(KEY_KEY_Y, val);
+            if(a.key.keysym.sym == SDLK_z) i->setkey(KEY_KEY_Z, val);
+//            if(a.key.keysym.sym == SDLK_LMETA) i->setkey(KEY_LWIN, val);
+//            if(a.key.keysym.sym == SDLK_RMETA) i->setkey(KEY_RWIN, val);
+//                if(a.key.keysym.sym == SDLK_A) i->setkey(KEY_APPS, val);
+//                if(a.key.keysym.sym == SDLK_S) i->setkey(KEY_SLEEP, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD0, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD1, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD2, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD3, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD4, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD5, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD6, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD7, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD8, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_NUMPAD9, val);
+            if(a.key.keysym.sym == SDLK_ASTERISK) i->setkey(KEY_MULTIPLY, val);
+//                if(a.key.keysym.sym == SDLK_) i->setkey(KEY_ADD, val);
+//                if(a.key.keysym.sym == SDLK_s) i->setkey(KEY_SEPARATOR, val);
+            if(a.key.keysym.sym == SDLK_MINUS) i->setkey(KEY_SUBTRACT, val);
+//                if(a.key.keysym.sym == SDLK_D) i->setkey(KEY_DECIMAL, val);
+            if(a.key.keysym.sym == SDLK_SLASH) i->setkey(KEY_DIVIDE, val);
+            if(a.key.keysym.sym == SDLK_F1) i->setkey(KEY_F1, val);
+            if(a.key.keysym.sym == SDLK_F2) i->setkey(KEY_F2, val);
+            if(a.key.keysym.sym == SDLK_F3) i->setkey(KEY_F3, val);
+            if(a.key.keysym.sym == SDLK_F4) i->setkey(KEY_F4, val);
+            if(a.key.keysym.sym == SDLK_F5) i->setkey(KEY_F5, val);
+            if(a.key.keysym.sym == SDLK_F6) i->setkey(KEY_F6, val);
+            if(a.key.keysym.sym == SDLK_F7) i->setkey(KEY_F7, val);
+            if(a.key.keysym.sym == SDLK_F8) i->setkey(KEY_F8, val);
+            if(a.key.keysym.sym == SDLK_F9) i->setkey(KEY_F9, val);
+            if(a.key.keysym.sym == SDLK_F10) i->setkey(KEY_F10, val);
+            if(a.key.keysym.sym == SDLK_F11) i->setkey(KEY_F11, val);
+            if(a.key.keysym.sym == SDLK_F12) i->setkey(KEY_F12, val);
+            if(a.key.keysym.sym == SDLK_F13) i->setkey(KEY_F13, val);
+            if(a.key.keysym.sym == SDLK_F14) i->setkey(KEY_F14, val);
+            if(a.key.keysym.sym == SDLK_F15) i->setkey(KEY_F15, val);
+//            if(a.key.keysym.sym == SDLK_NUMLOCK) i->setkey(KEY_NUMLOCK, val);
+//            if(a.key.keysym.sym == SDLK_SCROLLOCK) i->setkey(KEY_SCROLL, val);
+            if(a.key.keysym.sym == SDLK_LSHIFT) i->setkey(KEY_LSHIFT, val);
+            if(a.key.keysym.sym == SDLK_RSHIFT) i->setkey(KEY_RSHIFT, val);
+            if(a.key.keysym.sym == SDLK_LCTRL) i->setkey(KEY_LCONTROL, val);
+            if(a.key.keysym.sym == SDLK_RCTRL) i->setkey(KEY_RCONTROL, val);
+//            if(a.key.keysym.sym == SDLK_LMETA) i->setkey(KEY_LMENU, val);
+//            if(a.key.keysym.sym == SDLK_RMETA) i->setkey(KEY_RMENU, val);
+            if(a.key.keysym.sym == SDLK_PLUS) i->setkey(KEY_PLUS, val);
+            if(a.key.keysym.sym == SDLK_COMMA) i->setkey(KEY_COMMA, val);
+            if(a.key.keysym.sym == SDLK_MINUS) i->setkey(KEY_MINUS, val);
+            if(a.key.keysym.sym == SDLK_PERIOD) i->setkey(KEY_PERIOD, val);
+            if(a.key.keysym.sym == SDLK_AT) i->setkey(KEY_ATTN, val);
+//                if(a.key.keysym.sym == SDLK_c) i->setkey(KEY_CRSEL, val);
+//                if(a.key.keysym.sym == SDLK_E) i->setkey(KEY_EXSEL, val);
+//                if(a.key.keysym.sym == SDLK_E) i->setkey(KEY_EREOF, val);
+//                if(a.key.keysym.sym == SDLK_P) i->setkey(KEY_PLAY, val);
+//                if(a.key.keysym.sym == SDLK_Z) i->setkey(KEY_ZOOM, val);
+            if(a.key.keysym.sym == SDLK_PAGEUP) i->setkey(KEY_PA1, val);
+            if(a.key.keysym.sym == SDLK_CLEAR) i->setkey(KEY_OEM_CLEAR, val);
         }
     }
 }

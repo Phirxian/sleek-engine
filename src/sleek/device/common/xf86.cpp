@@ -109,6 +109,7 @@ namespace sleek
             glFlush();
             Device::end();
             reading = false;
+            glXSwapBuffers((Display*)getInfo().display, *(Window*)getInfo().window);
         }
 
         void Device_xf86::keymap(XEvent a, input *i, bool val)

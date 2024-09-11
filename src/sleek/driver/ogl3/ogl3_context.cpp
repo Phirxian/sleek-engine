@@ -9,6 +9,10 @@
 #include "ogl3_shader.h"
 #include <string.h>
 
+#ifdef glfw3_device_support
+#include <GLFW/glfw3.h>
+#endif
+
 namespace sleek
 {
     namespace driver
@@ -125,7 +129,7 @@ namespace sleek
 
         ogl3_context::~ogl3_context() noexcept
         {
-            if(win->getType() != device::DWM_SDL)
+            if(win->getType() != device::DWM_SDL && win->getType() != device::DWM_GLFW3)
             {
                 #if defined __linux
                     glXDestroyContext((Display*)win->getInfo().display, cx);
@@ -265,6 +269,11 @@ namespace sleek
 
         bool ogl3_context::checkExtension(const char *name) noexcept
         {
+            #ifdef glfw3_device_support
+            if(win->getType() == device::DWM_GLFW3)
+                return glfwExtensionSupported(name);
+            #endif
+
             const GLubyte *extensions = NULL;
             const GLubyte *debut;
             GLubyte *place, *fin;
@@ -366,16 +375,6 @@ namespace sleek
             testError(__LINE__, __FILE__);
             glPopMatrix();
             glFlush();
-
-            if(win->getType() != device::DWM_SDL)
-            {
-                #if defined __linux
-                    glXSwapBuffers((Display*)win->getInfo().display, *(Window*)win->getInfo().window);
-                #elif defined WIN32 || WIN64
-                    SwapBuffers(dc);
-                #endif
-            }
-
             glDisable(GL_TEXTURE_2D);
         }
     }

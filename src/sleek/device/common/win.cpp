@@ -157,6 +157,7 @@ namespace sleek
         void Device_win::end()
         {
             Device::end();
+            SwapBuffers(dc);
         }
     }
 }

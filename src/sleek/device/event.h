@@ -28,6 +28,8 @@ namespace sleek
                 virtual void force(input*) noexcept;
                 virtual bool manage(input*) noexcept;
                 virtual void exit() noexcept;
+
+                inline bool running() { return asRunning; }
             protected:
                 void kill() noexcept;
                 void reset() noexcept;
@@ -54,6 +56,12 @@ namespace sleek
             bool mouse[MOUSE_CODE_COUNT];
             bool key[KEY_KEY_CODES_COUNT];
             bool key_state[KEY_KEY_CODES_COUNT];
+
+            inline void setkey(int k, bool val)
+            {
+                key_state[k] = val;
+                key[k] = true;
+            };
 
             struct
             {
