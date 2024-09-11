@@ -220,9 +220,9 @@ namespace sleek
                 i->type = EVENT_NOTHINK;
 
             /** mouse event **/
-            if(a.button.button == SDL_BUTTON_LEFT) { i->mouse[MOUSE_LEFT] = true; setkey(KEY_LBUTTON); }
-            if(a.button.button == SDL_BUTTON_MIDDLE) { i->mouse[MOUSE_MIDDLE] = true; setkey(KEY_MBUTTON); }
-            if(a.button.button == SDL_BUTTON_RIGHT) { i->mouse[MOUSE_RIGHT] = true; setkey(KEY_RBUTTON); }
+            if(a.button.button == SDL_BUTTON_LEFT) { i->mouse[MOUSE_LEFT] = true; val = true; setkey(KEY_LBUTTON); }
+            if(a.button.button == SDL_BUTTON_MIDDLE) { i->mouse[MOUSE_MIDDLE] = true; val = true; setkey(KEY_MBUTTON); }
+            if(a.button.button == SDL_BUTTON_RIGHT) { i->mouse[MOUSE_RIGHT] = true; val = true; setkey(KEY_RBUTTON); }
             /** key event **/
 //                if(a.key.keysym.sym == SDLK_C) setkey(KEY_CANCEL);
 //                if(a.key.keysym.sym == SDLK_) setkey(KEY_XBUTTON1);

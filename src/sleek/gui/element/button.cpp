@@ -36,30 +36,40 @@ namespace sleek
                 return true;
             }
 
-/*
-            if(e->type == device::EVENT_MOUSSE_MOVED)
-                hovored = box.intersect(e->mouse_pos);
-
-            if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && hovored)
-                pushed = true;
-*/
-
             hovored = box.intersect(e->mouse_pos);
 
             if(e->type == device::EVENT_MOUSSE_UP && e->mouse[device::MOUSE_LEFT])
             {
                 if(hovored && pushed)
                 {
+                    mom->setActiveFrame(this);
                     pushed = false;
                     e->gui.called = this;
                     e->gui.code = gui::IET_BUTTON_CLICKED;
                     return true;
                 }
+                
                 pushed = false;
             }
 
             pushed = e->key_state[device::KEY_LBUTTON] && hovored;
+
+            // Handle key events for active frame
+            if (mom->getActiveFrame() == this)
+            {
+                pushed = e->key_state[device::KEY_SPACE];
+                std::cout << this << " " << pushed << std::endl;
+
+                if (e->type == device::EVENT_KEY_UP && e->key[device::KEY_SPACE])
+                {
+                    pushed = false;
+                    e->gui.called = this;
+                    e->gui.code = gui::IET_BUTTON_CLICKED;
+                    return true;
+                }
+            }
             
+            // Notify about state changes
             if(CPushed != pushed && pushed)
             {
                 e->gui.called = this;
@@ -83,9 +93,9 @@ namespace sleek
         {
             if(!show) return;
 
-            if(hovored && pushed)
+            if(pushed)
                 mom->getTheme()->drawButtonPushed(this);
-            else if(hovored && !pushed)
+            else if(hovored)
                 mom->getTheme()->drawButtonHovored(this);
             else
                 mom->getTheme()->drawButton(this);

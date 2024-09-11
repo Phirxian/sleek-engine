@@ -29,6 +29,16 @@ namespace sleek
             DWM_WIN,
             DWM_COUNT
         };
+
+        static const char* DeviceWindowManagerName[] = {
+            "DWM_AUTO",
+            "DWM_SDL",
+            "DWM_X11",
+            "DWM_XF86",
+            "DWM_GLFW3",
+            "DWM_WIN",
+        };
+
         class Device : public std::enable_shared_from_this<Device>
         {
             public:

@@ -11,6 +11,7 @@ namespace sleek
         Node::Node(Scene *m) noexcept
             : smgr(m), reference(), enabled(true)
         {
+            mat = std::make_shared<driver::material>();
             rot = math::vec3f(0, 0, 0);
             sca = math::vec3f(1, 1, 1);
         }

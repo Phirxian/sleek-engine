@@ -334,9 +334,9 @@ namespace sleek
                 i->key[k] = true;
             };
 
-            if(a.xbutton.button == Button1) { i->mouse[MOUSE_LEFT] = true;   setkey(KEY_LBUTTON); }
-            if(a.xbutton.button == Button2) { i->mouse[MOUSE_MIDDLE] = true; setkey(KEY_MBUTTON); }
-            if(a.xbutton.button == Button3) { i->mouse[MOUSE_RIGHT] = true;  setkey(KEY_RBUTTON); }
+            if(a.xbutton.button == Button1) { i->mouse[MOUSE_LEFT] = true; val=true; setkey(KEY_LBUTTON); }
+            if(a.xbutton.button == Button2) { i->mouse[MOUSE_MIDDLE] = true; val=true; setkey(KEY_MBUTTON); }
+            if(a.xbutton.button == Button3) { i->mouse[MOUSE_RIGHT] = true;  val=true; setkey(KEY_RBUTTON); }
             if(a.xbutton.button == Button4) { i->mouse[MOUSE_WHEEL_UP] = true;   }
             if(a.xbutton.button == Button5) { i->mouse[MOUSE_WHEEL_DOWN] = true; }
 

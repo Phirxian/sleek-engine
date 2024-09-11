@@ -360,6 +360,9 @@ namespace sleek
 
         void ogl3_driver::drawTexture(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec2f uv, const math::pixel clr) const noexcept
         {
+            if(!tex->getIdentifier())
+                return;
+                
             ObjectRenderBegin();
                 beginTo2D();
                     glEnable(GL_TEXTURE_2D);
@@ -383,6 +386,9 @@ namespace sleek
 
         void ogl3_driver::drawTexture(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec2f uv, const math::pixel clr) const noexcept
         {
+            if(!tex->getIdentifier())
+                return;
+                
             ObjectRenderBegin();
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);
@@ -404,6 +410,9 @@ namespace sleek
 
         void ogl3_driver::drawTextureScale(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec3f scl, const math::vec2f uv, const math::pixel clr) const noexcept
         {
+            if(!tex->getIdentifier())
+                return;
+                
             ObjectRenderBegin();
                 beginTo2D();
                     glEnable(GL_TEXTURE_2D);
@@ -427,6 +436,9 @@ namespace sleek
 
         void ogl3_driver::drawTextureScale(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec3f scl, const math::vec2f uv, const math::pixel clr) const noexcept
         {
+            if(!tex->getIdentifier())
+                return;
+                
             ObjectRenderBegin();
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);
@@ -448,6 +460,9 @@ namespace sleek
 
         void ogl3_driver::drawTextureCenter(texture *tex, const math::vec2i pos, const math::vec3f rot, const math::vec2f uv, const math::pixel clr) const noexcept
         {
+            if(!tex->getIdentifier())
+                return;
+                
             ObjectRenderBegin();
                 beginTo2D();
                     glEnable(GL_TEXTURE_2D);
@@ -471,6 +486,9 @@ namespace sleek
 
         void ogl3_driver::drawTextureCenter(texture *tex, const math::vec3f pos, const math::vec3f rot, const math::vec2f uv, const math::pixel clr) const noexcept
         {
+            if(!tex->getIdentifier())
+                return;
+                
             ObjectRenderBegin();
                 glEnable(GL_TEXTURE_2D);
                 glActiveTexture(GL_TEXTURE0_ARB);

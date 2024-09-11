@@ -72,11 +72,36 @@ namespace sleek
                 {
                     if(e->gui.called == check.get())
                     {
+                        mom->setActiveFrame(this);
                         setChecked(!getChecked());
                         e->gui.called = this;
                         e->gui.code = gui::IET_CHECKBOX_CHANGED;
                         return true;
                     }
+                }
+            }
+
+            // override inner button setActiveFrame
+            if (e->type == device::EVENT_MOUSSE_UP && e->mouse[device::MOUSE_LEFT])
+            {
+                if(box.intersect(e->mouse_pos))
+                {
+                    mom->setActiveFrame(this);
+                    setChecked(!getChecked());
+                    e->gui.called = this;
+                    e->gui.code = gui::IET_CHECKBOX_CHANGED;
+                    return true;
+                }
+            }
+
+            if (mom->getActiveFrame() == this)
+            {
+                if (e->type == device::EVENT_KEY_UP && e->key[device::KEY_SPACE])
+                {
+                    setChecked(!getChecked());
+                    e->gui.called = this;
+                    e->gui.code = gui::IET_CHECKBOX_CHANGED;
+                    return true;
                 }
             }
 

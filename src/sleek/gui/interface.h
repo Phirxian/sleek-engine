@@ -41,6 +41,10 @@ namespace sleek
                 std::shared_ptr<statictext>  addStaticText(const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
                 std::shared_ptr<window>      addWindow(const std::wstring &text = L"", const math::aabbox2di &pos = math::aabbox2di()) noexcept;
 
+                // last clicked & clickable element
+                void setActiveFrame(frame*) noexcept;
+                frame* getActiveFrame() noexcept;
+
                 void setTheme(std::shared_ptr<theme>) noexcept;
                 void addCustomFrame(std::shared_ptr<frame>) noexcept;
                 void unActiveElement() noexcept;
@@ -65,6 +69,7 @@ namespace sleek
 
                 void render() noexcept;
             protected:
+                frame *active;
                 std::vector<std::shared_ptr<frame>> gui;
                 std::shared_ptr<device::Device> screen;
                 std::shared_ptr<driver::driver> mom;

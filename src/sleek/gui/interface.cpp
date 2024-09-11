@@ -173,6 +173,11 @@ namespace sleek
 
             cr->manage(a);
 
+            // disable current if no event was captured before
+            // might be override later
+            if (a->type == device::EVENT_MOUSSE_UP && a->mouse[device::MOUSE_LEFT])
+                setActiveFrame(nullptr);
+
             for(u32 i = 0; i<gui.size(); ++i)
             {
                 if(gui[gui.size()-i-1]->manage(a))
@@ -182,7 +187,21 @@ namespace sleek
                 }
             }
 
+            // active element might capture the event
+            if (active && active->manage(a))
+                return true;
+
             return false;
+        }
+
+        void interface::setActiveFrame(frame *_active) noexcept
+        {
+            active = _active;
+        }
+
+        frame* interface::getActiveFrame() noexcept
+        {
+            return active;
         }
 
         void interface::popFrame(std::shared_ptr<frame> i) noexcept

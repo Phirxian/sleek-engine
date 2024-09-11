@@ -111,6 +111,10 @@ namespace sleek
             if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && til.intersect(e->mouse_pos))
                 isMoved = true;
 
+            if (e->type == device::EVENT_MOUSSE_UP && e->mouse[device::MOUSE_LEFT])
+                if(til.intersect(e->mouse_pos))
+                    mom->setActiveFrame(this);
+
             if(e->type == device::EVENT_MOUSSE_DOWN && e->mouse[device::MOUSE_LEFT] && window_box.intersect(e->mouse_pos))
             {
                 mom->unActiveElement();

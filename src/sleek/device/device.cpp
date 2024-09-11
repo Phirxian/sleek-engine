@@ -67,6 +67,9 @@ namespace sleek
             printf("=========================================================================\n");
             printf("\t\t\t\tSleekThink %s\n", version);
             printf("=========================================================================\n");
+
+            printf("backend: %s\n", DeviceWindowManagerName[getType()]);
+
             #if defined __linux
                 std::string linuxversion;
                 struct utsname LinuxInfo; uname(&LinuxInfo);
