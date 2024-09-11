@@ -157,6 +157,36 @@ void Simulation::resolveCollisionWithPlatform(Particle &particle, const StaticPl
     }
 }
 
+void Simulation::resolveCollisionWithStatics(Particle *particle)
+{
+    // Boundary checks
+    if(particle->position.x - particle->size < 0)
+    {
+        particle->position.x = particle->size;
+        particle->velocity.x = -particle->velocity.x * 0.5f; // Dampen the bounce
+    }
+    else if(particle->position.x + particle->size > SCREEN_WIDTH)
+    {
+        particle->position.x = SCREEN_WIDTH - particle->size;
+        particle->velocity.x = -particle->velocity.x * 0.5f; // Dampen the bounce
+    }
+
+    if(particle->position.y - particle->size < 0)
+    {
+        particle->position.y = particle->size;
+        particle->velocity.y = GRAVITY;
+    }
+    else if(particle->position.y + particle->size > SCREEN_HEIGHT)
+    {
+        particle->position.y = SCREEN_HEIGHT - particle->size;
+        particle->velocity.y = -particle->velocity.y * 0.5f; // Dampen the bounce
+    }
+
+    for(const auto &platform: platforms)
+        if(checkCollisionWithPlatform(*particle, platform))
+            resolveCollisionWithPlatform(*particle, platform);
+}
+
 void Simulation::updateFixed(float timeStep, int iterations)
 {
     index->buildIndex();
@@ -169,33 +199,7 @@ void Simulation::updateFixed(float timeStep, int iterations)
         {
             auto &particle = particles[i];
             particle->update(timeStep / iterations);
-
-            // Boundary checks
-            if(particle->position.x - particle->size < 0)
-            {
-                particle->position.x = particle->size;
-                particle->velocity.x = -particle->velocity.x * 0.5f; // Dampen the bounce
-            }
-            else if(particle->position.x + particle->size > SCREEN_WIDTH)
-            {
-                particle->position.x = SCREEN_WIDTH - particle->size;
-                particle->velocity.x = -particle->velocity.x * 0.5f; // Dampen the bounce
-            }
-
-            if(particle->position.y - particle->size < 0)
-            {
-                particle->position.y = particle->size;
-                particle->velocity.y = GRAVITY;
-            }
-            else if(particle->position.y + particle->size > SCREEN_HEIGHT)
-            {
-                particle->position.y = SCREEN_HEIGHT - particle->size;
-                particle->velocity.y = -particle->velocity.y * 0.5f; // Dampen the bounce
-            }
-
-            for(const auto &platform: platforms)
-                if(checkCollisionWithPlatform(*particle, platform))
-                    resolveCollisionWithPlatform(*particle, platform);
+            resolveCollisionWithStatics(particle);
         }
 
         if(grabbedParticle)
@@ -228,9 +232,12 @@ void Simulation::updateFixed(float timeStep, int iterations)
 
         // interpolateState(1.0f/iterations);
     }
+
+    for(int i = 0; i < particles.size(); ++i)
+        resolveCollisionWithStatics(particles[i]);
 }
 
-void Simulation::resolveCollision(Particle &particle, Particle &neighbor)
+void Simulation::resolveCollision(Particle &particle, Particle &neighbor, float alpha)
 {
     glm::vec2 diff = particle.position - neighbor.position;
     float dist = glm::length(diff);
@@ -242,10 +249,10 @@ void Simulation::resolveCollision(Particle &particle, Particle &neighbor)
 
         // Separate particles
         if(!particle.isResting)
-            particle.position += normal * overlap * 0.5f;
+            particle.position += normal * overlap * 0.5f * alpha;
 
         if(!neighbor.isResting)
-            neighbor.position -= normal * overlap * 0.5f;
+            neighbor.position -= normal * overlap * 0.5f * alpha;
 
         // Resolve collision
         glm::vec2 relativeVelocity = particle.velocity - neighbor.velocity;

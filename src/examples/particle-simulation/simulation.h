@@ -56,6 +56,7 @@ class Simulation
         void addStaticPlatform(glm::vec2 position, glm::vec2 size);
         bool checkCollisionWithPlatform(Particle &particle, const StaticPlatform &platform);
         void resolveCollisionWithPlatform(Particle &particle, const StaticPlatform &platform);
+        void resolveCollisionWithStatics(Particle*);
 
         void handleMouseDown(int x, int y);
         void handleMouseMove(int x, int y);
@@ -66,7 +67,7 @@ class Simulation
         void update(float dt, int iteration = 3);
         void updateFixed(float timeStep, int iterations);
 
-        void resolveCollision(Particle &particle, Particle &neighbor);
+        void resolveCollision(Particle &particle, Particle &neighbor, float alpha = 1.f);
         void interpolateState(float alpha);
 
         void render(std::shared_ptr<sleek::driver::driver> renderer);

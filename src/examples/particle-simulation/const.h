@@ -7,3 +7,4 @@ const float GRAVITY = 9.81f;
 const float VELOCITY_THRESHOLD = 98.f;
 const float DAMPING_FACTOR = 0.98f;
 const float GRAB_RADIUS = MAX_PARTICLE_RADIUS*2;
+const float RESTING_TIMEOUT = 100.0f;
