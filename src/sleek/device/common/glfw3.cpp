@@ -259,6 +259,12 @@ namespace sleek
             auto evt = win->getEventReceiver();
             auto i = win->getCurrentEvent();
 
+            auto newsize = math::vec2i(width, height);
+            if(newsize.x > 0 || newsize.y > 0)
+                win->setVideoSize(newsize);
+
+            i->type = EVENT_WINDOW_RESIZE;
+
             evt->manage(i);
             if(!evt->running())
                 win->exit();
