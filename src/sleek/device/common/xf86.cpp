@@ -127,9 +127,9 @@ namespace sleek
             else if(a.type == MotionNotify) i->type = EVENT_MOUSSE_MOVED;
             else i->type = EVENT_NOTHINK;
             /** mouse event **/
-            if(a.xbutton.button == Button1) { i->mouse[MOUSE_LEFT] = true; setkey(KEY_LBUTTON); }
-            if(a.xbutton.button == Button2) { i->mouse[MOUSE_MIDDLE] = true; setkey(KEY_MBUTTON); }
-            if(a.xbutton.button == Button3) { i->mouse[MOUSE_RIGHT] = true; setkey(KEY_RBUTTON); }
+            if(a.xbutton.button == Button1) { i->mouse[MOUSE_LEFT] = true; val=true; setkey(KEY_LBUTTON); }
+            if(a.xbutton.button == Button2) { i->mouse[MOUSE_MIDDLE] = true; val=true; setkey(KEY_MBUTTON); }
+            if(a.xbutton.button == Button3) { i->mouse[MOUSE_RIGHT] = true; val=true; setkey(KEY_RBUTTON); }
             current->mouse_pos.width = xev.xbutton.x; current->mouse_pos.height = xev.xbutton.y;
             int xkey = XLookupKeysym(&xev.xkey, 0);
             /** key event **/

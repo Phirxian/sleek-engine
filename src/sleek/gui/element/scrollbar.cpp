@@ -155,14 +155,59 @@ namespace sleek
                 }
             }
 
-            if(e->type == device::EVENT_MOUSSE_MOVED)
+            if (mom->getActiveFrame() == this && e->type == device::EVENT_KEY_UP)
+            {
+                if(orient == SBO_HORIZONTAL)
+                {
+                    if (e->key[device::KEY_LEFT])
+                    {
+                        setPercentage(getPercentage()-getStep()/100.f);
+                        e->gui.called = this;
+                        e->gui.code = gui::IET_SCROLLBAR_UPDATED;
+                        return true;
+                    }
+                    if (e->key[device::KEY_RIGHT])
+                    {
+                        setPercentage(getPercentage()+getStep()/100.f);
+                        e->gui.called = this;
+                        e->gui.code = gui::IET_SCROLLBAR_UPDATED;
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (e->key[device::KEY_UP])
+                    {
+                        setPercentage(getPercentage()-getStep()/100.f);
+                        e->gui.called = this;
+                        e->gui.code = gui::IET_SCROLLBAR_UPDATED;
+                        return true;
+                    }
+                    if (e->key[device::KEY_DOWN])
+                    {
+                        setPercentage(getPercentage()+getStep()/100.f);
+                        e->gui.called = this;
+                        e->gui.code = gui::IET_SCROLLBAR_UPDATED;
+                        return true;
+                    }
+                }
+            }
+
+            if (e->type == device::EVENT_MOUSSE_MOVED)
                 isHovored = box.intersect(e->mouse_pos);
 
-            if(e->type == device::EVENT_MOUSSE_DOWN)
+            if (e->type == device::EVENT_MOUSSE_DOWN)
                 isLeftDown = isHovored;
 
-            if(e->type == device::EVENT_MOUSSE_UP)
+            if (e->type == device::EVENT_MOUSSE_UP)
+            {
                 isLeftDown = false;
+                if(box.intersect(e->mouse_pos))
+                {
+                    mom->setActiveFrame(this);
+                    return true;
+                }
+            }
 
             if(CHovored != isHovored)
             {

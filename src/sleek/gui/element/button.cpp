@@ -58,7 +58,6 @@ namespace sleek
             if (mom->getActiveFrame() == this)
             {
                 pushed = e->key_state[device::KEY_SPACE];
-                std::cout << this << " " << pushed << std::endl;
 
                 if (e->type == device::EVENT_KEY_UP && e->key[device::KEY_SPACE])
                 {
