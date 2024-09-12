@@ -1,6 +1,7 @@
 #include "../material.h"
 #include "ogl3_shader.h"
 #include <stdlib.h>
+#include <iostream>
 #include <cstring>
 
 #define GL_GEOMETRY_SHADER          0x8DD9
@@ -9,6 +10,7 @@
 #define GL_COMPUTE_SHADER           0x91B9
 
 unsigned int ogl3_shader_type[] = {
+    0,
     GL_FRAGMENT_SHADER,
     GL_VERTEX_SHADER,
     GL_GEOMETRY_SHADER,
@@ -23,7 +25,7 @@ namespace sleek
     namespace driver
     {
         template<>
-        ogl3_shader<false>::ogl3_shader() noexcept : shader(), compiled(GL_FALSE), enabled(0)
+        ogl3_shader<false>::ogl3_shader() noexcept : shader(), enabled(0)
         {
             if(!(prog = glCreateProgram()))
                 printf("Can't creat shader programme\n");
@@ -31,7 +33,7 @@ namespace sleek
         }
 
         template<>
-        ogl3_shader<true>::ogl3_shader() noexcept : shader(), compiled(GL_FALSE), enabled(0)
+        ogl3_shader<true>::ogl3_shader() noexcept : shader(), enabled(0)
         {
             if(!(prog = glCreateProgram()))
                 printf("Can't creat shader programme\n");
@@ -70,20 +72,22 @@ namespace sleek
             GLint lenght = data.size();
             const char *tmp = data.c_str();
 
-            if((~enabled >> i) & 1 && !glIsShader(shaders[i]))
+            if((~enabled >> i) && !glIsShader(shaders[i]))
             {
                 shaders[i] = glCreateShader(ogl3_shader_type[i]);
+
                 if(!shaders[i])
                     printf("Can't create %s shader\n", shader_type_name[i]);
+                else
+                    printf("Create %s shader\n", shader_type_name[i]);
+
+                glAttachShader(prog, shaders[i]);
             }
 
             glShaderSource(shaders[i], 1, (const GLchar**)&tmp, &lenght);
 
-            if((~enabled >> i) & 1)
-                glAttachShader(prog, shaders[i]);
-
             enabled |= 1 << i;
-            source[i] = data;
+            source[i-1] = data;
         }
 
         template<bool dsa>
@@ -94,69 +98,75 @@ namespace sleek
             glDeleteShader(shaders[i]);
         }
 
-        template<bool dsa>
-        void ogl3_shader<dsa>::compileShader() noexcept
+        bool checkCompileErrors(unsigned int shader, const std::string &type)
         {
-            compiled = GL_TRUE;
+            int success;
+            char infoLog[512];
 
+            if (type!= "PROGRAM")
+            {
+                glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+                if (!success)
+                {
+                    glGetShaderInfoLog(shader, 512, NULL, infoLog);
+                    std::cerr << "ERROR::SHADER_COMPILATION_ERROR of type: "
+                    << type << "\n"
+                    << infoLog << "\n" << std::endl;
+                }
+            }
+            else
+            {
+                glGetProgramiv(shader, GL_LINK_STATUS, &success);
+                if (!success)
+                {
+                    glGetProgramInfoLog(shader, 512, NULL, infoLog);
+                    std::cerr << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n"
+                    << infoLog << std::endl;
+                }
+            }
+
+            return success;
+        }
+
+        template<bool dsa>
+        bool ogl3_shader<dsa>::compileShader() noexcept
+        {
             for(int i = 0; i<shd_count; ++i)
             {
                 if((enabled >> i) & 0x1)
                 {
                     glCompileShader(shaders[i]);
                     glGetShaderiv(shaders[i], GL_COMPILE_STATUS, &compiled);
-                    if(compiled != GL_TRUE)
+                    if(!checkCompileErrors(shaders[i], shader_type_name[i]))
                     {
-                        #ifdef __linux
-                            GLsizei logsize = 1024;
-                            char *log = NULL;
-                            log = new char[logsize];
-                            glGetShaderInfoLog(shaders[i], logsize, &logsize, log);
-                            printf("%s\n", log);
-                            delete[] log;
-                        #endif
+                        std::cerr << source[i-1] << std::endl;
+                        return false;
                     }
                 }
             }
 
-            LinkAndValidate();
+            return LinkAndValidate();
         }
+        
 
         template<bool dsa>
-        void ogl3_shader<dsa>::LinkAndValidate() noexcept
+        bool ogl3_shader<dsa>::LinkAndValidate() noexcept
         {
             glLinkProgram(prog);
             glGetProgramiv(prog, GL_LINK_STATUS, &compiled);
-            if(compiled != GL_TRUE)
+            bool sucess = checkCompileErrors(prog, "PROGRAM");
+            if(!sucess)
             {
-                #ifdef __linux
-                    char *log = NULL;
-                    GLsizei logsize = 1024;
-                    log = new char[logsize];
-                    memset(log, '\0', logsize);
-                    glGetInfoLogARB(prog, logsize, &logsize, log);
-                    printf("%s\n", log);
-                    delete[] log;
-                #endif
-            }
-            else
-            {
-                glValidateProgram(prog);
-                glGetProgramiv(prog, GL_VALIDATE_STATUS, &compiled);
-                if(compiled != GL_TRUE)
+                for(int i = 0; i<shd_count; ++i)
                 {
-                    #ifdef __linux
-                        char *log = NULL;
-                        GLsizei logsize = 1024;
-                        log = new char[logsize];
-                        memset(log, '\0', logsize);
-                        glGetInfoLogARB(prog, logsize, &logsize, log);
-                        printf("%s\n", log);
-                        delete[] log;
-                    #endif
+                    if((enabled >> i) & 0x1)
+                    {
+                        std::cerr << source[i-1] << std::endl;
+                        return false;
+                    }
                 }
-
             }
+            return sucess;
         }
 
         template<bool dsa>

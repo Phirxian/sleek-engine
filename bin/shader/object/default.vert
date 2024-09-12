@@ -1,4 +1,4 @@
-#version 430 core
+#version 430
 
 layout (location = 0) in vec3 iposition;
 layout (location = 1) in vec3 inormal;
@@ -17,9 +17,8 @@ out vec2 uv;
 void main()
 {
     N = mat3(transpose(inverse(model))) * inormal;
-    C = icolor/255.f;
+    C = icolor / 255.0f;
     uv = icoord;
     P = model * vec4(iposition, 1.0f);
-
     gl_Position = projection * view * P;
 }

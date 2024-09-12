@@ -1,5 +1,7 @@
 #include "GLTool.h"
 
+#include <iostream>
+
 void glRotatef(GLfloat x, GLfloat y, GLfloat z)
 {
     glRotatef(x,1,0,0);
@@ -85,4 +87,16 @@ const char* GLErrorString(GLenum errorCode)
             return errors[i].string;
 
     return nullptr;
+}
+
+
+bool glCheckError_(int line, const std::string &file) noexcept
+{
+    GLenum er;
+
+    while((er = glGetError()) != GL_NO_ERROR)
+        // SOURCE_PATH_SIZE
+        std::cerr << file << ":" << line << " >> GL: " << GLErrorString(er) << std::endl;
+
+    return er != GL_NO_ERROR;
 }

@@ -6,6 +6,8 @@
 #include "../sleek/loader/ressource.h"
 #include "../sleek/gui/interface.h"
 #include "../sleek/math/math.h"
+#include <thread>
+#include <chrono>
 #include <map>
 
 class Core;
@@ -22,6 +24,8 @@ class SpaceShooterState : public sleek::device::event
             sleek::driver::shader_callback callback,
             int tid
         ) noexcept;
+
+        std::string loadShaderCode(const std::string& filename);
 
         static void material_callback(sleek::driver::shader *i) noexcept
         {
@@ -50,6 +54,7 @@ class SpaceShooterState : public sleek::device::event
         sleek::scene3d::Scene *smgr;
         
         std::vector<std::shared_ptr<sleek::driver::texture>> textures;
+        std::map<std::string, std::string> shaders_cache;
         
         sleek::math::timer tm;
         Core *core;

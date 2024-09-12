@@ -121,6 +121,7 @@ namespace sleek
         {
             glPushMatrix();
             //glLoadIdentity();
+            ctx->testError(-1, "ObjectRenderBegin");
             if(mat && mat->effect)
                 mat->effect->update();
             ctx->testError(-1, "shader_callback");
@@ -516,9 +517,11 @@ namespace sleek
 
             ObjectRenderBegin();
                 glColor4f(1.f, 1.f, 1.f, 1.f);
+                /*
                 glTranslatef(pos.x,pos.y,pos.z);
                 glRotatef(rot.x,rot.y,rot.z);
                 glScalef(mat->getScale().x,mat->getScale().y,mat->getScale().z);
+                */
 
                 ctx->testError(__LINE__, __FILE__);
 
@@ -568,13 +571,11 @@ namespace sleek
                 if (mat->effect)
                     mat->effect->unbind();
 
-                int start = i ? i->Texture.size() : 0;
-
-                for (int stage = start; stage < mat->Texture.size(); ++stage)
+                for (int unit = 0; unit < mat->Texture.size(); ++unit)
                 {
-                    glActiveTexture(GL_TEXTURE0_ARB + stage);
-                    if (mat->Texture[stage])
-                        mat->Texture[stage]->unbind();
+                    glActiveTextureARB(GL_TEXTURE0_ARB + unit);
+                    if (mat->Texture[unit])
+                        mat->Texture[unit]->unbind();
                 }
             }
 
@@ -634,32 +635,14 @@ namespace sleek
                 }
                 else
                 {
-                    int stage = 0;
-                    if (mat)
-                    {
-                        int end = std::min(mat->Texture.size(), i->Texture.size());
-                        for (; stage < end; ++stage)
-                        {
-                            if (i->Texture[stage] == mat->Texture[stage])
-                                continue;
-
-                            glActiveTexture(GL_TEXTURE0_ARB + stage);
-
-                            if (i->Texture[stage])
-                                i->Texture[stage]->bind();
-
-                            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_ADD);
-                        }
-                    }
-
                     ctx->testError(__LINE__, __FILE__);
 
-                    for (; stage < i->Texture.size(); ++stage)
+                    for (unsigned unit = 0; unit < i->Texture.size(); ++unit)
                     {
-                        glActiveTexture(GL_TEXTURE0_ARB + stage);
+                        glActiveTexture(GL_TEXTURE0_ARB + unit);
 
-                        if (i->Texture[stage])
-                            i->Texture[stage]->bind();
+                        if (i->Texture[unit])
+                            i->Texture[unit]->bind();
 
                         glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_ADD);
                     }

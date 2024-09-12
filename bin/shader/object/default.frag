@@ -1,4 +1,4 @@
-#version 430 core
+#version 430
 
 in vec4 P; // position
 in vec4 C; // color

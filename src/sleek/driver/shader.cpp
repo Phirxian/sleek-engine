@@ -27,8 +27,9 @@ namespace sleek
             return link;
         }
 
-        void shader::compileShader() noexcept
+        bool shader::compileShader() noexcept
         {
+            return false;
         }
 
         std::string shader::getShader(const shader_type i) const noexcept

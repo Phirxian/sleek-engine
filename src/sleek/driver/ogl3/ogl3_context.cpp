@@ -318,23 +318,7 @@ namespace sleek
 
         bool ogl3_context::testError(int line, const std::string &file) const noexcept
         {
-            GLenum er;
-
-            while((er = glGetError()) != GL_NO_ERROR)
-                // SOURCE_PATH_SIZE
-                std::cerr << file << ":" << line << " >> GL: " << GLErrorString(er) << std::endl;
-
-            return er != GL_NO_ERROR;
-        }
-
-        bool ogl3_context::testError() const noexcept
-        {
-            GLenum er;
-
-            while((er = glGetError()) != GL_NO_ERROR)
-                std::cerr << "GL:" << GLErrorString(er) << std::endl;
-
-            return er != GL_NO_ERROR;
+            return glCheckError_(line, file);
         }
 
         bool ogl3_context::bind() noexcept
@@ -376,10 +360,10 @@ namespace sleek
 
         void ogl3_context::end() noexcept
         {
-            testError(__LINE__, __FILE__);
             //glPopMatrix();
             glFlush();
             glDisable(GL_TEXTURE_2D);
+            testError(__LINE__, __FILE__);
         }
     }
 }

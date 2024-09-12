@@ -23,38 +23,78 @@ sleek::driver::context* SpaceShooterState::getContext() const noexcept
 {
     return core->getContext();
 }
-
 std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
     sleek::scene3d::Node *node, void *user,
     std::string filename_vert, std::string filename_frag,
     sleek::driver::shader_callback callback, int tid
 ) noexcept
 {
-    auto shade = core->getContext()->createShader();
     auto mat = std::make_shared<driver::material>();
-
     mat->setMode(driver::rmd_polygon);
     mat->setShadeModel(driver::rsd_flat);
-//        mat->setFaceCulling(driver::rfc_back);
     mat->setMaterialRender(driver::rmt_solid);
-    mat->setShader(shade);
 
     if(tid >= 0 && tid < textures.size() && textures[tid])
         mat->Texture.push_back(textures[tid]->getIdentifier().get());
 
-    auto vert = core->getFileSystem()->read(filename_vert);
-    auto frag = core->getFileSystem()->read(filename_frag);
+    // Load and cache shaders
+    std::string vertShaderCode = loadShaderCode(filename_vert);
+    std::string fragShaderCode = loadShaderCode(filename_frag);
 
-    shade->attacheShader(driver::shd_vert, vert->readAll(), "main");
-    shade->attacheShader(driver::shd_frag, frag->readAll(), "main");
-    // used to get information from material (like texture binding) by callback
+    if (vertShaderCode.empty() || fragShaderCode.empty())
+    {
+        std::cout << "Failed to load shader files." << std::endl;
+        return mat;
+    }
+
+    auto shade = core->getContext()->createShader();
+    shade->attacheShader(driver::shd_vert, vertShaderCode, "main_vertex");
+    shade->attacheShader(driver::shd_frag, fragShaderCode, "main_fragment");
+
+    // Set up shader user data
     shade->setLinkToMaterial(mat.get());
-    // used to get model view
     shade->user[0] = node;
     shade->user[1] = user;
 
-    shade->compileShader();
-    shade->setCallback(callback);
+    if (shade->compileShader())
+    {
+        mat->setShader(shade);
+        shade->setCallback(callback);
+    }
+    else
+    {
+        /*
+        std::cout << "Shader compilation failed." << std::endl;
+        std::cout << "Vertex Shader: " << filename_vert << std::endl;
+        std::cout << "Fragment Shader: " << filename_frag << std::endl;
+        std::cout << "--------------------" << std::endl;
+        std::cout << "Vertex Code: " << vertShaderCode << std::endl;
+        std::cout << "--------------------" << std::endl;
+        std::cout << "Fragment Code: " << fragShaderCode << std::endl;
+        std::cout << "--------------------" << std::endl;
+        */
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+    }
 
     return mat;
+}
+
+// Helper function to load and cache shader code
+std::string SpaceShooterState::loadShaderCode(const std::string& filename)
+{
+    auto it = shaders_cache.find(filename);
+    if (it!= shaders_cache.end())
+        return it->second;
+
+    auto shaderCode = core->getFileSystem()->read(filename)->readAll();
+
+    if (shaderCode.empty())
+    {
+        std::cout << "Failed to read shader file: " << filename << std::endl;
+        return "";
+    }
+
+    shaders_cache[filename] = shaderCode;
+
+    return shaderCode;
 }

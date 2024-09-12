@@ -61,7 +61,7 @@ Core::Core() noexcept
     scene = new Game(this);
     screen->setEventReceiver(this);
 
-    pp = new PostProcessing(this);
+    // pp = new PostProcessing(this);
 }
 
 Core::~Core() noexcept
@@ -113,7 +113,7 @@ bool Core::manage(sleek::device::input *a) noexcept
         }
     }
 
-    pp->manage(a);
+    // pp->manage(a);
 
     if(guienv->manage(a))
         return true;

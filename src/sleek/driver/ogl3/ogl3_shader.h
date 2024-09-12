@@ -18,7 +18,7 @@ namespace sleek
                 virtual void* getHardwareTarget() const noexcept { return (void*)GL_FRAGMENT_SHADER; }
                 virtual void* getHardwareLink() const noexcept;
 
-                virtual void compileShader() noexcept;
+                virtual bool compileShader() noexcept;
                 virtual void attacheShader(const shader_type, const std::string &prog, const std::string &main) noexcept;
                 virtual void detacheShader(const shader_type) noexcept;
 
@@ -52,12 +52,11 @@ namespace sleek
                 virtual void bind() noexcept;
                 virtual void unbind() noexcept;
             protected:
-                virtual void LinkAndValidate() noexcept;
+                virtual bool LinkAndValidate() noexcept;
             protected:
                 material *link;
                 GLuint shaders[shd_count], prog;
                 unsigned enabled;
-                int compiled;
         };
     }
 }

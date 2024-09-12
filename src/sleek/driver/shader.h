@@ -13,17 +13,18 @@ namespace sleek
     {
         enum shader_type
         {
-            shd_frag,
-            shd_vert,
-            shd_geom,
-            shd_tesc, // tesselation control
-            shd_tese, // tesselation eval
-            shd_comp, // compute shader
+            shd_frag = 1,
+            shd_vert = 2,
+            shd_geom = 3,
+            shd_tesc = 4, // tesselation control
+            shd_tese = 5, // tesselation eval
+            shd_comp = 6, // compute shader
             shd_count
         };
 
         static const char* shader_type_name[] =
         {
+            nullptr,
             "fragment",
             "vertex",
             "geometrie",
@@ -51,7 +52,7 @@ namespace sleek
 
                 virtual void* getHardwareLink() const noexcept = 0;
 
-                virtual void compileShader() noexcept = 0;
+                virtual bool compileShader() noexcept = 0;
                 virtual void attacheShader(const shader_type, const std::string &prog, const std::string &main) noexcept = 0;
                 virtual void detacheShader(const shader_type) noexcept = 0;
 

@@ -1,4 +1,4 @@
-#version 430 core
+#version 430
 
 in vec2 uv;
 in vec3 N;
