@@ -54,6 +54,7 @@ class SpaceShooterState : public sleek::device::event
         sleek::scene3d::Scene *smgr;
         
         std::vector<std::shared_ptr<sleek::driver::texture>> textures;
+        std::map<std::string, std::shared_ptr<sleek::driver::material>> material_cache;
         std::map<std::string, std::string> shaders_cache;
         
         sleek::math::timer tm;

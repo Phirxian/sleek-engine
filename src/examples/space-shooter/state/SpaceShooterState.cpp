@@ -29,6 +29,15 @@ std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
     sleek::driver::shader_callback callback, int tid
 ) noexcept
 {
+    std::string material_key;
+    material_key += filename_vert + "-";
+    material_key += filename_frag + "-";
+    material_key += tid;
+
+    auto it = material_cache.find(material_key);
+    if (it!= material_cache.end())
+        return it->second;
+
     auto mat = std::make_shared<driver::material>();
     mat->setMode(driver::rmd_polygon);
     mat->setShadeModel(driver::rsd_flat);
@@ -75,6 +84,8 @@ std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
         */
         std::this_thread::sleep_for(std::chrono::seconds(10));
     }
+
+    material_cache[material_key] = mat;
 
     return mat;
 }
