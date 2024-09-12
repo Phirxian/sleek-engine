@@ -1,6 +1,6 @@
 #include "ogl3_texture.h"
 #include <memory.h>
-//#include <GL/gl.h>
+#include <iostream>
 
 namespace sleek
 {
@@ -31,6 +31,9 @@ namespace sleek
         ogl3_texture<i>::~ogl3_texture() noexcept
         {
             glDeleteTextures(1, &gl);
+            int error = glGetError();
+            if (error!= GL_NO_ERROR)
+                std::cerr << "Error deleting Texture: " << error << std::endl;
         }
 
         template<bool i>

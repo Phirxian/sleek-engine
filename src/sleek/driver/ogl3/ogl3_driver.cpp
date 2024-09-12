@@ -119,7 +119,8 @@ namespace sleek
 
         void ogl3_driver::ObjectRenderBegin() const noexcept
         {
-            //glPushMatrix();
+            glPushMatrix();
+            //glLoadIdentity();
             if(mat && mat->effect)
                 mat->effect->update();
             ctx->testError(-1, "shader_callback");
@@ -128,7 +129,7 @@ namespace sleek
 
         void ogl3_driver::ObjectRenderEnd() const noexcept
         {
-            //glPopMatrix();
+            glPopMatrix();
         }
 
         void ogl3_driver::drawPixel(const math::vec2i pos, const math::pixel clr) const noexcept
@@ -510,6 +511,9 @@ namespace sleek
 
         void ogl3_driver::drawMesh(mesh *m, const math::vec3f pos, const math::vec3f rot) const noexcept
         {
+            if(!m || !mat)
+                return;
+
             ObjectRenderBegin();
                 glColor4f(1.f, 1.f, 1.f, 1.f);
                 glTranslatef(pos.x,pos.y,pos.z);
@@ -537,7 +541,9 @@ namespace sleek
                 glTexCoordPointer(2, GL_FLOAT, sizeof(math::vertex), vptr + offsetof(math::vertex, Coord));
                 glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(math::vertex), vptr + offsetof(math::vertex, Color));
 
+                ctx->testError(__LINE__, __FILE__);
                 glDrawElements(ogl3_render_mode[mat->getMode()], m->indices.size()*3, GL_UNSIGNED_INT, iptr);
+                ctx->testError(__LINE__, __FILE__);
 
                 glDisableClientState(GL_COLOR_ARRAY);
                 glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -563,6 +569,7 @@ namespace sleek
                     mat->effect->unbind();
 
                 int start = i ? i->Texture.size() : 0;
+
                 for (int stage = start; stage < mat->Texture.size(); ++stage)
                 {
                     glActiveTexture(GL_TEXTURE0_ARB + stage);
@@ -581,7 +588,7 @@ namespace sleek
                 _glState[bool(i->ant & ral_line)](GL_LINE_SMOOTH);
                 _glState[bool(i->mat & rmt_solid)](GL_DEPTH_TEST);
                 _glState[1](GL_BLEND);
-                _glState[bool(i->mat & rmt_lighting)](GL_LIGHTING);
+                // _glState[bool(i->mat & rmt_lighting)](GL_LIGHTING);
                 _glState[bool(i->mat & rmt_fog)](GL_FOG);
                 _glState[bool(i->fac != rfc_off)](GL_CULL_FACE);
 
@@ -595,6 +602,8 @@ namespace sleek
                     glLineWidth(i->psize);
                 }
 
+                ctx->testError(__LINE__, __FILE__);
+                
                 // Set polygon mode
                 glPolygonMode(GL_FRONT_AND_BACK, i->wire ? GL_LINE : GL_FILL);
 
@@ -606,27 +615,23 @@ namespace sleek
                 if (i->fac != rfc_off && (!mat || mat->fac != i->fac))
                     glCullFace(_cull[i->fac]);
 
-                switch (i->mat)
-                {
-                    case rmt_solid:
-                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        break;
-                    case rmt_add:
-                        glBlendFunc(GL_ONE, GL_ONE);
-                        break;
-                    case rmt_sub:
-                        glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
-                        break;
-                    default:
-                        glBlendFunc(GL_ONE, GL_ZERO);
-                        break;
-                }
+                if (i->mat == rmt_hard)
+                    glBlendFunc(GL_ONE, GL_ZERO);
+                else if (i->mat & rmt_add)
+                    glBlendFunc(GL_ONE, GL_ONE);
+                else if (i->mat & rmt_sub)
+                    glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
+                else
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
                 ctx->testError(__LINE__, __FILE__);
 
                 // Bind effect or textures of the new material
                 if (i->effect)
+                {
                     i->effect->bind();
+                    ctx->testError(__LINE__, __FILE__);
+                }
                 else
                 {
                     int stage = 0;
@@ -659,9 +664,6 @@ namespace sleek
                         glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_ADD);
                     }
                 }
-            }
-            else
-            {
             }
 
             ctx->testError(__LINE__, __FILE__);

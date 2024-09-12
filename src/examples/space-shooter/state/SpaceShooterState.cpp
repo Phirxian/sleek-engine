@@ -19,6 +19,11 @@ SpaceShooterState::~SpaceShooterState() noexcept
     smgr->clear();
 }
 
+sleek::driver::context* SpaceShooterState::getContext() const noexcept
+{
+    return core->getContext();
+}
+
 std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
     sleek::scene3d::Node *node, void *user,
     std::string filename_vert, std::string filename_frag,
@@ -34,8 +39,8 @@ std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
     mat->setMaterialRender(driver::rmt_solid);
     mat->setShader(shade);
 
-    if(tid >= 0 && tid < texture.size() && texture[tid])
-        mat->Texture.push_back(texture[tid]->getIdentifier().get());
+    if(tid >= 0 && tid < textures.size() && textures[tid])
+        mat->Texture.push_back(textures[tid]->getIdentifier().get());
 
     auto vert = core->getFileSystem()->read(filename_vert);
     auto frag = core->getFileSystem()->read(filename_frag);

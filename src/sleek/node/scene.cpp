@@ -27,22 +27,22 @@ namespace sleek
 
         void Scene::removeNode(std::shared_ptr<Node> t) noexcept
         {
-            for(auto i = nd.begin(); i != nd.end(); ++i)
-            {
-                if(*i == t)
-                {
-                    nd.erase(i);
-                    break;
+            auto it = std::find_if(
+                nd.begin(), nd.end(),
+                [t](const std::shared_ptr<Node>& node) {
+                    return node.get() == t.get();
                 }
-            }
+            );
+
+            if (it != nd.end())
+                nd.erase(it);
         }
 
         /* ***************************************** */
 
         void Scene::clear() noexcept
         {
-            while(nd.size())
-                removeNode(getNode(0));
+            nd.clear();
         }
 
         /* ***************************************** */

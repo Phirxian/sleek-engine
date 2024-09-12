@@ -321,7 +321,8 @@ namespace sleek
             GLenum er;
 
             while((er = glGetError()) != GL_NO_ERROR)
-                std::cerr << (file.c_str() + SOURCE_PATH_SIZE) << ":" << line << " >> GL: " << GLErrorString(er) << std::endl;
+                // SOURCE_PATH_SIZE
+                std::cerr << file << ":" << line << " >> GL: " << GLErrorString(er) << std::endl;
 
             return er != GL_NO_ERROR;
         }
@@ -359,6 +360,7 @@ namespace sleek
 
         void ogl3_context::begin(const math::pixel &color) noexcept
         {
+            testError(__LINE__, __FILE__);
             glClearColor((f32)(color.red/255.f),(f32)(color.green/255.f),(f32)(color.blue/255.f),(f32)(color.alpha/255.f));
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             //glPushMatrix();
@@ -369,6 +371,7 @@ namespace sleek
             glActiveTexture(GL_TEXTURE0_ARB);
             glColor4ub(255,255,255,255);
             testError(__LINE__, __FILE__);
+            glLoadIdentity();
         }
 
         void ogl3_context::end() noexcept

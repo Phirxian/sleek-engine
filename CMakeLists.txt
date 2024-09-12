@@ -41,6 +41,10 @@ add_definitions("-DGL_GLEXT_LEGACY")
 add_definitions("-DGLEW_STATICY")
 add_definitions("-DGL3_PROTOTYPES")
 add_definitions("-DGLX_GLXEXT_LEGACY")
+add_definitions("-DGLM_FORCE_PRECISION_MEDIUMP_FLOAT")
+add_definitions("-DGLM_FORCE_PRECISION_MEDIUMP_DOUBLE")
+add_definitions("-DGLM_FORCE_PRECISION_MEDIUMP_INT")
+add_definitions("-DGLM_FORCE_PRECISION_MEDIUMP_UINT")
 
 # Opengl
 find_package(Freetype REQUIRED)

@@ -1,13 +1,13 @@
 #pragma once
 #define GLM_SWIZZLE_XYZW
 
+#include "../define.h"
 #include "../library/glm/vec2.hpp"
 #include "../library/glm/vec3.hpp"
 #include "../library/glm/vec4.hpp"
 #include "../library/glm/mat4x4.hpp"
 #include "../library/glm/mat3x3.hpp"
 #include "../library/glm/gtc/quaternion.hpp"
-#include "../define.h"
 
 namespace sleek
 {

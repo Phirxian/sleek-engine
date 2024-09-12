@@ -32,12 +32,16 @@ class SpaceShooterState : public sleek::device::event
             i->setVariable("view",       camera->getViewMatrix());
             i->setVariable("projection", camera->getProjectionMatrix());
 
-            i->setTexture("base", i->getLinkFromMaterial()->Texture[0], 0);
+            if (i->getLinkFromMaterial())
+                i->setTexture("base", i->getLinkFromMaterial()->Texture[0], 0);
         };
 
+        sleek::driver::context* getContext() const noexcept;
         sleek::scene3d::Scene* getSceneManager() const noexcept { return smgr; }
         sleek::device::Device* getDevice() const noexcept { return screen; }
         sleek::math::timer* getTimer() noexcept { return &tm; }
+
+        inline std::shared_ptr<sleek::driver::texture> getTexture(int i) const noexcept { return textures[i]; }
         
         virtual void render() noexcept = 0;
         
@@ -45,7 +49,7 @@ class SpaceShooterState : public sleek::device::event
         sleek::device::Device *screen;
         sleek::scene3d::Scene *smgr;
         
-        std::vector<std::shared_ptr<sleek::driver::texture>> texture;
+        std::vector<std::shared_ptr<sleek::driver::texture>> textures;
         
         sleek::math::timer tm;
         Core *core;

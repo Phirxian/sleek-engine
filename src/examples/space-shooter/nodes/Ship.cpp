@@ -2,51 +2,54 @@
 
 using namespace sleek;
 
-Ship::Ship(sleek::scene3d::Scene *m) noexcept : Node(m)
+Ship::Ship(Game *game, int tid) noexcept : Object(game, tid)
 {
-    mat = std::make_shared<driver::material>();
-    mat->setMode(driver::rmd_polygon);
-    mat->setShadeModel(driver::rsd_flat);
-    mat->setMaterialRender(driver::rmt_solid);
 }
 
 Ship::~Ship() noexcept
 {
 }
 
-void Ship::setTexture(std::shared_ptr<driver::texture> a) noexcept
+bool Ship::manage(device::input *e) noexcept
 {
-    tex = a;
+    if (e->type == device::EVENT_NOTHINK)
+        return false;
 
-    std::cout << mat << std::endl;
-    
-    if (tex)
+    if (e->type == device::EVENT_KEY_DOWN)
     {
-        if (mat->Texture.size())
-            mat->Texture[0] = tex->getIdentifier().get();
-        else
-            mat->Texture.push_back(tex->getIdentifier().get());
+        if (e->key_state[device::KEY_KEY_W])
+            direction.y -= 2;
+        if (e->key_state[device::KEY_KEY_S])
+            direction.y += 2;
+        if (e->key_state[device::KEY_KEY_A])
+            direction.x -= 2;
+        if (e->key_state[device::KEY_KEY_D])
+            direction.x += 2;
     }
-    else
-        mat->Texture.clear();
-}
 
-bool Ship::manage(device::input *a) noexcept
-{
+    if (e->type == device::EVENT_KEY_UP)
+    {
+        if (e->key[device::KEY_KEY_W])
+            direction.y = 0.f;
+        if (e->key[device::KEY_KEY_S])
+            direction.y = 0.f;
+        if (e->key[device::KEY_KEY_A])
+            direction.x = 0.f;
+        if (e->key[device::KEY_KEY_D])
+            direction.x = 0.f;
+    }
+
+    direction.x = math::clamp(direction.x, -1.f, 1.f)*4;
+    direction.y = math::clamp(direction.y, -1.f, 1.f)*4;
+
+    std::cout << e->type << " direction " << direction.x << "," << direction.y << std::endl;
+
     return false;
 }
 
-std::shared_ptr<driver::texture> Ship::getTexture() const noexcept
+void Ship::update(const sleek::math::vec2f& force, float dt)
 {
-    return tex;
-}
-
-void Ship::render() noexcept
-{
-    if(!smgr || !smgr->getDrawManager() || !tex)
-        return;
-
-    Node::render();
-
-    smgr->getDrawManager()->drawTextureCenter(tex.get(), {pos.x,pos.y,pos.z});
+    Object::update(force, dt);
+    auto xyz = getPosition();
+    //std::cout << xyz.x << "," << xyz.y << "," << xyz.z << " \t :" << node->getRotation().y << std::endl;
 }

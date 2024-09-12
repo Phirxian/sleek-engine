@@ -3,6 +3,7 @@
 //#include <GL/gl.h>
 
 #include <functional>
+#include <iostream>
 using namespace std::placeholders;
 
 namespace sleek
@@ -67,11 +68,28 @@ namespace sleek
         template<bool dsa>
         ogl3_vao_identifer<dsa>::~ogl3_vao_identifer() noexcept
         {
-            for(int i = 0; i<subdata.size(); ++i)
+            for(int i = 0; i < subdata.size(); ++i)
+            {
                 glDeleteBuffers(1, &subdata[i]);
+                GLenum error = glGetError();
+                if (error!= GL_NO_ERROR)
+                    std::cerr << "Error deleting buffer: " << error << std::endl;
+            }
+
             glDeleteBuffers(1, &vbo);
+            int error = glGetError();
+            if (error!= GL_NO_ERROR)
+                std::cerr << "Error deleting VBO: " << error << std::endl;
+
             glDeleteBuffers(1, &ebo);
-            glDeleteBuffers(1, &gl);
+            error = glGetError();
+            if (error!= GL_NO_ERROR)
+                std::cerr << "Error deleting EBO: " << error << std::endl;
+
+            glDeleteVertexArrays(1, &gl);
+            error = glGetError();
+            if (error!= GL_NO_ERROR)
+                std::cerr << "Error deleting VAO: " << error << std::endl;
         }
 
         template<bool dsa>

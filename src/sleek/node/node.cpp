@@ -1,6 +1,8 @@
 #include "scene.h"
 #include "node.h"
+#include <cmath>
 
+#define GLM_Precision glm::precision::mediump
 #include "../library/glm/detail/func_geometric.hpp"
 #include "../library/glm/gtx/transform.hpp"
 
@@ -67,10 +69,30 @@ namespace sleek
 
         math::mat4f Node::getModelMatrix() const noexcept
         {
-            math::mat4f model;
-            model = glm::translate(model, pos);
-            model = glm::scale(model, sca);
-//            model = glm::rotate(model, 90.f, rot);
+            auto npos = pos;
+            auto nrot = rot;
+            auto nsca = sca;
+
+            auto pxyz = npos.x+npos.y+npos.z;
+            auto rxyz = nrot.x+nrot.y+nrot.z;
+            auto sxyz = nsca.x+nsca.y+nsca.z;
+
+            if (std::isnan(pxyz) || std::isinf(pxyz))
+                npos = {0,0,0};
+
+            if (std::isnan(rxyz) || std::isinf(rxyz))
+                nrot = {0,0,0};
+
+            if (sxyz < 1e-2 || std::isnan(sxyz) || std::isinf(sxyz))
+                nsca = {1,1,1};
+
+            math::mat4f model = glm::mat4(1.0f);
+            model = glm::translate(model, npos);
+            model = model * glm::rotate(math::mat4f(1.0f), glm::radians(nrot.x), math::vec3f(1.0f, 0.0f, 0.0f));
+            model = model * glm::rotate(math::mat4f(1.0f), glm::radians(nrot.y), math::vec3f(0.0f, 1.0f, 0.0f));
+            model = model * glm::rotate(math::mat4f(1.0f), glm::radians(nrot.z), math::vec3f(0.0f, 0.0f, 1.0f));
+
+            model = glm::scale(model, nsca);
             return model;
         }
 
