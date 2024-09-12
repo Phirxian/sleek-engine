@@ -6,7 +6,7 @@ namespace sleek
     namespace driver
     {
         driver::driver(std::shared_ptr<device::Device> dev, std::shared_ptr<context> c) noexcept
-            : src(dev), ctx(c), mat(std::make_shared<material>())
+            : src(dev), ctx(c), mat(nullptr)
         {
         }
 

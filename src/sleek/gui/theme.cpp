@@ -28,15 +28,13 @@ namespace sleek
 
             solid = std::make_shared<driver::material>();
             solid->setMode(driver::rmd_quad);
-            //solid->setMaterialRender(driver::rmt_solid);
-            //solid->setMaterialRender(driver::rmt_add);
+            solid->setMaterialRender(driver::rmt_solid);
 
             line = std::make_shared<driver::material>();
             line->setMode(driver::rmd_line_loop);
             line->setWireframe(true);
             line->setPointSize(2);
             line->setMaterialRender(driver::rmt_solid);
-            //line->setMaterialRender(driver::rmt_add);
         }
 
         theme::~theme() noexcept

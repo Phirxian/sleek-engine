@@ -606,24 +606,20 @@ namespace sleek
                 if (i->fac != rfc_off && (!mat || mat->fac != i->fac))
                     glCullFace(_cull[i->fac]);
 
-                // Update blend function if material properties have changed
-                if (!mat || mat->mat != i->mat)
+                switch (i->mat)
                 {
-                    switch (i->mat)
-                    {
-                        case rmt_solid:
-                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                            break;
-                        case rmt_add:
-                            glBlendFunc(GL_ONE, GL_ONE);
-                            break;
-                        case rmt_sub:
-                            glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
-                            break;
-                        default:
-                            glBlendFunc(GL_ONE, GL_ZERO);
-                            break;
-                    }
+                    case rmt_solid:
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        break;
+                    case rmt_add:
+                        glBlendFunc(GL_ONE, GL_ONE);
+                        break;
+                    case rmt_sub:
+                        glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ZERO);
+                        break;
+                    default:
+                        glBlendFunc(GL_ONE, GL_ZERO);
+                        break;
                 }
 
                 ctx->testError(__LINE__, __FILE__);
@@ -663,6 +659,9 @@ namespace sleek
                         glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_ADD);
                     }
                 }
+            }
+            else
+            {
             }
 
             ctx->testError(__LINE__, __FILE__);

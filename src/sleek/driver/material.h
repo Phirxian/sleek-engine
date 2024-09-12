@@ -22,7 +22,7 @@ namespace sleek
                     fac = rfc_off;
                     ant = ral_off;
                     mode = rmd_polygon;
-                    mat = rmt_solid;
+                    mat = rmt_hard;
                     shd = rsd_smooth;
                     wire = rwf_fill;
 
