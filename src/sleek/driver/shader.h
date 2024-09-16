@@ -56,9 +56,6 @@ namespace sleek
                 virtual void attacheShader(const shader_type, const std::string &prog, const std::string &main) noexcept = 0;
                 virtual void detacheShader(const shader_type) noexcept = 0;
 
-                virtual void setLinkToMaterial(material*) noexcept;
-                virtual material* getLinkFromMaterial() const noexcept;
-
                 virtual void setVariable(const std::string&, const f32) noexcept = 0;
                 virtual void setVariable(const std::string&, int count, const f32*) noexcept = 0;
 
@@ -103,7 +100,6 @@ namespace sleek
                 void* user[shader_userdata];
             protected:
                 void *users;
-                material *link;
                 shader_callback callback;
                 std::string source[shd_count];
                 int compiled;

@@ -48,8 +48,6 @@ namespace sample
 
         shade->attacheShader(driver::shd_vert, vert->readAll(), "main");
         shade->attacheShader(driver::shd_frag, frag->readAll(), "main");
-        // used to get information from material (like texture binding) by callback
-        shade->setLinkToMaterial(mat.get());
         // used to get model view
         shade->user[0] = node;
         shade->user[1] = user;

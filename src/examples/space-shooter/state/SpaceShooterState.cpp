@@ -61,7 +61,6 @@ std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
     shade->attacheShader(driver::shd_frag, fragShaderCode, "main_fragment");
 
     // Set up shader user data
-    shade->setLinkToMaterial(mat.get());
     shade->user[0] = node;
     shade->user[1] = user;
 

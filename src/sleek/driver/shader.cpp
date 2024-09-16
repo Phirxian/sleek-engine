@@ -17,16 +17,6 @@ namespace sleek
         {
         }
 
-        void shader::setLinkToMaterial(material* i) noexcept
-        {
-            link = i;
-        }
-
-        material* shader::getLinkFromMaterial() const noexcept
-        {
-            return link;
-        }
-
         bool shader::compileShader() noexcept
         {
             return false;

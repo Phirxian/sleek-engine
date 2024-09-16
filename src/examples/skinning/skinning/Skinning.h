@@ -36,7 +36,7 @@ namespace sample
                 i->setVariable("view",       camera->getViewMatrix());
                 i->setVariable("projection", camera->getProjectionMatrix());
 
-                i->setTexture("base", i->getLinkFromMaterial()->Texture[0], 0);
+                i->setTexture("base", node->getMaterial()->Texture[0], 0);
             };
 
             inline std::shared_ptr<sleek::driver::mesh> getptr() const noexcept

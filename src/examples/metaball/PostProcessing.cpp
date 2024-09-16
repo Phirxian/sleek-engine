@@ -80,18 +80,19 @@ namespace sample
             lpp->attacheShader(driver::shd_frag, frag->readAll(),"main");
             lpp->compileShader();
 
-            lpp->setLinkToMaterial(mt.get());
             lpp->user[0] = core->getDevice();
             lpp->user[1] = this;
+            lpp->user[2] = mt.get();
 
             lpp->setCallback([](driver::shader *i) noexcept {
                 device::Device *dev = (device::Device*)i->user[0];
+                driver::material *mat = (driver::material*)i->user[2];
 
-                i->setTexture("redux",       i->getLinkFromMaterial()->Texture[4], 4);
-                i->setTexture("last",        i->getLinkFromMaterial()->Texture[3], 3);
-                i->setTexture("position",    i->getLinkFromMaterial()->Texture[2], 2);
-                i->setTexture("normal",      i->getLinkFromMaterial()->Texture[1], 1);
-                i->setTexture("base",        i->getLinkFromMaterial()->Texture[0], 0);
+                i->setTexture("redux",       mat->Texture[4], 4);
+                i->setTexture("last",        mat->Texture[3], 3);
+                i->setTexture("position",    mat->Texture[2], 2);
+                i->setTexture("normal",      mat->Texture[1], 1);
+                i->setTexture("base",        mat->Texture[0], 0);
 
                 i->setVariable("resolution", dev->getInfo().size);
                 i->setVariable("znear", 1.0f); // default camera znear

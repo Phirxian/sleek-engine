@@ -36,8 +36,8 @@ class SpaceShooterState : public sleek::device::event
             i->setVariable("view",       camera->getViewMatrix());
             i->setVariable("projection", camera->getProjectionMatrix());
 
-            if (i->getLinkFromMaterial())
-                i->setTexture("base", i->getLinkFromMaterial()->Texture[0], 0);
+            if (node->getMaterial())
+                i->setTexture("base", node->getMaterial()->Texture[0], 0);
         };
 
         sleek::driver::context* getContext() const noexcept;
