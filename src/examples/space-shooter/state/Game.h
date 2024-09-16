@@ -17,7 +17,10 @@ class Game : public SpaceShooterState
 
         bool manage(sleek::device::input*) noexcept override;
 
+        void spawnAmmo(Object*, sleek::math::vec2f pos, sleek::math::vec2f velocity, int tid);
         void spawnAsteroid(int tid);
+
+        void remove(Object*) noexcept;
 
         void render() noexcept;
         

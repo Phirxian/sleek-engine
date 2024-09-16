@@ -3,6 +3,7 @@
 #include "../sleek/math/function.h"
 
 #include "nodes/Ship.h"
+#include "nodes/Ammo.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -31,6 +32,11 @@ Game::Game(Core *mom) noexcept
     textures.push_back(mom->getLoader()->loadTexture("texture/asteroid/small-1.png"));
     textures.push_back(mom->getLoader()->loadTexture("texture/asteroid/small-2.png"));
     textures.push_back(mom->getLoader()->loadTexture("texture/asteroid/small-3.png"));
+    textures.push_back(mom->getLoader()->loadTexture("texture/objects/ammo-0.png"));
+    textures.push_back(mom->getLoader()->loadTexture("texture/objects/ammo-1.png"));
+    textures.push_back(mom->getLoader()->loadTexture("texture/objects/ammo-2.png"));
+    textures.push_back(mom->getLoader()->loadTexture("texture/objects/ammo-3.png"));
+    textures.push_back(mom->getLoader()->loadTexture("texture/objects/ammo-4.png"));
 
     for(auto &it : textures)
     {
@@ -61,7 +67,7 @@ Game::Game(Core *mom) noexcept
         getSceneManager()->addSceneNode(background);
     }
 
-    for(int i = 0; i < 100; ++i)
+    for(int i = 0; i < 10; ++i)
         spawnAsteroid(i);
 
     //objects.pop_back();
@@ -98,12 +104,38 @@ void Game::handleCollision(Object *obj1, Object *obj2)
     float distance = glm::length(vector);
     float overlap = (obj1->radius + obj2->radius) - distance;
 
+    if (obj1->getType() == GOT_AMMO)
+    {
+        Ammo *ammo = (Ammo*)obj1;
+        obj2->health -= ammo->dammage;
+        if(obj2->health <= 0)
+            remove(obj2);
+        remove(ammo);
+    }
+
+    if (obj2->getType() == GOT_AMMO)
+    {
+        Ammo *ammo = (Ammo*)obj2;
+        obj1->health -= ammo->dammage;
+        if(obj1->health <= 0)
+            remove(obj1);
+        remove(ammo);
+    }
+
+    if (obj1->getType() == GOT_AMMO)
+    {
+        Ammo *ammo = (Ammo*)obj1;
+        obj2->health -= ammo->dammage;
+    }
+
     if (obj1 == player.get() || obj2 == player.get())
     {
         std::cout << "handle collision "
                 << obj1 << "-" << obj2
                 << " overlap " << overlap
                 << " distance " << distance
+                << " t1 " << obj1->getType()
+                << " t2 " << obj2->getType()
                 << std::endl;
     }
 
@@ -174,6 +206,10 @@ void Game::handleCollision(Object *obj1, Object *obj2)
     float m2 = obj2->mass;
     obj1->velocity = (v1 * (m1 - m2) + 2 * m2 * v2) / (m1 + m2);
     obj2->velocity = (v2 * (m2 - m1) + 2 * m1 * v1) / (m1 + m2);
+    obj1->velocity.x = math::clamp(obj1->velocity.x, -10.f, 10.f);
+    obj1->velocity.y = math::clamp(obj1->velocity.y, -10.f, 10.f);
+    obj2->velocity.x = math::clamp(obj2->velocity.x, -10.f, 10.f);
+    obj2->velocity.y = math::clamp(obj2->velocity.y, -10.f, 10.f);
 }
 
 void Game::simulate(float dt, int steps)
@@ -189,7 +225,8 @@ void Game::simulate(float dt, int steps)
             {
                 if (obj.get() != otherObj.get())
                 {
-                    totalForce += calculateForce(obj.get(), otherObj.get());
+                    if(obj->shouldInteract(otherObj.get()))
+                        totalForce += calculateForce(obj.get(), otherObj.get());
 
                     if (obj->isColliding(otherObj.get()))
                         if (obj->shouldCollide(otherObj.get()))
@@ -283,6 +320,29 @@ bool Game::manage(sleek::device::input *a) noexcept
     }
 
     return false;
+}
+
+void Game::remove(Object *t) noexcept
+{
+    auto it = std::find_if(
+        objects.begin(), objects.end(),
+        [t](const std::shared_ptr<Object>& node) {
+            return node.get() == t;
+        }
+    );
+
+    if (it != objects.end())
+        objects.erase(it);
+}
+
+void Game::spawnAmmo(Object *owner, math::vec2f position, math::vec2f velocity, int i)
+{
+    auto ammo = std::make_shared<Ammo>(this, 14 + i%5);
+    ammo->position = position;
+    ammo->velocity = velocity;
+    ammo->owner = owner;
+    objects.push_back(ammo);
+    std::cout << "new ammo " << i << " at {" << position.x << "," << position.y << "}" << std::endl;
 }
 
 void Game::spawnAsteroid(int i)

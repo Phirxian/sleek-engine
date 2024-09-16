@@ -9,6 +9,8 @@ class Ship : public Object
         Ship(Game*, int tid) noexcept;
         virtual ~Ship() noexcept;
 
+        virtual ObjectType getType() const noexcept { return GOT_SHIP; }
+
         virtual bool manage(sleek::device::input*) noexcept;
         
         virtual void update(const sleek::math::vec2f& force, float dt);

@@ -6,10 +6,15 @@
 using namespace sleek;
 
 Object::Object(Game *game, int tid)
-    : game(game), mass(1.0)
+    : game(game), owner(nullptr), mass(1.0), health(100)
 {
     auto texture = game->getTexture(tid);
-    auto plane = std::shared_ptr<driver::mesh>(driver::Geometry().createPlane({texture->getDimension().x/100.f, texture->getDimension().y/100.f}));
+    auto plane = std::shared_ptr<driver::mesh>(
+        driver::Geometry().createPlane({
+            texture->getDimension().x/100.f,
+            texture->getDimension().y/100.f
+        })
+    );
 
     radius = math::max(texture->getDimension().x, texture->getDimension().y) / 200.f;
     mass = radius*3;
@@ -49,8 +54,16 @@ sleek::math::vec3f Object::getPosition() const noexcept
     return {position.x, 0, position.y};
 }
 
+bool Object::shouldInteract(const Object* other) const noexcept
+{
+    return !(other == owner || other == this || owner == this || other->owner == this);
+}
+
 bool Object::shouldCollide(Object* other) noexcept
 {
+    if (!shouldInteract(other))
+        return false;
+
     auto current = std::chrono::steady_clock::now();
     auto should_collide = std::chrono::duration_cast<std::chrono::milliseconds>(current - collided).count();
 
@@ -65,8 +78,12 @@ bool Object::shouldCollide(Object* other) noexcept
 
 bool Object::isColliding(const Object *other, float margin) const noexcept
 {
+    if (!shouldInteract(other))
+        return false;
+
     math::vec2f r = other->position - position;
     float distance = glm::length(r);
+
     return distance < (radius + other->radius + margin);
 }
 

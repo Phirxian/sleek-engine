@@ -1,19 +1,25 @@
-#include "Ship.h"
 #include "Ammo.h"
-
 #include "../state/Game.h"
 
 using namespace sleek;
 
-Ship::Ship(Game *game, int tid) noexcept : Object(game, tid)
+Ammo::Ammo(Game *game, int tid) noexcept
+    : Object(game, tid), dammage(50.f)
 {
 }
 
-Ship::~Ship() noexcept
+Ammo::~Ammo() noexcept
 {
 }
 
-bool Ship::manage(device::input *e) noexcept
+bool Ammo::shouldInteract(const Object* other) const noexcept
+{
+    if(other->getType() == GOT_AMMO)
+        return false;
+    return Object::shouldInteract(other);
+}
+
+bool Ammo::manage(device::input *e) noexcept
 {
     if (e->type == device::EVENT_NOTHINK)
         return false;
@@ -28,18 +34,6 @@ bool Ship::manage(device::input *e) noexcept
             direction.x -= 2;
         if (e->key_state[device::KEY_KEY_D])
             direction.x += 2;
-    }
-
-    if (e->type == device::EVENT_KEY_DOWN)
-    {
-        if (e->key_state[device::KEY_SPACE])
-        {
-            glm::vec2 vector = position - old_position;
-            float length = glm::length(vector);
-            if (length)
-                vector = vector / glm::length(vector);
-            game->spawnAmmo(this, position, vector*10.f, 1);
-        }
     }
 
     if (e->type == device::EVENT_KEY_UP)
@@ -62,9 +56,18 @@ bool Ship::manage(device::input *e) noexcept
     return false;
 }
 
-void Ship::update(const sleek::math::vec2f& force, float dt)
+void Ammo::update(const sleek::math::vec2f& force, float dt)
 {
     Object::update(force, dt);
     auto xyz = getPosition();
     //std::cout << xyz.x << "," << xyz.y << "," << xyz.z << " \t :" << node->getRotation().y << std::endl;
+
+    auto current = std::chrono::steady_clock::now();
+    auto should_delete = std::chrono::duration_cast<std::chrono::milliseconds>(current - instanciated).count();
+
+    if (should_delete > 1000)
+        game->remove(this);
+
+    if (abs(velocity.x) + abs(velocity.y) < 1e-2)
+        game->remove(this);
 }
