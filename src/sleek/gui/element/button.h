@@ -10,7 +10,7 @@ namespace sleek
         class button : public frame
         {
             public:
-                button(interface*) noexcept;
+                button(Interface*) noexcept;
                 ~button() noexcept;
                 virtual INTERFACE_GUI_CODE getType() const noexcept { return IGT_BUTTON; }
 

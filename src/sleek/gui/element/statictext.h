@@ -10,7 +10,7 @@ namespace sleek
         class statictext : public frame
         {
             public:
-                statictext(interface*) noexcept;
+                statictext(Interface*) noexcept;
                 ~statictext() noexcept;
                 
                 virtual INTERFACE_GUI_CODE getType() const noexcept { return IGT_STATICTEXT; }

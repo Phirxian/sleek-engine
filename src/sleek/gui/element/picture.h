@@ -11,7 +11,7 @@ namespace sleek
         class picture : public frame
         {
             public:
-                picture(interface*) noexcept;
+                picture(Interface*) noexcept;
                 ~picture() noexcept;
 
                 virtual INTERFACE_GUI_CODE getType() const noexcept { return IGT_PICTURE; }

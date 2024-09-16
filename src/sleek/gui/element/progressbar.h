@@ -10,7 +10,7 @@ namespace sleek
         class progressbar : public frame
         {
             public:
-                progressbar(interface*) noexcept;
+                progressbar(Interface*) noexcept;
                 ~progressbar() noexcept;
 
                 virtual INTERFACE_GUI_CODE getType() const  noexcept { return IGT_PROGRESSBAR; }

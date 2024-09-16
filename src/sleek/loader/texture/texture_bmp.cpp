@@ -30,11 +30,23 @@ namespace sleek
             file->read(header, 0x36);
 
             if(header[0]!='B' || header[1]!='M')
+            {
+                printf("bmp check signature failed\n");
+                for (int i = 0; i < 0x36; ++i)
+                    printf("%02x ", header[i]);
+                printf("\n");
                 return nullptr;
+            }
 
             // unsupported compression mode
             if(CTOI(header[0x1E]) < 0 || CTOI(header[0x1E]) > 3)
+            {
+                printf("bmp check signature failed\n");
+                for (int i = 0; i < 0x36; ++i)
+                    printf("%02x ", header[i]);
+                printf("\n");
                 return nullptr;
+            }
 
             m_bitCount = CTOI(header[0x1C]);
             if(m_bitCount == 16)      pitch = driver::TXFMT_RGB;

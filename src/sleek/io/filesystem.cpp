@@ -30,8 +30,8 @@ namespace sleek
                         return std::make_shared<std_filesystem>(working_dir);
                 #endif
                 #ifdef std_filesystem_support
-                    case FILE_SYSTEM_TYPE::FST_ZIP:
-                        return std::make_shared<zip_filesystem>(working_dir);
+                    //case FILE_SYSTEM_TYPE::FST_ZIP:
+                    //    return std::make_shared<zip_filesystem>(working_dir);
                 #endif
             }
             return nullptr;

@@ -11,6 +11,10 @@
 
 namespace sleek
 {
+    namespace io
+    {
+        class loader;
+    }
     namespace device
     {
         class Device;
@@ -132,6 +136,8 @@ namespace sleek
                 u8 component;
                 u8 pitch;
                 u8 bpp;
+
+                friend class loader;
         };
 
         using texture_ptr = std::shared_ptr<texture>;

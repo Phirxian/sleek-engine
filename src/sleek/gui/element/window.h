@@ -10,7 +10,7 @@ namespace sleek
         class window : public frame
         {
             public:
-                window(interface*) noexcept;
+                window(Interface*) noexcept;
                 ~window() noexcept;
 
                 virtual INTERFACE_GUI_CODE getType() const noexcept { return IGT_WINDOW; }

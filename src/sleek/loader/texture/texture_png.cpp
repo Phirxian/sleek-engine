@@ -2,7 +2,10 @@
 #include "../../driver/texture.h"
 #include "../../compile.h"
 #include <stdlib.h>
+
+#ifdef texture_loader_png_support
 #include <png.h>
+#endif
 
 extern "C" {
     void* memccpy(void *dest, const void *src, int c, size_t n);
@@ -66,7 +69,13 @@ namespace sleek
                 file->read(magic, sizeof(magic));
 
                 if(!png_check_sig(magic, sizeof (magic)))
+                {
+                    printf("png_check_sig failed\n");
+                    for (int i = 0; i < 8; ++i)
+                        printf("%02x ", magic[i]);
+                    printf("\n");
                     return nullptr;
+                }
 
                 png_ptr = png_create_read_struct(
                     PNG_LIBPNG_VER_STRING, NULL,
@@ -75,7 +84,10 @@ namespace sleek
                 );
 
                 if(!png_ptr)
+                {
+                    printf("png_create_read_struct failed\n");
                     return nullptr;
+                }
 
                 info_ptr = png_create_info_struct(png_ptr);
                 if(!info_ptr || setjmp(png_jmpbuf(png_ptr)))
@@ -83,6 +95,7 @@ namespace sleek
                     png_destroy_read_struct(&png_ptr, &info_ptr, 0);
                     if(row_pointers)
                         free(row_pointers);
+                    printf("png_create_info_struct failed\n");
                     return nullptr;
                 }
 

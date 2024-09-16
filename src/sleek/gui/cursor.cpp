@@ -5,7 +5,7 @@ namespace sleek
 {
     namespace gui
     {
-        cursor::cursor(interface *m) noexcept : mom(m)
+        cursor::cursor(Interface *m) noexcept : mom(m)
         {
             isRender = false;
             showCursor(true);

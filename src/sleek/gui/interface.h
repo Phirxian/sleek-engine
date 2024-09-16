@@ -1,5 +1,4 @@
-#ifndef INTERFACE
-#define INTERFACE
+#pragma once
 
 #include "element/frame.h"
 #include "theme.h"
@@ -20,13 +19,13 @@ namespace sleek
         class statictext;
         class window;
 
-        class interface : public std::enable_shared_from_this<interface>
+        class Interface : public std::enable_shared_from_this<Interface>
         {
             public:
-                interface(std::shared_ptr<device::Device> screen, std::shared_ptr<driver::driver> drawer) noexcept;
-                virtual ~interface() noexcept;
+                Interface(std::shared_ptr<device::Device> screen, std::shared_ptr<driver::driver> drawer) noexcept;
+                virtual ~Interface() noexcept;
 
-                inline std::shared_ptr<interface> getptr() noexcept
+                inline std::shared_ptr<Interface> getptr() noexcept
                 {
                     return shared_from_this();
                 }
@@ -81,11 +80,10 @@ namespace sleek
                 std::shared_ptr<cursor> cr;
         };
 
-        std::shared_ptr<interface> createGUIEnvironment(
+        std::shared_ptr<Interface> createGUIEnvironment(
             std::shared_ptr<device::Device> screen,
             std::shared_ptr<driver::driver> drawer
         ) noexcept;
     }
 }
 
-#endif // INTERFACE

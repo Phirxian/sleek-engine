@@ -19,7 +19,7 @@
 
 #define std_filesystem_support
 #define mem_filesystem_support
-#define zip_filesystem_support
+//#define zip_filesystem_support
 
 #define mesh_loader_3ds_support
 #define mesh_loader_txt_support

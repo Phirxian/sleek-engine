@@ -108,7 +108,7 @@ class GUITest : public device::event
     private:
         std::shared_ptr<device::Device> screen;
         std::shared_ptr<sleek::driver::driver> driver;
-        std::shared_ptr<sleek::gui::interface> guienv;
+        std::shared_ptr<sleek::gui::Interface> guienv;
         std::shared_ptr<sleek::gui::progressbar> progressbar;
 };
 

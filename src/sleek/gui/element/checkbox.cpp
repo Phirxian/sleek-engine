@@ -8,7 +8,7 @@ namespace sleek
 {
     namespace gui
     {
-        checkbox::checkbox(interface *m) noexcept : frame(m)
+        checkbox::checkbox(Interface *m) noexcept : frame(m)
         {
             isChecked = false;
             check = std::make_shared<button>(m);

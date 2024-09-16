@@ -51,7 +51,7 @@ namespace sample
         guienv->getCursor()->showCursor(false);
         guienv->getCursor()->showTexture(true);
 
-        pointor = loader->loadTexture("texture/pointor.bmp");
+        pointor = loader->loadTexture("texture/pointor.png");
 
         if(pointor)
         {
@@ -91,7 +91,7 @@ namespace sample
         screen->setEventReceiver(0);
     }
 
-    sleek::gui::interface* Core::getGui() const noexcept
+    sleek::gui::Interface* Core::getGui() const noexcept
     {
         return guienv.get();
     }

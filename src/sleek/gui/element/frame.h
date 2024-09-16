@@ -13,11 +13,11 @@ namespace sleek
 {
     namespace gui
     {
-        class interface;
+        class Interface;
         class frame : public reference, public std::enable_shared_from_this<frame>
         {
             public:
-                frame(interface*) noexcept;
+                frame(Interface*) noexcept;
                 virtual ~frame() noexcept;
 
                 virtual INTERFACE_GUI_CODE getType() const noexcept { return IGT_FRAME; }
@@ -43,7 +43,7 @@ namespace sleek
                 virtual void setScale(math::vec2i) noexcept;
                 virtual void setSize(math::vec2i) noexcept;
 
-                virtual interface* getGUIEnvironment() const noexcept;
+                virtual Interface* getGUIEnvironment() const noexcept;
 
                 virtual math::aabbox2di& getBoundingBox() noexcept;
                 virtual math::vec2i getScale() const noexcept;
@@ -75,7 +75,7 @@ namespace sleek
                 std::shared_ptr<driver::texture> fontcache;
                 
                 frame* parent;
-                interface *mom;
+                Interface *mom;
 
                 bool show, isActive;
                 math::vec2i relative, absolute, textpos;
@@ -87,7 +87,7 @@ namespace sleek
             private:
                 friend class window;
                 friend class theme;
-                friend class interface;
+                friend class Interface;
                 std::vector<std::shared_ptr<frame>> child;
         };
     }

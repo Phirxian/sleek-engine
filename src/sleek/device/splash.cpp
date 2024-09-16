@@ -63,7 +63,7 @@ namespace sleek
             return renderer.get();
         }
 
-        gui::interface* Splash::getGUIEnvirnoment() const noexcept
+        gui::Interface* Splash::getGUIEnvirnoment() const noexcept
         {
             return guienv.get();
         }

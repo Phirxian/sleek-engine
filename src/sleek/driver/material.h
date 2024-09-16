@@ -17,8 +17,6 @@ namespace sleek
             public:
                 material() noexcept : psize(1)
                 {
-                    scale = math::vec3f(1);
-
                     fac = rfc_off;
                     ant = ral_off;
                     mode = rmd_polygon;
@@ -27,7 +25,7 @@ namespace sleek
                     wire = rwf_fill;
 
                     Texture.reserve(reserved_texture);
-                    effect = 0;
+                    effect = nullptr;
                 }
 
                 ~material() noexcept
@@ -48,11 +46,9 @@ namespace sleek
                 inline void setFaceCulling(const u32 i) noexcept { fac = i; }
                 inline void setAntialiasing(const u32 i) noexcept { ant = i; }
                 inline void setMaterialRender(const u32 i) noexcept { mat = i; }
-                inline void setScale(const math::vec3f &i) noexcept { scale = i; }
 
                 /** ***************************************************** **/
 
-                inline math::vec3f getScale() const noexcept { return scale; }
                 inline u32 getMaterialRender() const noexcept { return mat; }
                 inline u32 getAntialiasing() const noexcept { return ant; }
                 inline u32 getFaceCulling() const noexcept { return fac; }
@@ -68,8 +64,6 @@ namespace sleek
                 render_mode mode;
                 f32 psize;
                 u32 ant, mat, shd, fac, wire;
-                math::vec3f scale;
-
                 std::shared_ptr<identifier> effect;
         };
     }

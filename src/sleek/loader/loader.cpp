@@ -46,6 +46,7 @@ namespace sleek
                     << "\t bits{" << ptr->getPitch()*8 << "}"
                     << "\t format{" << driver::TextureFormatName[ptr->getFormat()-1] << "}"
                     << std::endl;
+                //ptr->filename = filename;
             }
             else
             {
@@ -153,7 +154,9 @@ namespace sleek
                 {
                     auto loader = e.second;
                     auto file = fs->read(filename);
-                    return file ? debug(loader->read(file.get()), filename.c_str()) : nullptr;
+                    auto mesh = file ? loader->read(file.get()) : nullptr;
+                    debug(mesh, filename.c_str());
+                    return mesh;
                 }
             }
 
@@ -168,7 +171,9 @@ namespace sleek
                 {
                     auto loader = e.second;
                     auto file = fs->read(filename);
-                    return file ? debug(loader->read(file.get()), filename.c_str()) : nullptr;
+                    auto texture = file ? loader->read(file.get()) : nullptr;
+                    debug(texture, filename.c_str());
+                    return texture;
                 }
             }
 

@@ -5,7 +5,7 @@ namespace sleek
 {
     namespace gui
     {
-        frame::frame(interface *m) noexcept : mom(m)
+        frame::frame(Interface *m) noexcept : mom(m)
         {
             textsize = 11;
             parent = nullptr;
@@ -93,7 +93,7 @@ namespace sleek
                 setFontCache(nullptr);
         }
 
-        interface* frame::getGUIEnvironment() const noexcept
+        Interface* frame::getGUIEnvironment() const noexcept
         {
             return mom;
         }

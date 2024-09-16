@@ -12,14 +12,14 @@ namespace sleek
 {
     namespace gui
     {
-        font_ttf::font_ttf(interface *i, void *buffer, int buffersize) noexcept
+        font_ttf::font_ttf(Interface *i, void *buffer, int buffersize) noexcept
             : font(i)
         {
             FT_Init_FreeType(&library);
             FT_New_Memory_Face(library, (FT_Byte*)buffer, buffersize, 0, &face);
         }
 
-        font_ttf::font_ttf(interface *i, const std::string &ttf) noexcept
+        font_ttf::font_ttf(Interface *i, const std::string &ttf) noexcept
             : font(i)
         {
             file = ttf;

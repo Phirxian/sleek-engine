@@ -7,14 +7,13 @@ namespace sleek
 {
     namespace gui
     {
-        class interface;
         class scrollbar;
         class button;
 
         class colorpicker : public frame
         {
             public:
-                colorpicker(interface*) noexcept;
+                colorpicker(Interface*) noexcept;
                 ~colorpicker() noexcept;
 
                 virtual INTERFACE_GUI_CODE getType() const  noexcept { return IGT_COLORPICKER; }

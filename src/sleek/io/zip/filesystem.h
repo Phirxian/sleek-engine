@@ -3,9 +3,9 @@
 
 #include "../../compile.h"
 #include "../filesystem.h"
-#include <zip.h>
 
 #ifdef zip_filesystem_support
+#include <zip.h>
 namespace sleek
 {
     namespace io

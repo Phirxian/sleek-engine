@@ -5,7 +5,7 @@ namespace sleek
 {
     namespace gui
     {
-        window::window(interface *m) noexcept : frame(m)
+        window::window(Interface *m) noexcept : frame(m)
         {
             title_size = 20;
             isHovored = isMoved = isCollapsed = false;

@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "../library/glm/glm.hpp"
-#include "../library/glm/detail/func_geometric.hpp"
-#include "../library/glm/gtx/transform.hpp"
-#include "../library/glm/gtx/quaternion.hpp"
+#include "library/glm/glm.hpp"
+#include "library/glm/detail/func_geometric.hpp"
+#include "library/glm/gtx/transform.hpp"
+#include "library/glm/gtx/quaternion.hpp"
 
 namespace sleek
 {

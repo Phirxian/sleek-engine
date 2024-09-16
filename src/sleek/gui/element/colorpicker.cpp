@@ -14,7 +14,7 @@ namespace sleek
 {
     namespace gui
     {
-        colorpicker::colorpicker(interface *guienv) noexcept
+        colorpicker::colorpicker(Interface *guienv) noexcept
             : frame(guienv), background{64, 255, 255, 255}, white{255, 255, 255, 255}, black{0, 0, 0, 255},
               isGradient(false), isColor(false)
         {

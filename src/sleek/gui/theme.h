@@ -19,7 +19,7 @@ namespace sleek
         class theme : public std::enable_shared_from_this<theme>
         {
             public:
-                theme(interface*) noexcept;
+                theme(Interface*) noexcept;
                 ~theme() noexcept;
 
                 inline std::shared_ptr<theme> getptr() noexcept
@@ -51,7 +51,7 @@ namespace sleek
                 std::shared_ptr<driver::material> getSolidMaterial() { return solid; }
                 std::shared_ptr<driver::material> getAddMaterial() { return add; }
             protected:
-                interface *mom;
+                Interface *mom;
                 driver::texture *decor[IGT_COUNT*3];
                 std::shared_ptr<driver::material> solid, line, add;
         };

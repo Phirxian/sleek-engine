@@ -4,9 +4,6 @@
 #include <vector>
 #include "../directory.h"
 
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-
 namespace sleek
 {
     namespace io
@@ -14,23 +11,9 @@ namespace sleek
         class std_directory : public directory
         {
             public:
-                std_directory(const std::string &filename) : directory()
-                {
-                    dir = filename;
-                    refresh();
-                }
+                std_directory(const std::string &filename);
 
-                virtual void refresh() noexcept
-                {
-                    file.clear();
-                    for(auto& p: fs::directory_iterator(dir))
-                    {
-                        file.push_back(directory::entry{
-                            p.path().filename(), 0, 0,
-                            (file_type)p.status().type()
-                        });
-                    }
-                }
+                virtual void refresh() noexcept;
         };
     }
 }

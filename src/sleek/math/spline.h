@@ -2,7 +2,7 @@
 #define SPLINES_HPP
 
 #include "math.h"
-#include "../library/array_view.h"
+#include "library/array_view.h"
 #include <vector>
 
 namespace sleek

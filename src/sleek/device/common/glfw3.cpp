@@ -348,11 +348,18 @@ namespace sleek
         math::vec2i Device_glfw3::getDesktopVideoSize() const noexcept
         {
             math::vec2i size;
-            GLFWmonitor *monitor;
-            glfw_get_mouse_monitor(&monitor, window);
-            const GLFWvidmode * mode = glfwGetVideoMode(monitor);
-            size.x = mode->width;
-            size.y = mode->height;
+            #ifdef WIN32
+                GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+                const GLFWvidmode * mode = glfwGetVideoMode(monitor);
+                size.x = mode->width;
+                size.y = mode->height;
+            #else
+                GLFWmonitor *monitor;
+                glfw_get_mouse_monitor(&monitor, window);
+                const GLFWvidmode * mode = glfwGetVideoMode(monitor);
+                size.x = mode->width;
+                size.y = mode->height;
+            #endif
             return size;
         }
 

@@ -75,6 +75,7 @@ namespace sleek
                 }
                 catch(std::exception e)
                 {
+                    std::cout << e.what() << std::endl;
                 }
 
                 jpeg_destroy_decompress(&cinfo);

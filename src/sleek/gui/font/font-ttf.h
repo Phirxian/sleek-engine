@@ -15,7 +15,7 @@ namespace sleek
 {
     namespace gui
     {
-        class interface;
+        class Interface;
         class frame;
 
         class font_ttf : public font
@@ -31,8 +31,8 @@ namespace sleek
             };
 
             public:
-                font_ttf(interface*, void*, int) noexcept;
-                font_ttf(interface*, const std::string &ttf) noexcept;
+                font_ttf(Interface*, void*, int) noexcept;
+                font_ttf(Interface*, const std::string &ttf) noexcept;
                 ~font_ttf();
 
                 math::vec2i getTextDimensions(const std::wstring& text, int font_size);

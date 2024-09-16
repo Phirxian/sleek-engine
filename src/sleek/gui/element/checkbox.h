@@ -12,7 +12,7 @@ namespace sleek
         class checkbox : public frame
         {
             public:
-                checkbox(interface*) noexcept;
+                checkbox(Interface*) noexcept;
                 ~checkbox() noexcept;
 
                 virtual INTERFACE_GUI_CODE getType() const  noexcept { return IGT_CHECKBOX; }

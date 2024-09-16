@@ -7,8 +7,6 @@
 #include "common/glfw3.h"
 #include <iostream>
 
-#include "console/spdlog.h"
-
 namespace sleek
 {
     namespace device
@@ -53,7 +51,7 @@ namespace sleek
             reading(true), current(new input()), ext(new event()),
             info(a), tm(new math::timer())
         {
-            log = spdlog::stdout_logger_mt("sleek-think");
+            //log = spdlog::stdout_logger_mt("sleek-think");
             evt = ext;
         }
 
@@ -87,7 +85,7 @@ namespace sleek
 
         std::shared_ptr<spdlog::logger> Device::getLogger() const noexcept
         {
-            return log;
+            return nullptr;
         }
 
         std::shared_ptr<tool::cpuid> Device::getCPUID() const noexcept

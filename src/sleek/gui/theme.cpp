@@ -20,7 +20,7 @@ namespace sleek
         static auto theme_color_hover = math::pixel(24, 47, 45, 255);
         static auto theme_color_border = math::pixel(8, 8, 18, 255);
 
-        theme::theme(interface *i) noexcept : mom(i)
+        theme::theme(Interface *i) noexcept : mom(i)
         {
             add = std::make_shared<driver::material>();
             add->setMode(driver::rmd_quad);

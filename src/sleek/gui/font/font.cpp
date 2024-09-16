@@ -5,7 +5,7 @@ namespace sleek
 {
     namespace gui
     {
-        font::font(interface *i) noexcept
+        font::font(Interface *i) noexcept
             : mom(i)
         {
         }

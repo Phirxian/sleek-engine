@@ -291,8 +291,6 @@ namespace sleek
                     extensions = (const GLubyte*)glXQueryExtensionsString(
                         (Display*)win->getInfo().display, 0
                     );
-            #else
-                #error TODO
             #endif
 
             if(!extensions)
@@ -337,9 +335,11 @@ namespace sleek
                     *(Window*)win->getInfo().window,
                     cx
                 );
-            #elif defined WIN32 || WIN64
+            #elif defined win_device_support
                 return wglMakeCurrent(dc, gl);
             #endif
+
+            return true;
         }
 
         void ogl3_context::begin(const math::pixel &color) noexcept

@@ -19,7 +19,7 @@ namespace sleek
         class scrollbar : public frame
         {
             public:
-                scrollbar(interface*) noexcept;
+                scrollbar(Interface*) noexcept;
                 ~scrollbar() noexcept;
 
                 virtual INTERFACE_GUI_CODE getType() const  noexcept { return IGT_SCROLLBAR; }

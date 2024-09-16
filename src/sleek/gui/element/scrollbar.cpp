@@ -8,7 +8,7 @@ namespace sleek
 {
     namespace gui
     {
-        scrollbar::scrollbar(interface *m) noexcept : frame(m)
+        scrollbar::scrollbar(Interface *m) noexcept : frame(m)
         {
             min = 0;
             max = 100;

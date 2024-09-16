@@ -8,7 +8,6 @@ namespace sleek
 {
     namespace math
     {
-        
         struct kdnode
         {
             kdnode() : left(nullptr), right(nullptr), user(nullptr) {}

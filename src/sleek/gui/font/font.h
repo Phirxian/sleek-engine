@@ -8,13 +8,13 @@ namespace sleek
 {
     namespace gui
     {
-        class interface;
+        class Interface;
         class frame;
 
         class font : public std::enable_shared_from_this<font>
         {
             public:
-                font(interface*) noexcept;
+                font(Interface*) noexcept;
 
                 inline std::shared_ptr<font> getptr() noexcept
                 {
@@ -25,7 +25,7 @@ namespace sleek
                 
                 std::string getFilename() const noexcept;
             protected:
-                interface *mom;
+                Interface *mom;
                 std::string file;
         };
     }

@@ -5,7 +5,7 @@ namespace sleek
 {
     namespace gui
     {
-        progressbar::progressbar(interface *m) noexcept : frame(m)
+        progressbar::progressbar(Interface *m) noexcept : frame(m)
         {
             min = 0;
             max = 100;

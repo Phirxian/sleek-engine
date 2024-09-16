@@ -9,10 +9,10 @@ class Core : public sleek::device::event
         Core() noexcept;
         virtual ~Core() noexcept;
 
-        void setGUI(sleek::gui::interface*) noexcept;
-        void setSMGR(sleek::gui::interface*) noexcept;
+        void setGUI(sleek::gui::Interface*) noexcept;
+        void setSMGR(sleek::gui::Interface*) noexcept;
 
-        sleek::gui::interface* getGui() const noexcept;
+        sleek::gui::Interface* getGui() const noexcept;
         sleek::device::Device* getDevice() const noexcept;
         sleek::driver::driver* getDriver() const noexcept;
         sleek::driver::context* getContext() const noexcept;
@@ -24,7 +24,7 @@ class Core : public sleek::device::event
         void update_title() noexcept;
         void run() noexcept;
     private:
-        std::shared_ptr<sleek::gui::interface> guienv;
+        std::shared_ptr<sleek::gui::Interface> guienv;
         std::shared_ptr<sleek::device::Device> screen;
         std::shared_ptr<sleek::driver::driver> driver;
         std::shared_ptr<sleek::driver::context>renderer;

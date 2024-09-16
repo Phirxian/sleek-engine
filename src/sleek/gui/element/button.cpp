@@ -5,7 +5,7 @@ namespace sleek
 {
     namespace gui
     {
-        button::button(interface *m) noexcept : frame(m)
+        button::button(Interface *m) noexcept : frame(m)
         {
             hovored = pushed = false;
         }

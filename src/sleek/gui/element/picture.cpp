@@ -7,7 +7,7 @@ namespace sleek
 {
     namespace gui
     {
-        picture::picture(interface *m) noexcept : frame(m), pic(0)
+        picture::picture(Interface *m) noexcept : frame(m), pic(0)
         {
             isHovored = false;
             isScalable = true;

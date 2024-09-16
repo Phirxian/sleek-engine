@@ -7,11 +7,11 @@ namespace sleek
 {
     namespace gui
     {
-        class interface;
+        class Interface;
         class cursor : public std::enable_shared_from_this<cursor>
         {
             public:
-                cursor(interface*) noexcept;
+                cursor(Interface*) noexcept;
                 virtual ~cursor() noexcept;
 
                 virtual INTERFACE_GUI_CODE getType() const noexcept { return IGT_CURSOR; }
@@ -39,7 +39,7 @@ namespace sleek
                 bool isRender, isVisible;
                 std::shared_ptr<driver::material> rnd;
                 std::shared_ptr<driver::texture> tex;
-                interface *mom;
+                Interface *mom;
             private:
                 math::vec2i pos;
         };

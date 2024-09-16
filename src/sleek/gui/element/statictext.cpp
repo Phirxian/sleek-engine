@@ -5,7 +5,7 @@ namespace sleek
 {
     namespace gui
     {
-        statictext::statictext(interface *m) noexcept : frame(m)
+        statictext::statictext(Interface *m) noexcept : frame(m)
         {
             isHovored = false;
         }

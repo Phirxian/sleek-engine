@@ -75,6 +75,7 @@ find_package(JPEG)
 include_directories("src/app")
 include_directories("src/sleek")
 include_directories("src/library")
+include_directories("src/")
 
 ###############################################################################
 ################################ project ext ##################################

@@ -16,12 +16,12 @@ namespace sleek
 {
     namespace gui
     {
-        std::shared_ptr<interface> createGUIEnvironment(std::shared_ptr<device::Device> screen, std::shared_ptr<driver::driver> drawer) noexcept
+        std::shared_ptr<Interface> createGUIEnvironment(std::shared_ptr<device::Device> screen, std::shared_ptr<driver::driver> drawer) noexcept
         {
-            return std::make_shared<interface>(screen, drawer);
+            return std::make_shared<Interface>(screen, drawer);
         }
 
-        interface::interface(std::shared_ptr<device::Device> s, std::shared_ptr<driver::driver> d) noexcept : screen(s), mom(d)
+        Interface::Interface(std::shared_ptr<device::Device> s, std::shared_ptr<driver::driver> d) noexcept : screen(s), mom(d)
         {
             active = nullptr;
             cr = std::make_shared<cursor>(this);
@@ -32,12 +32,12 @@ namespace sleek
             custom = interne;
         }
 
-        interface::~interface() noexcept
+        Interface::~Interface() noexcept
         {
             clear();
         }
 
-        std::shared_ptr<frame> interface::addFrame(const std::wstring &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<frame> Interface::addFrame(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<frame>(this);
             tmp->absolute = b.upperleft;
@@ -46,7 +46,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<checkbox> interface::addCheckbox(const std::wstring &text, const math::aabbox2di &b) noexcept
+        std::shared_ptr<checkbox> Interface::addCheckbox(const std::wstring &text, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<checkbox>(this);
             tmp->absolute = b.upperleft;
@@ -55,7 +55,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<colorpicker> interface::addColorPicker(const math::aabbox2di &b) noexcept
+        std::shared_ptr<colorpicker> Interface::addColorPicker(const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<colorpicker>(this);
             tmp->absolute = b.upperleft;
@@ -63,7 +63,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<picture> interface::addPicture(std::shared_ptr<driver::texture> w, const std::wstring &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<picture> Interface::addPicture(std::shared_ptr<driver::texture> w, const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<picture>(this);
             tmp->absolute = b.upperleft;
@@ -73,7 +73,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<scrollbar> interface::addScrollbar(bool horizontal, const math::aabbox2di &pos) noexcept
+        std::shared_ptr<scrollbar> Interface::addScrollbar(bool horizontal, const math::aabbox2di &pos) noexcept
         {
             auto tmp = std::make_shared<scrollbar>(this);
 
@@ -87,7 +87,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<progressbar> interface::addProgressbar(const std::wstring &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<progressbar> Interface::addProgressbar(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<progressbar>(this);
             tmp->absolute = b.upperleft;
@@ -96,7 +96,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<button> interface::addButton(const std::wstring &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<button> Interface::addButton(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<button>(this);
             tmp->absolute = b.upperleft;
@@ -105,7 +105,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<statictext> interface::addStaticText(const std::wstring &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<statictext> Interface::addStaticText(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<statictext>(this);
             tmp->absolute = b.upperleft;
@@ -114,7 +114,7 @@ namespace sleek
             return tmp;
         }
 
-        std::shared_ptr<window> interface::addWindow(const std::wstring &t, const math::aabbox2di &b) noexcept
+        std::shared_ptr<window> Interface::addWindow(const std::wstring &t, const math::aabbox2di &b) noexcept
         {
             auto tmp = std::make_shared<window>(this);
             tmp->absolute = b.upperleft;
@@ -125,7 +125,7 @@ namespace sleek
             return tmp;
         }
 
-        void interface::addCustomFrame(std::shared_ptr<frame> tmp) noexcept
+        void Interface::addCustomFrame(std::shared_ptr<frame> tmp) noexcept
         {
             tmp->move(tmp->absolute);
             gui.push_back(tmp);
@@ -133,23 +133,23 @@ namespace sleek
 
         /** ******************************************** **/
 
-        std::shared_ptr<theme> interface::getTheme() const noexcept
+        std::shared_ptr<theme> Interface::getTheme() const noexcept
         {
             return custom;
         }
 
 
-        std::shared_ptr<font> interface::getIconsFont() const noexcept
+        std::shared_ptr<font> Interface::getIconsFont() const noexcept
         {
             return icons;
         }
 
-        std::shared_ptr<font> interface::getInternalFont() const noexcept
+        std::shared_ptr<font> Interface::getInternalFont() const noexcept
         {
             return internal;
         }
 
-        std::shared_ptr<font> interface::getFont(const std::string &file) noexcept
+        std::shared_ptr<font> Interface::getFont(const std::string &file) noexcept
         {
             for(int i = 0; i<fontcache.size(); ++i)
                 if(fontcache[i]->getFilename() == file)
@@ -161,13 +161,13 @@ namespace sleek
             return tmp;
         }
 
-        void interface::unActiveElement() noexcept
+        void Interface::unActiveElement() noexcept
         {
             for(u32 a = 0; a<gui.size(); ++a)
                 gui[a]->isActive = false;
         }
 
-        bool interface::manage(device::input *a) noexcept
+        bool Interface::manage(device::input *a) noexcept
         {
             if(!a)
                 return false;
@@ -195,17 +195,17 @@ namespace sleek
             return false;
         }
 
-        void interface::setActiveFrame(frame *_active) noexcept
+        void Interface::setActiveFrame(frame *_active) noexcept
         {
             active = _active;
         }
 
-        frame* interface::getActiveFrame() noexcept
+        frame* Interface::getActiveFrame() noexcept
         {
             return active;
         }
 
-        void interface::popFrame(std::shared_ptr<frame> i) noexcept
+        void Interface::popFrame(std::shared_ptr<frame> i) noexcept
         {
             if(*gui.rbegin() == i)
                 return;
@@ -223,14 +223,14 @@ namespace sleek
             gui.push_back(i);
         }
 
-        void interface::ActiveElement(std::shared_ptr<frame> i) noexcept
+        void Interface::ActiveElement(std::shared_ptr<frame> i) noexcept
         {
             unActiveElement();
             popFrame(i);
             i->isActive = true;
         }
 
-        void interface::removeFrame(std::shared_ptr<frame> i) noexcept
+        void Interface::removeFrame(std::shared_ptr<frame> i) noexcept
         {
             gui.erase(
                 std::remove_if(
@@ -242,37 +242,37 @@ namespace sleek
             );
         }
 
-        void interface::removeFrame(const s32 i) noexcept
+        void Interface::removeFrame(const s32 i) noexcept
         {
             removeFrame(gui[i]);
         }
 
-        void interface::popFrame(const s32 i) noexcept
+        void Interface::popFrame(const s32 i) noexcept
         {
             popFrame(gui[i]);
         }
 
-        void interface::clear() noexcept
+        void Interface::clear() noexcept
         {
             gui.clear();
         }
 
-        std::shared_ptr<driver::driver> interface::getDrawManager() const noexcept
+        std::shared_ptr<driver::driver> Interface::getDrawManager() const noexcept
         {
             return mom;
         }
 
-        std::shared_ptr<device::Device> interface::getDevice() const noexcept
+        std::shared_ptr<device::Device> Interface::getDevice() const noexcept
         {
             return screen;
         }
 
-        std::shared_ptr<cursor> interface::getCursor() const noexcept
+        std::shared_ptr<cursor> Interface::getCursor() const noexcept
         {
             return cr;
         }
 
-        void interface::render() noexcept
+        void Interface::render() noexcept
         {
             auto mat = std::make_shared<driver::material>();
             //mat->setMaterialRender(driver::rmt_add);

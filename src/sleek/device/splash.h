@@ -8,7 +8,7 @@ namespace sleek
 {
     namespace gui
     {
-        class interface;
+        class Interface;
     }
     namespace driver
     {
@@ -40,7 +40,7 @@ namespace sleek
                 void resize(const math::vec2i&) noexcept;
 
                 driver::context* getRenderer() const noexcept;
-                gui::interface*  getGUIEnvirnoment() const noexcept;
+                gui::Interface*  getGUIEnvirnoment() const noexcept;
                 math::timer*     getTimer() const noexcept;
 
                 void render() noexcept;
@@ -52,7 +52,7 @@ namespace sleek
                 std::shared_ptr<driver::texture> csp;
                 std::shared_ptr<driver::driver>  driver;
                 std::shared_ptr<driver::context> renderer;
-                std::shared_ptr<gui::interface>  guienv;
+                std::shared_ptr<gui::Interface>  guienv;
                 math::timer *tm;
         };
     }
