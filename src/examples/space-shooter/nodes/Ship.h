@@ -14,6 +14,9 @@ class Ship : public Object
         virtual bool manage(sleek::device::input*) noexcept;
         
         virtual void update(const sleek::math::vec2f& force, float dt);
+    private:
+        std::chrono::steady_clock::time_point fire_interval;
+        bool fire;
 };
 
 #endif // NODE

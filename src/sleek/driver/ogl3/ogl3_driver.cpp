@@ -600,6 +600,7 @@ namespace sleek
                 // _glState[bool(i->mat & rmt_lighting)](GL_LIGHTING);
                 _glState[bool(i->mat & rmt_fog)](GL_FOG);
                 _glState[bool(i->fac != rfc_off)](GL_CULL_FACE);
+                _glState[i->depth_test](GL_DEPTH_TEST);
 
                 // Set shading model
                 glShadeModel(i->shd & rsd_flat ? GL_FLAT : GL_SMOOTH);

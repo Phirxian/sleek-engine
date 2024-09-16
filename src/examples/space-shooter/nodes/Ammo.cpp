@@ -14,46 +14,14 @@ Ammo::~Ammo() noexcept
 
 bool Ammo::shouldInteract(const Object* other) const noexcept
 {
+    if(!other)
+        return false;
+
     if(other->getType() == GOT_AMMO)
-        return false;
+        if(other->owner == owner)
+            return false;
+
     return Object::shouldInteract(other);
-}
-
-bool Ammo::manage(device::input *e) noexcept
-{
-    if (e->type == device::EVENT_NOTHINK)
-        return false;
-
-    if (e->type == device::EVENT_KEY_DOWN)
-    {
-        if (e->key_state[device::KEY_KEY_W])
-            direction.y -= 2;
-        if (e->key_state[device::KEY_KEY_S])
-            direction.y += 2;
-        if (e->key_state[device::KEY_KEY_A])
-            direction.x -= 2;
-        if (e->key_state[device::KEY_KEY_D])
-            direction.x += 2;
-    }
-
-    if (e->type == device::EVENT_KEY_UP)
-    {
-        if (e->key[device::KEY_KEY_W])
-            direction.y = 0.f;
-        if (e->key[device::KEY_KEY_S])
-            direction.y = 0.f;
-        if (e->key[device::KEY_KEY_A])
-            direction.x = 0.f;
-        if (e->key[device::KEY_KEY_D])
-            direction.x = 0.f;
-    }
-
-    direction.x = math::clamp(direction.x, -1.f, 1.f)*4;
-    direction.y = math::clamp(direction.y, -1.f, 1.f)*4;
-
-    //std::cout << e->type << " direction " << direction.x << "," << direction.y << std::endl;
-
-    return false;
 }
 
 void Ammo::update(const sleek::math::vec2f& force, float dt)

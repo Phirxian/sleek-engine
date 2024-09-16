@@ -6,7 +6,7 @@
 using namespace sleek;
 
 Object::Object(Game *game, int tid)
-    : game(game), owner(nullptr), mass(1.0), health(100)
+    : game(game), owner(nullptr), mass(1.0), health(100), old_direction(0,0), direction(0,0)
 {
     auto texture = game->getTexture(tid);
     auto plane = std::shared_ptr<driver::mesh>(
@@ -16,7 +16,7 @@ Object::Object(Game *game, int tid)
         })
     );
 
-    radius = math::max(texture->getDimension().x, texture->getDimension().y) / 200.f;
+    base_radius = radius = math::max(texture->getDimension().x, texture->getDimension().y) / 200.f;
     mass = radius*3;
 
     node = std::make_shared<scene3d::real::Natif>(game->getSceneManager());
@@ -39,6 +39,18 @@ Object::~Object()
     game->getSceneManager()->removeNode(node);
 }
 
+void Object::setScale(float i)
+{
+    scale = i;
+    node->setScale({i,i,i});
+    radius = base_radius * i;
+}
+
+float Object::getScale()
+{
+    return scale;
+}
+
 void Object::setSceneNode(std::shared_ptr<sleek::scene3d::real::Natif> new_node) noexcept
 {
     node = new_node;
@@ -56,6 +68,8 @@ sleek::math::vec3f Object::getPosition() const noexcept
 
 bool Object::shouldInteract(const Object* other) const noexcept
 {
+    if(!other)
+        return false;
     return !(other == owner || other == this || owner == this || other->owner == this);
 }
 
@@ -100,7 +114,10 @@ void Object::update(const sleek::math::vec2f& force, float dt)
         velocity += direction * dt;
 
     if (std::isnan(velocity.x + velocity.y) || std::isinf(velocity.x + velocity.y))
+    {
+        printf("%f, %f\n", velocity.x, velocity.y);
         velocity = old_velocity;
+    }
     else
     {
         velocity.x = math::clamp(velocity.x, -5.f, 5.0f);
@@ -124,9 +141,9 @@ void Object::update(const sleek::math::vec2f& force, float dt)
             node->setRotation({0,0,0});
         else
         {
-            float angle = std::atan2(vector.y, vector.x);
-            float angleDegrees = glm::degrees(angle)+90;
-            node->setRotation({0,-angleDegrees,0});
+            float angle = -std::atan2(vector.y, vector.x);
+            float angleDegrees = glm::degrees(angle)-90;
+            node->setRotation({0,angleDegrees,0});
         }
     }
 }

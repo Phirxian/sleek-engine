@@ -24,15 +24,16 @@ class Game : public SpaceShooterState
 
         void render() noexcept;
         
+        std::mt19937 gen;
     protected:
         sleek::math::vec2f calculateForce(const Object *obj1, const Object *obj2) const noexcept;
         void handleCollision(Object *obj1, Object *obj2);
         void simulate(float dt, int steps);
 
     private:
-        std::mt19937 gen;
         sleek::math::vec2f boundary;
         sleek::math::timer time;
+        std::chrono::steady_clock::time_point last_spawn;
         std::shared_ptr<sleek::scene3d::real::Natif> background;
         std::vector<std::shared_ptr<Object>> objects;
         std::vector<std::shared_ptr<Object>> unused;

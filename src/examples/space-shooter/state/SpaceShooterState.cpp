@@ -38,6 +38,7 @@ std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
     mat->setShadeModel(driver::rsd_flat);
     mat->setMaterialRender(driver::rmt_solid);
     mat->setCallback(callback);
+    mat->depth_test = false;
     mat->user[0] = node;
     mat->user[1] = user;
 

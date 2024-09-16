@@ -17,6 +17,7 @@ Game::Game(Core *mom) noexcept
     : SpaceShooterState(mom), rotation(true), boundary{5.f, 5.f}
 {
     smgr = new sleek::scene3d::Scene(screen, mom->getDriver());
+    last_spawn = std::chrono::steady_clock::now();
 
     textures.push_back(mom->getLoader()->loadTexture("texture/background-stars.jpg"));
     textures.push_back(mom->getLoader()->loadTexture("texture/ship/ship-0.png"));
@@ -46,26 +47,25 @@ Game::Game(Core *mom) noexcept
             it->getIdentifier()->update();
         }
     }
-    
-    player = std::make_shared<Ship>(this, 1);
-    player->position = {0,0};
-    player->mass = 10.0f;
-    objects.push_back(player);
 
     // background
-    if (false)
     {
         auto texture = getTexture(0);
-        auto plane = std::shared_ptr<driver::mesh>(driver::Geometry().createPlane({texture->getDimension().x/100.f, texture->getDimension().y/100.f}));
+        auto plane = std::shared_ptr<driver::mesh>(driver::Geometry().createPlane({boundary.x*2, boundary.y*2}));
         background = std::make_shared<scene3d::real::Natif>(getSceneManager());
         getContext()->createVAO(plane.get(), sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);
-        background->setPosition({0,0,0});
+        background->setPosition({0,-1,0});
         background->setMesh(plane);
         background->setMaterial(buildMaterial(background.get(), nullptr, "shader/object/default.vert", "shader/object/solid.frag", SpaceShooterState::material_callback, 0));
         background->getMaterial()->setMaterialRender(driver::rmt_solid);
         background->getMaterial()->setMode(driver::rmd_polygon);
         getSceneManager()->addSceneNode(background);
     }
+
+    player = std::make_shared<Ship>(this, 1);
+    player->position = {0,0};
+    player->mass = 10.0f;
+    objects.push_back(player);
 
     for(int i = 0; i < 10; ++i)
         spawnAsteroid(i);
@@ -103,30 +103,6 @@ void Game::handleCollision(Object *obj1, Object *obj2)
     math::vec2f vector = obj2->position - obj1->position;
     float distance = glm::length(vector);
     float overlap = (obj1->radius + obj2->radius) - distance;
-
-    if (obj1->getType() == GOT_AMMO)
-    {
-        Ammo *ammo = (Ammo*)obj1;
-        obj2->health -= ammo->dammage;
-        if(obj2->health <= 0)
-            remove(obj2);
-        remove(ammo);
-    }
-
-    if (obj2->getType() == GOT_AMMO)
-    {
-        Ammo *ammo = (Ammo*)obj2;
-        obj1->health -= ammo->dammage;
-        if(obj1->health <= 0)
-            remove(obj1);
-        remove(ammo);
-    }
-
-    if (obj1->getType() == GOT_AMMO)
-    {
-        Ammo *ammo = (Ammo*)obj1;
-        obj2->health -= ammo->dammage;
-    }
 
     if (obj1 == player.get() || obj2 == player.get())
     {
@@ -170,34 +146,6 @@ void Game::handleCollision(Object *obj1, Object *obj2)
 
         return;
     }
-    /*/
-
-    // Update velocities after collision
-    math::vec2f v1 = obj1->velocity;
-    math::vec2f v2 = obj2->velocity;
-    float m1 = obj1->mass;
-    float m2 = obj2->mass;
-
-    // Calculate the normal of the collision
-    math::vec2f normal = vector / distance;
-
-    // Calculate the tangent of the collision
-    math::vec2f tangent = math::vec2f(-normal.y, normal.x);
-
-    // Project velocities onto tangent and normal
-    float v1n = glm::dot(v1, normal);
-    float v1t = glm::dot(v1, tangent);
-    float v2n = glm::dot(v2, normal);
-    float v2t = glm::dot(v2, tangent);
-
-    // Perform collision response
-    float newV1n = (v1n * (m1 - m2) + 2 * m2 * v2n) / (m1 + m2);
-    float newV2n = (v2n * (m2 - m1) + 2 * m1 * v1n) / (m1 + m2);
-
-    // Convert back to Cartesian coordinates
-    obj1->velocity = normal * newV1n + tangent * v1t;
-    obj2->velocity = normal * newV2n + tangent * v2t;
-    */
 
     // Update velocities after collision
     math::vec2f v1 = obj1->velocity;
@@ -210,6 +158,29 @@ void Game::handleCollision(Object *obj1, Object *obj2)
     obj1->velocity.y = math::clamp(obj1->velocity.y, -10.f, 10.f);
     obj2->velocity.x = math::clamp(obj2->velocity.x, -10.f, 10.f);
     obj2->velocity.y = math::clamp(obj2->velocity.y, -10.f, 10.f);
+
+    // at the end, 
+    if (obj1 && obj2 && obj1->getType() == GOT_AMMO)
+    {
+        Ammo *ammo = (Ammo*)obj1;
+        obj2->health -= ammo->dammage;
+        if(obj2->health <= 0)
+        {
+            remove(obj2);
+            obj2 = nullptr;
+        }
+        remove(ammo);
+        obj1 = nullptr;
+    }
+
+    if (obj1 && obj2 && obj2->getType() == GOT_AMMO)
+    {
+        Ammo *ammo = (Ammo*)obj2;
+        obj1->health -= ammo->dammage;
+        if(obj1->health <= 0)
+            remove(obj1);
+        remove(ammo);
+    }
 }
 
 void Game::simulate(float dt, int steps)
@@ -221,9 +192,12 @@ void Game::simulate(float dt, int steps)
             auto obj = objects[i];
             math::vec2f totalForce(0, 0);
 
+            if(!obj)
+                continue;
+
             for (const auto& otherObj : objects)
             {
-                if (obj.get() != otherObj.get())
+                if (obj.get() != otherObj.get() && otherObj)
                 {
                     if(obj->shouldInteract(otherObj.get()))
                         totalForce += calculateForce(obj.get(), otherObj.get());
@@ -342,7 +316,7 @@ void Game::spawnAmmo(Object *owner, math::vec2f position, math::vec2f velocity, 
     ammo->velocity = velocity;
     ammo->owner = owner;
     objects.push_back(ammo);
-    std::cout << "new ammo " << i << " at {" << position.x << "," << position.y << "}" << std::endl;
+    //std::cout << "new ammo " << i << " at {" << position.x << "," << position.y << "}" << std::endl;
 }
 
 void Game::spawnAsteroid(int i)
@@ -378,8 +352,9 @@ void Game::spawnAsteroid(int i)
     if (validPosition)
     {
         asteroid->velocity = {vx, vy};
+        asteroid->setScale(1.5f);
         objects.push_back(asteroid);
-        std::cout << "new asteroid " << i << " at {" << position.x << "," << position.y << "}" << std::endl;
+        //std::cout << "new asteroid " << i << " at {" << position.x << "," << position.y << "}" << std::endl;
     }
 }
 
@@ -395,10 +370,20 @@ void Game::render() noexcept
     camera->setTarget(player->getPosition());
     camera->setPosition(player->getPosition() + math::vec3f{0, 7.5, 0.1});
 
+    auto current = std::chrono::steady_clock::now();
+    auto should_spawn = std::chrono::duration_cast<std::chrono::milliseconds>(current - last_spawn).count();
+
+    //smgr->render();
+
     camera->render();
-    //background->render();
+    background->render();
     for(auto &obj : objects)
         obj->render();
-        
-    //smgr->render();
+
+    // after render() avoid glitch
+    if(should_spawn > 2500)
+    {
+        spawnAsteroid(rand());
+        last_spawn = current;
+    }
 }

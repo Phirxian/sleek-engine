@@ -21,6 +21,9 @@ class Object
         Object(Game*, int tid);
         virtual ~Object();
 
+        virtual void setScale(float);
+        virtual float getScale();
+
         virtual ObjectType getType() const noexcept { return GOT_BASIC; }
 
         void setSceneNode(std::shared_ptr<sleek::scene3d::real::Natif>) noexcept;
@@ -38,11 +41,13 @@ class Object
     public:
         Game *game;
         Object *owner;
+
         std::chrono::steady_clock::time_point instanciated;
         std::chrono::steady_clock::time_point collided;
 
         std::shared_ptr<sleek::scene3d::real::Natif> node;
         sleek::math::vec2f position, velocity, direction;
         sleek::math::vec2f old_position, old_velocity, old_direction;
-        float mass, radius, health;
+
+        float mass, radius, base_radius, health, scale;
 };

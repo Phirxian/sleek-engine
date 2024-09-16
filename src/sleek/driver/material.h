@@ -26,6 +26,7 @@ namespace sleek
                     mat = rmt_hard;
                     shd = rsd_smooth;
                     wire = rwf_fill;
+                    depth_test = true;
 
                     Texture.reserve(reserved_texture);
                     effect = nullptr;
@@ -65,8 +66,10 @@ namespace sleek
                 inline std::shared_ptr<shader> getShader() const noexcept { return effect; }
 
                 std::vector<identifier*> Texture;
+
             public:
                 render_mode mode;
+                bool depth_test;
                 f32 psize;
                 u32 ant, mat, shd, fac, wire;
                 std::shared_ptr<shader> effect;

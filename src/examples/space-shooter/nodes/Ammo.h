@@ -12,8 +12,6 @@ class Ammo : public Object
         virtual ObjectType getType() const noexcept { return GOT_AMMO; }
 
         virtual bool shouldInteract(const Object* other) const noexcept;
-
-        virtual bool manage(sleek::device::input*) noexcept;
         
         virtual void update(const sleek::math::vec2f& force, float dt);
     public:

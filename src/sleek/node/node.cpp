@@ -88,9 +88,11 @@ namespace sleek
 
             math::mat4f model = glm::mat4(1.0f);
             model = glm::translate(model, npos);
-            model = model * glm::rotate(math::mat4f(1.0f), glm::radians(nrot.x), math::vec3f(1.0f, 0.0f, 0.0f));
-            model = model * glm::rotate(math::mat4f(1.0f), glm::radians(nrot.y), math::vec3f(0.0f, 1.0f, 0.0f));
-            model = model * glm::rotate(math::mat4f(1.0f), glm::radians(nrot.z), math::vec3f(0.0f, 0.0f, 1.0f));
+
+            math::quatf rotationQuat = glm::quat(glm::radians(nrot));
+            math::mat4f rotationMatrix = glm::mat4_cast(rotationQuat);
+
+            model = model * rotationMatrix;
 
             model = glm::scale(model, nsca);
             return model;

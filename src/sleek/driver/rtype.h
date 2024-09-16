@@ -33,7 +33,9 @@ namespace sleek
             rmt_add          = 0x002,
             rmt_sub          = 0x004,
             rmt_lighting     = 0x008,
-            rmt_fog          = 0x016
+            rmt_fog          = 0x016,
+            //! TODO enable/disable depth test
+            // rmt_depth        = 0x032,
         };
         enum render_antialiasing
         {
