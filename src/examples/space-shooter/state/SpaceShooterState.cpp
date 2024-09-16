@@ -26,22 +26,20 @@ sleek::driver::context* SpaceShooterState::getContext() const noexcept
 std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
     sleek::scene3d::Node *node, void *user,
     std::string filename_vert, std::string filename_frag,
-    sleek::driver::shader_callback callback, int tid
+    sleek::driver::material_callback callback, int tid
 ) noexcept
 {
-    std::string material_key;
-    material_key += filename_vert + "-";
-    material_key += filename_frag + "-";
-    material_key += tid;
-
-    auto it = material_cache.find(material_key);
-    if (it!= material_cache.end())
-        return it->second;
+    std::string shader_key;
+    shader_key += filename_vert + "-";
+    shader_key += filename_frag;
 
     auto mat = std::make_shared<driver::material>();
     mat->setMode(driver::rmd_polygon);
     mat->setShadeModel(driver::rsd_flat);
     mat->setMaterialRender(driver::rmt_solid);
+    mat->setCallback(callback);
+    mat->user[0] = node;
+    mat->user[1] = user;
 
     if(tid >= 0 && tid < textures.size() && textures[tid])
         mat->Texture.push_back(textures[tid]->getIdentifier().get());
@@ -56,35 +54,24 @@ std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
         return mat;
     }
 
-    auto shade = core->getContext()->createShader();
-    shade->attacheShader(driver::shd_vert, vertShaderCode, "main_vertex");
-    shade->attacheShader(driver::shd_frag, fragShaderCode, "main_fragment");
-
-    // Set up shader user data
-    shade->user[0] = node;
-    shade->user[1] = user;
-
-    if (shade->compileShader())
+    auto it = shader_cache.find(shader_key);
+    if (it != shader_cache.end())
     {
-        mat->setShader(shade);
-        shade->setCallback(callback);
+        mat->setShader(it->second);
     }
     else
     {
-        /*
-        std::cout << "Shader compilation failed." << std::endl;
-        std::cout << "Vertex Shader: " << filename_vert << std::endl;
-        std::cout << "Fragment Shader: " << filename_frag << std::endl;
-        std::cout << "--------------------" << std::endl;
-        std::cout << "Vertex Code: " << vertShaderCode << std::endl;
-        std::cout << "--------------------" << std::endl;
-        std::cout << "Fragment Code: " << fragShaderCode << std::endl;
-        std::cout << "--------------------" << std::endl;
-        */
-        std::this_thread::sleep_for(std::chrono::seconds(10));
-    }
+        auto shade = core->getContext()->createShader();
+        shade->attacheShader(driver::shd_vert, vertShaderCode, "main_vertex");
+        shade->attacheShader(driver::shd_frag, fragShaderCode, "main_fragment");
 
-    material_cache[material_key] = mat;
+        if (shade->compileShader())
+            mat->setShader(shade);
+        else
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+
+        shader_cache[shader_key] = shade;
+    }
 
     return mat;
 }
@@ -92,8 +79,8 @@ std::shared_ptr<sleek::driver::material> SpaceShooterState::buildMaterial(
 // Helper function to load and cache shader code
 std::string SpaceShooterState::loadShaderCode(const std::string& filename)
 {
-    auto it = shaders_cache.find(filename);
-    if (it!= shaders_cache.end())
+    auto it = shaders_source_cache.find(filename);
+    if (it!= shaders_source_cache.end())
         return it->second;
 
     auto shaderCode = core->getFileSystem()->read(filename)->readAll();
@@ -104,7 +91,7 @@ std::string SpaceShooterState::loadShaderCode(const std::string& filename)
         return "";
     }
 
-    shaders_cache[filename] = shaderCode;
+    shaders_source_cache[filename] = shaderCode;
 
     return shaderCode;
 }

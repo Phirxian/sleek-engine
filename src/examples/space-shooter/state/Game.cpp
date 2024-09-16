@@ -98,11 +98,14 @@ void Game::handleCollision(Object *obj1, Object *obj2)
     float distance = glm::length(vector);
     float overlap = (obj1->radius + obj2->radius) - distance;
 
-    std::cout << "handle collision "
-              << obj1 << "-" << obj2
-              << " overlap " << overlap
-              << " distance " << distance
-              << std::endl;
+    if (obj1 == player.get() || obj2 == player.get())
+    {
+        std::cout << "handle collision "
+                << obj1 << "-" << obj2
+                << " overlap " << overlap
+                << " distance " << distance
+                << std::endl;
+    }
 
     // Check for division by zero set to 1e-6f
     // Check for stupid overlapping set it higher
@@ -116,10 +119,10 @@ void Game::handleCollision(Object *obj1, Object *obj2)
 
         // Resolve overlap smoothly
         math::vec2f direction = vector / distance;
-        float factor = 0.5f;
+        float factor = 1.f;
 
         if (obj1 == player.get() || obj2 == player.get())
-            factor = 1.0f;
+            factor = 2.0f;
 
         if (obj1 != player.get())
         {

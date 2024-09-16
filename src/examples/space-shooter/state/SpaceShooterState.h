@@ -21,23 +21,24 @@ class SpaceShooterState : public sleek::device::event
             sleek::scene3d::Node *node, void *user,
             std::string filename_vert,
             std::string filename_frag,
-            sleek::driver::shader_callback callback,
+            sleek::driver::material_callback callback,
             int tid
         ) noexcept;
 
         std::string loadShaderCode(const std::string& filename);
 
-        static void material_callback(sleek::driver::shader *i) noexcept
+        static void material_callback(sleek::driver::material *mat) noexcept
         {
-            auto *node = static_cast<sleek::scene3d::real::Natif*>(i->user[0]);
+            auto i = mat->getShader();
+            auto *node = static_cast<sleek::scene3d::real::Natif*>(mat->user[0]);
             auto *camera = node->getScene()->getCamera();
 
             i->setVariable("model",      node->getModelMatrix());
             i->setVariable("view",       camera->getViewMatrix());
             i->setVariable("projection", camera->getProjectionMatrix());
 
-            if (node->getMaterial())
-                i->setTexture("base", node->getMaterial()->Texture[0], 0);
+            if (mat->Texture.size())
+                i->setTexture("base", mat->Texture[0], 0);
         };
 
         sleek::driver::context* getContext() const noexcept;
@@ -54,8 +55,8 @@ class SpaceShooterState : public sleek::device::event
         sleek::scene3d::Scene *smgr;
         
         std::vector<std::shared_ptr<sleek::driver::texture>> textures;
-        std::map<std::string, std::shared_ptr<sleek::driver::material>> material_cache;
-        std::map<std::string, std::string> shaders_cache;
+        std::map<std::string, std::shared_ptr<sleek::driver::shader>> shader_cache;
+        std::map<std::string, std::string> shaders_source_cache;
         
         sleek::math::timer tm;
         Core *core;

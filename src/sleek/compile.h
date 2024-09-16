@@ -39,4 +39,5 @@
 
 #define reserved_texture 4
 #define gui_frame_userdata 2
-#define shader_userdata 2
+#define shader_userdata 4
+#define material_userdata 4

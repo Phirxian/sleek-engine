@@ -12,7 +12,7 @@ Object::Object(Game *game, int tid)
     auto plane = std::shared_ptr<driver::mesh>(driver::Geometry().createPlane({texture->getDimension().x/100.f, texture->getDimension().y/100.f}));
 
     radius = math::max(texture->getDimension().x, texture->getDimension().y) / 200.f;
-    mass = 1+radius;
+    mass = radius*3;
 
     node = std::make_shared<scene3d::real::Natif>(game->getSceneManager());
     game->getContext()->createVAO(plane.get(), sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);

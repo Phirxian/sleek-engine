@@ -55,18 +55,6 @@ namespace sleek
         }
 
         template<bool dsa>
-        void ogl3_shader<dsa>::setLinkToMaterial(material* i) noexcept
-        {
-            link = i;
-        }
-
-        template<bool dsa>
-        material* ogl3_shader<dsa>::getLinkFromMaterial() const noexcept
-        {
-            return link;
-        }
-
-        template<bool dsa>
         void ogl3_shader<dsa>::attacheShader(const shader_type i, const std::string &data, const std::string &main) noexcept
         {
             GLint lenght = data.size();

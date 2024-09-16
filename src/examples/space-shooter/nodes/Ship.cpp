@@ -42,7 +42,7 @@ bool Ship::manage(device::input *e) noexcept
     direction.x = math::clamp(direction.x, -1.f, 1.f)*4;
     direction.y = math::clamp(direction.y, -1.f, 1.f)*4;
 
-    std::cout << e->type << " direction " << direction.x << "," << direction.y << std::endl;
+    //std::cout << e->type << " direction " << direction.x << "," << direction.y << std::endl;
 
     return false;
 }

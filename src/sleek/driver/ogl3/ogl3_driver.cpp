@@ -122,8 +122,16 @@ namespace sleek
             glPushMatrix();
             //glLoadIdentity();
             ctx->testError(-1, "ObjectRenderBegin");
-            if(mat && mat->effect)
-                mat->effect->update();
+
+            if(mat)
+            {
+                if(mat->callback)
+                    mat->callback(mat.get());
+
+                if(mat->effect)
+                    mat->effect->update();
+            }
+
             ctx->testError(-1, "shader_callback");
             glColor4f(1.f, 1.f, 1.f, 1.f);
         }

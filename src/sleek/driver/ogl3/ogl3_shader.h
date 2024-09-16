@@ -22,9 +22,6 @@ namespace sleek
                 virtual void attacheShader(const shader_type, const std::string &prog, const std::string &main) noexcept;
                 virtual void detacheShader(const shader_type) noexcept;
 
-                virtual void setLinkToMaterial(material*) noexcept;
-                virtual material* getLinkFromMaterial() const noexcept;
-
                 virtual void setVariable(const std::string&, const f32) noexcept;
                 virtual void setVariable(const std::string&, const s32) noexcept;
                 virtual void setVariable(const std::string&, const u32) noexcept;
@@ -54,7 +51,6 @@ namespace sleek
             protected:
                 virtual bool LinkAndValidate() noexcept;
             protected:
-                material *link;
                 GLuint shaders[shd_count], prog;
                 unsigned enabled;
         };

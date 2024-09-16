@@ -13,7 +13,7 @@ out vec4 position;
 
 void main()
 {
-    color = C*texture2D(base, uv) * vec4(1,0,0,1);
+    color = C*texture2D(base, uv);
     normal = vec4(normalize(N),1);
     position = vec4(P.xy / P.w * gl_FragCoord.z, gl_FragCoord.z, 1);
 }

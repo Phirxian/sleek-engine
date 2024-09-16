@@ -11,7 +11,7 @@ out vec4 position;
 
 void main()
 {
-    color = C * vec4(1,0,0,1);
+    color = C;
     normal = vec4(normalize(N),1);
     position = vec4(P.xy / P.w * gl_FragCoord.z, gl_FragCoord.z, 1);
 }

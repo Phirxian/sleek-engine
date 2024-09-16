@@ -99,7 +99,6 @@ namespace sleek
             public:
                 void* user[shader_userdata];
             protected:
-                void *users;
                 shader_callback callback;
                 std::string source[shd_count];
                 int compiled;
