@@ -44,4 +44,4 @@ Actully only opengl3 context is supported but the architect allow to define new 
 But directx or cpu driver is not planned to be implemented but possible.
 
 
-![alt text](figure/inherit_graph_25.png "Graph")
+![alt text](figure/inherit_graph_29.png "Graph")
