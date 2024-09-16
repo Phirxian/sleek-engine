@@ -156,7 +156,7 @@ namespace sample
         grid->setMaterial(buildMaterial(
             grid.get(), nullptr,
             "shader/object/default.vert",
-            "shader/object/solid.frag",
+            "shader/object/default.frag",
             Sample::material_callback, 0
         ));
         smgr->addSceneNode(grid);
@@ -168,7 +168,7 @@ namespace sample
         node[0]->setMaterial(buildMaterial(
             node[0].get(), &linear_blend,
             "shader/object/linear_blend.vert",
-            "shader/object/solid.frag",
+            "shader/object/default.frag",
             LinearBlend::shader_callback, 1
         ));
         node[0]->setMesh(linear_blend.getptr());
@@ -181,7 +181,7 @@ namespace sample
         node[1]->setMaterial(buildMaterial(
             node[1].get(), &dual_quat,
             "shader/object/dual_quaternion.vert",
-            "shader/object/solid.frag",
+            "shader/object/default.frag",
             DualQuaternion::shader_callback, 1
         ));
         
@@ -266,6 +266,14 @@ namespace sample
             if(a->key[KEY_SPACE])
             {
                 rotation = !rotation;
+                return true;
+            }
+
+            //! engine test
+            if(a->key[KEY_F1])
+            {
+                for(unsigned i =0; i<5; ++i)
+                    node[i]->setEnable(!node[i]->getEnable());
                 return true;
             }
             

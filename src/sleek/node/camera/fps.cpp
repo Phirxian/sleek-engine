@@ -19,6 +19,23 @@ namespace sleek
 
             bool FPSCamera::manage(device::input *e) noexcept
             {
+                // Handle keyboard input for movement
+                // should always be updated
+                moveDirection = {0,0,0};
+
+                if (e->key_state[device::KEY_KEY_W])
+                    moveDirection += front;
+                if (e->key_state[device::KEY_KEY_S])
+                    moveDirection -= front;
+                if (e->key_state[device::KEY_KEY_A])
+                    moveDirection -= right;
+                if (e->key_state[device::KEY_KEY_D])
+                    moveDirection += right;
+                if (e->key_state[device::KEY_SPACE])
+                    moveDirection += up;
+                if (e->key_state[device::KEY_LSHIFT])
+                    moveDirection -= up;
+
                 if (e->type == device::EVENT_MOUSSE_MOVED)
                 {
                     math::vec2f delta = math::vec2f(e->mouse_pos.x - lastMousePos.x, e->mouse_pos.y - lastMousePos.y);
@@ -35,25 +52,6 @@ namespace sleek
                             screen->WarpMouse(screen->getInfo().size/2);
                         }
                     }
-                }
-
-                if (e->type == device::EVENT_KEY_DOWN || e->type == device::EVENT_KEY_UP)
-                {
-                    // Handle keyboard input for movement
-                    moveDirection = {0,0,0};
-
-                    if (e->key_state[device::KEY_KEY_W])
-                        moveDirection += front;
-                    if (e->key_state[device::KEY_KEY_S])
-                        moveDirection -= front;
-                    if (e->key_state[device::KEY_KEY_A])
-                        moveDirection -= right;
-                    if (e->key_state[device::KEY_KEY_D])
-                        moveDirection += right;
-                    if (e->key_state[device::KEY_SPACE])
-                        moveDirection += up;
-                    if (e->key_state[device::KEY_LSHIFT])
-                        moveDirection -= up;
                 }
 
                 return Camera::manage(e);

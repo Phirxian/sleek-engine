@@ -20,7 +20,7 @@ namespace sleek
 {
     namespace loader
     {
-        static std::shared_ptr<driver::mesh> debug(const std::shared_ptr<driver::mesh> &ptr, const char *filename)
+        static std::shared_ptr<driver::mesh> debug_texture(const std::shared_ptr<driver::mesh> &ptr, const char *filename)
         {
             std::cout << "Mesh \"" << filename << "\" ";
             if(ptr)
@@ -36,7 +36,8 @@ namespace sleek
             }
             return ptr;
         }
-        static std::shared_ptr<driver::texture> debug(const std::shared_ptr<driver::texture> &ptr, const char *filename)
+        
+        static std::shared_ptr<driver::texture> debug_texture(const std::shared_ptr<driver::texture> &ptr, const char *filename)
         {
             std::cout << "Texture \"" << filename << "\" ";
             if(ptr)
@@ -45,6 +46,25 @@ namespace sleek
                     << "\t vec2{" << ptr->getDimension().x << ", " << ptr->getDimension().y << "}"
                     << "\t bits{" << ptr->getPitch()*8 << "}"
                     << "\t format{" << driver::TextureFormatName[ptr->getFormat()-1] << "}"
+                    << std::endl;
+                //ptr->filename = filename;
+            }
+            else
+            {
+                std::cout << "failed to load" << std::endl;
+            }
+            return ptr;
+        }
+
+        static std::shared_ptr<driver::mesh> debug_mesh(const std::shared_ptr<driver::mesh> &ptr, const char *filename)
+        {
+            std::cout << "Texture \"" << filename << "\" ";
+            if(ptr)
+            {
+                std::cout
+                    << "\t vertices{" << ptr->vertices.size() << "}"
+                    << "\t indices{" << ptr->indices.size() << "}"
+                    << "\t attributes{" << ptr->datas.size() << "}"
                     << std::endl;
                 //ptr->filename = filename;
             }
@@ -155,7 +175,7 @@ namespace sleek
                     auto loader = e.second;
                     auto file = fs->read(filename);
                     auto mesh = file ? loader->read(file.get()) : nullptr;
-                    debug(mesh, filename.c_str());
+                    debug_mesh(mesh, filename.c_str());
                     return mesh;
                 }
             }
@@ -172,7 +192,7 @@ namespace sleek
                     auto loader = e.second;
                     auto file = fs->read(filename);
                     auto texture = file ? loader->read(file.get()) : nullptr;
-                    debug(texture, filename.c_str());
+                    debug_texture(texture, filename.c_str());
                     return texture;
                 }
             }

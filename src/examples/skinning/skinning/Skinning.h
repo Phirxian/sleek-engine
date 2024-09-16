@@ -31,6 +31,7 @@ namespace sample
                 auto *node = static_cast<sleek::scene3d::real::Natif*>(i->user[0]);
                 auto *camera = node->getScene()->getCamera();
 
+                i->setVariable("color",      sleek::math::vec4f{1,1,1,1});
                 i->setVariable("model",      node->getModelMatrix());
                 i->setVariable("view",       camera->getViewMatrix());
                 i->setVariable("projection", camera->getProjectionMatrix());

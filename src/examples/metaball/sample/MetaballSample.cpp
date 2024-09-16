@@ -37,6 +37,16 @@ namespace sample
         metaball.update();
         metaball.setThreshold(2.0f);
 
+        auto grid = std::make_shared<scene3d::real::Grid>(smgr);
+        grid->setPosition({0,-50,0});
+        grid->setMaterial(buildMaterial(
+            grid.get(), nullptr,
+            "shader/object/default.vert",
+            "shader/object/default.frag",
+            Sample::material_callback, 0
+        ));
+        smgr->addSceneNode(grid);
+
 //        core->getContext()->createVAO(tmp.get(), sleek::driver::VAO_DYNAMIC, sleek::driver::VAO_DYNAMIC);
         core->getContext()->createVAO(tmp.get(), sleek::driver::VAO_STREAM, sleek::driver::VAO_STREAM);
 //        core->getContext()->createVAO(tmp.get(), sleek::driver::VAO_STATIC, sleek::driver::VAO_STATIC);

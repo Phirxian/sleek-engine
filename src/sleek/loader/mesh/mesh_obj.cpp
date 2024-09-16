@@ -123,20 +123,23 @@ namespace sleek
                 
                 mesh->vertices.resize(obj_vertices.size());
                 for(uint32_t i=0; i<obj_vertices.size(); ++i)
-                    mesh->vertices[i].Pos = obj_positions.at(obj_vertices[i].p-1);
+                    if (i < obj_positions.size())
+                        mesh->vertices[i].Pos = obj_positions[obj_vertices[i].p];
 
                 if(!obj_normals.empty())
                 {
                     mesh->vertices.resize(obj_vertices.size());
                     for(uint32_t i=0; i<obj_vertices.size(); ++i)
-                        mesh->vertices[i].Normal = obj_normals.at(obj_vertices[i].n-1);
+                        if (i < obj_normals.size())
+                            mesh->vertices[i].Normal = obj_normals[obj_vertices[i].n];
                 }
 
                 if(!obj_texcoords.empty())
                 {
                     mesh->vertices.resize(obj_vertices.size());
                     for(uint32_t i=0; i<obj_vertices.size(); ++i)
-                        mesh->vertices[i].Coord = obj_texcoords.at(obj_vertices[i].uv-1);
+                        if (i < obj_texcoords.size())
+                            mesh->vertices[i].Coord = obj_texcoords[obj_vertices[i].uv];
                 }
                 
             #endif
