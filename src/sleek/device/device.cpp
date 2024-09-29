@@ -28,7 +28,7 @@ namespace sleek
                     case DWM_SDL: return std::make_shared<Device_sdl>(info); break;
                 #endif
                 #if defined sdl2_device_support
-                    case DWM_SDL: return std::make_shared<Device_sdl2>(info); break;
+                    case DWM_SDL2: return std::make_shared<Device_sdl2>(info); break;
                 #endif
                 #if defined x11_device_support
                     case DWM_X11: return std::make_shared<Device_x11>(info); break;

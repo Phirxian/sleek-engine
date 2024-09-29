@@ -21,7 +21,7 @@
                     Device_sdl2(const Device_stub&) noexcept;
                     virtual ~Device_sdl2() noexcept;
 
-                    virtual const DeviceWindowManager getType() const { return DWM_SDL; }
+                    virtual const DeviceWindowManager getType() const { return DWM_SDL2; }
 
                     virtual bool run() noexcept;
                     virtual void begin(const math::pixel&) noexcept;

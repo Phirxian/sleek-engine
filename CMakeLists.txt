@@ -115,6 +115,7 @@ endif(X11_FOUND)
 
 if(SDL_FOUND)
   add_definitions("-Dsdl_device_support")
+  list(APPEND ALL_LIBS ${SDL_LIBRARIES})
 endif(SDL_FOUND)
 
 if(SDL2_FOUND)

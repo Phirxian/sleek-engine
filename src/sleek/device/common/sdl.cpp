@@ -10,9 +10,9 @@
 #endif
 
 extern "C" {
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_video.h>
-    #include <SDL2/SDL_syswm.h>
+    #include <SDL/SDL.h>
+    #include <SDL/SDL_video.h>
+    #include <SDL/SDL_syswm.h>
 }
 
 namespace sleek
@@ -163,7 +163,6 @@ namespace sleek
             SDL_GL_SwapBuffers();
             if(!reading) return;
             Device::end();
-            os::Sleeping(1);
             reading = false;
         }
 
