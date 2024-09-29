@@ -58,6 +58,8 @@ namespace sleek
         {
             //log = spdlog::stdout_logger_mt("sleek-think");
             evt = ext;
+            kbd = detectKeyboardLayout();
+            printKeyboardLayout(kbd);
         }
 
         Device::~Device() noexcept

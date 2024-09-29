@@ -39,6 +39,8 @@ namespace sleek
                     math::vec3f front;
                     math::vec3f right;
                     math::vec3f up;
+                    
+                    sleek::device::KEYCODE key_up, key_left, key_down, key_right;
             };
         }
     }

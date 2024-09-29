@@ -8,6 +8,7 @@
 #include "../math/fps_counter.h"
 #include "tool/cpuid.h"
 #include "event.h"
+#include "keyboard.h"
 #include <memory>
 
 namespace spdlog
@@ -58,6 +59,7 @@ namespace sleek
                 virtual void enableWindowDecorator(bool) noexcept;
 
                 virtual math::vec2i getDesktopVideoSize() const noexcept = 0;
+                virtual KEYBOARD_LAYOUT getKeyboardLayout() { return kbd; }
 
                 virtual std::shared_ptr<tool::cpuid> getCPUID() const noexcept;
                 virtual std::shared_ptr<spdlog::logger> getLogger() const noexcept;
@@ -99,6 +101,8 @@ namespace sleek
                 bool running, reading;
 
                 void welcomeMessage() noexcept;
+            private:
+                KEYBOARD_LAYOUT kbd;
         };
         std::shared_ptr<Device> CreateDeviceWindowManager(const DeviceWindowManager&, const Device_stub&) noexcept;
     }

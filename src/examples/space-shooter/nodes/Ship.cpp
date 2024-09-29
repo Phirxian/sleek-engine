@@ -2,6 +2,7 @@
 #include "Ammo.h"
 
 #include "../state/Game.h"
+#include "sleek/device/keyboard.h"
 
 using namespace sleek;
 
@@ -9,6 +10,21 @@ Ship::Ship(Game *game, int tid) noexcept
     : Object(game, tid), fire(false)
 {
     fire_interval = std::chrono::steady_clock::now();
+    
+    if (game->getDevice()->getKeyboardLayout() == sleek::device::KEYBOARD_LAYOUT::KBD_QWERTY)
+    {
+        key_up = device::KEY_KEY_W;
+        key_left = device::KEY_KEY_A;
+        key_down = device::KEY_KEY_S;
+        key_right = device::KEY_KEY_Q;
+    }
+    else
+    {
+        key_up = device::KEY_KEY_Z;
+        key_left = device::KEY_KEY_Q;
+        key_down = device::KEY_KEY_S;
+        key_right = device::KEY_KEY_D;
+    }
 }
 
 Ship::~Ship() noexcept
@@ -22,13 +38,13 @@ bool Ship::manage(device::input *e) noexcept
 
     if (e->type == device::EVENT_KEY_DOWN)
     {
-        if (e->key_state[device::KEY_KEY_W])
+        if (e->key_state[key_up])
             direction.y -= 2;
-        if (e->key_state[device::KEY_KEY_S])
+        if (e->key_state[key_down])
             direction.y += 2;
-        if (e->key_state[device::KEY_KEY_A])
+        if (e->key_state[key_left])
             direction.x -= 2;
-        if (e->key_state[device::KEY_KEY_D])
+        if (e->key_state[key_right])
             direction.x += 2;
     }
 
@@ -36,13 +52,13 @@ bool Ship::manage(device::input *e) noexcept
 
     if (e->type == device::EVENT_KEY_UP)
     {
-        if (e->key[device::KEY_KEY_W])
+        if (e->key[key_up])
             direction.y = 0.f;
-        if (e->key[device::KEY_KEY_S])
+        if (e->key[key_down])
             direction.y = 0.f;
-        if (e->key[device::KEY_KEY_A])
+        if (e->key[key_left])
             direction.x = 0.f;
-        if (e->key[device::KEY_KEY_D])
+        if (e->key[key_right])
             direction.x = 0.f;
     }
 

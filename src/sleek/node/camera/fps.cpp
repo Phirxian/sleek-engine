@@ -15,6 +15,21 @@ namespace sleek
                 right = math::vec3f(1.0f, 0.0f, 0.0f);
                 up = math::vec3f(0.0f, 1.0f, 0.0f);
                 timer.reset();
+                
+                if (dev->getKeyboardLayout() == sleek::device::KEYBOARD_LAYOUT::KBD_QWERTY)
+                {
+                    key_up = device::KEY_KEY_W;
+                    key_left = device::KEY_KEY_A;
+                    key_down = device::KEY_KEY_S;
+                    key_right = device::KEY_KEY_D;
+                }
+                else
+                {
+                    key_up = device::KEY_KEY_Z;
+                    key_left = device::KEY_KEY_Q;
+                    key_down = device::KEY_KEY_S;
+                    key_right = device::KEY_KEY_D;
+                }
             }
 
             bool FPSCamera::manage(device::input *e) noexcept
@@ -23,13 +38,13 @@ namespace sleek
                 // should always be updated
                 moveDirection = {0,0,0};
 
-                if (e->key_state[device::KEY_KEY_W])
+                if (e->key_state[key_up])
                     moveDirection += front;
-                if (e->key_state[device::KEY_KEY_S])
+                if (e->key_state[key_down])
                     moveDirection -= front;
-                if (e->key_state[device::KEY_KEY_A])
+                if (e->key_state[key_left])
                     moveDirection -= right;
-                if (e->key_state[device::KEY_KEY_D])
+                if (e->key_state[key_right])
                     moveDirection += right;
                 if (e->key_state[device::KEY_SPACE])
                     moveDirection += up;

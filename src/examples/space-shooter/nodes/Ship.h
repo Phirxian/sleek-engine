@@ -16,6 +16,7 @@ class Ship : public Object
         virtual void update(const sleek::math::vec2f& force, float dt);
     private:
         std::chrono::steady_clock::time_point fire_interval;
+        sleek::device::KEYCODE key_up, key_left, key_down, key_right;
         bool fire;
 };
 
