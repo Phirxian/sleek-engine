@@ -133,7 +133,7 @@ void update_title(device::Device *screen, math::timer time) noexcept
 int main(int argc, char *args[])
 {
     device::Device_stub info = device::Device_stub(SCREEN_WIDTH, SCREEN_HEIGHT, 32, false);
-    auto screen = CreateDeviceWindowManager(device::DWM_GLFW3, info);
+    auto screen = CreateDeviceWindowManager(device::DWM_AUTO, info);
 
     if(screen == nullptr)
     {

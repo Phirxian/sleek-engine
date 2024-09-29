@@ -298,15 +298,15 @@ bool Game::manage(sleek::device::input *a) noexcept
 
 void Game::remove(Object *t) noexcept
 {
-    auto it = std::find_if(
-        objects.begin(), objects.end(),
-        [t](const std::shared_ptr<Object>& node) {
-            return node.get() == t;
-        }
-    );
-
-    if (it != objects.end())
+    auto it = objects.begin();
+    while (it != objects.end())
+    {
+      if (it->get() == t) {
         objects.erase(it);
+        return;
+      }
+      ++it;
+    }
 }
 
 void Game::spawnAmmo(Object *owner, math::vec2f position, math::vec2f velocity, int i)

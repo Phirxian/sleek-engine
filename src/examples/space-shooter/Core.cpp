@@ -26,7 +26,7 @@ using namespace sleek;
 Core::Core() noexcept
 {
     device::Device_stub info = device::Device_stub(1024,768,32,false);
-    screen = CreateDeviceWindowManager(device::DWM_GLFW3, info);
+    screen = CreateDeviceWindowManager(device::DWM_AUTO, info);
 
     if (screen == nullptr)
     {

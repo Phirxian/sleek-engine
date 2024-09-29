@@ -16,10 +16,15 @@ namespace sleek
             switch(type)
             {
                 case DWM_AUTO:
+                    // priority to plateform specific backend
                     #if defined x11_device_support
                         return std::make_shared<Device_x11>(info);
                     #elif defined win_device_support
                         return new Device_win(info));
+                    #elif DWM_GLFW3
+                        return new Device_glfw3(info));
+                    #elif sdl2_device_support
+                        return new Device_sdl2(info));
                     #elif sdl_device_support
                         return new Device_sdl(info));
                     #endif

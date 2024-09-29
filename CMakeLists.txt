@@ -103,7 +103,8 @@ set(
   ${GLEW_LIBRARY}
   freetype
   Threads::Threads
-  -lstdc++fs -lzip
+  -lstdc++fs
+  -lzip
   -fopenmp
 )
 
