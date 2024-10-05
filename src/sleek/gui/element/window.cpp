@@ -79,6 +79,7 @@ namespace sleek
                         e->gui.type = IGT_WINDOW;
                         e->gui.code = IET_WINDOW_CLOSED;
                         mom->removeFrame(getptr());
+                        mom->setActiveFrame(nullptr);
                         return true;
                     }
 

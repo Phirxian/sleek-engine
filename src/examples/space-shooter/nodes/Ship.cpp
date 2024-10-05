@@ -16,7 +16,7 @@ Ship::Ship(Game *game, int tid) noexcept
         key_up = device::KEY_KEY_W;
         key_left = device::KEY_KEY_A;
         key_down = device::KEY_KEY_S;
-        key_right = device::KEY_KEY_Q;
+        key_right = device::KEY_KEY_D;
     }
     else
     {
