@@ -20,13 +20,13 @@ namespace sleek
                     #if defined x11_device_support
                         return std::make_shared<Device_x11>(info);
                     #elif defined win_device_support
-                        return new Device_win(info));
-                    #elif DWM_GLFW3
-                        return new Device_glfw3(info));
-                    #elif sdl2_device_support
-                        return new Device_sdl2(info));
-                    #elif sdl_device_support
-                        return new Device_sdl(info));
+                        return std::make_shared<Device_win>(info);
+                    #elif defined glfw3_device_support
+                        return std::make_shared<Device_glfw3>(info);
+                    #elif defined sdl2_device_support
+                        return std::make_shared<Device_sdl2>(info);
+                    #elif defined sdl_device_support
+                        return std::make_shared<Device_sdl>(info);
                     #endif
                 break;
                 #if defined sdl_device_support
@@ -64,6 +64,9 @@ namespace sleek
 
         Device::~Device() noexcept
         {
+            delete current;
+            delete ext;
+            delete tm;
             exit();
         }
 

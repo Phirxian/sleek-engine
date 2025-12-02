@@ -359,11 +359,11 @@ TheoraVideoFrame* TheoraVideoClip::getNextFrame()
 	for (;;)
 	{
 		frame=mFrameQueue->getFirstAvailableFrame();
-		if (!frame) return 0;
-		if (frame->mTimeToDisplay > time) return 0;
+		if (!frame) return nullptr;
+		if (frame->mTimeToDisplay > time) return nullptr;
 		if (frame->mTimeToDisplay < time-0.1)
 		{
-			if (mRestarted && frame->mTimeToDisplay < 2) return 0;
+			if (mRestarted && frame->mTimeToDisplay < 2) return nullptr;
 #ifdef _DEBUG
 			th_writelog(mName+": dropped frame "+str(frame->getFrameNumber()));
 #endif

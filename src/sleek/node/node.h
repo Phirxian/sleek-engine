@@ -1,5 +1,4 @@
-#ifndef NODE
-#define NODE
+#pragma once
 
 #include "../reference.h"
 #include "../driver/mesh.h"
@@ -40,7 +39,7 @@ namespace sleek
                 virtual std::shared_ptr<driver::material>   getMaterial() noexcept;
 
                 //! used for sorting
-                virtual bool operator < (Node*);
+                virtual bool operator < (const Node *other) const;
 
                 virtual void render() noexcept;
             protected:
@@ -53,4 +52,3 @@ namespace sleek
         };
     }
 }
-#endif // NODE

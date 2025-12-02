@@ -103,18 +103,16 @@ namespace sleek
             return mat;
         }
 
-        bool Node::operator < (Node *other)
+        bool Node::operator < (const Node *other) const
         {
-            if(!other->getMaterial())
+            if(!other || !other->mat)
                 return false;
 
-            if(other->getMaterial()->mat == driver::rmt_solid)
+            if(other->mat->getMaterialRender() == driver::rmt_solid)
                 return false;
 
-            return other && (
-                glm::distance(pos, smgr->getCamera()->getPosition()) <
-                glm::distance(other->pos, smgr->getCamera()->getPosition())
-            );
+            return glm::distance(pos, smgr->getCamera()->getPosition()) <
+                   glm::distance(other->pos, smgr->getCamera()->getPosition());
         }
 
         void Node::render() noexcept

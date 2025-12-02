@@ -1,5 +1,4 @@
-#ifndef SCENE
-#define SCENE
+#pragma once
 
 #include "../device/device.h"
 #include "../driver/fbo.h"
@@ -58,4 +57,3 @@ namespace sleek
         };
     }
 }
-#endif // Scene_H

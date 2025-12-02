@@ -33,6 +33,6 @@ class Core : public sleek::device::event
         std::shared_ptr<sleek::driver::texture>pointor;
     private:
         sleek::math::timer time;
-        PostProcessing *pp;
+        // PostProcessing *pp;
         SpaceShooterState *scene;
 };

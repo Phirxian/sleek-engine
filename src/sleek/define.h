@@ -1,5 +1,4 @@
-#ifndef DEFINE
-#define DEFINE
+#pragma once
 
 #include "compile.h"
 
@@ -25,7 +24,7 @@ namespace sleek
 {
     static constexpr float PI = 3.14159265f;
     static constexpr float DegToRad = PI/180.f;
-    static constexpr float RadToDeg = PI*180.f;
+    static constexpr float RadToDeg = 180.f/PI;
     static constexpr float RECIPROCAL_PI = 1.0/PI;
 
     static constexpr const char *version = "0.6";
@@ -48,5 +47,3 @@ namespace sleek
     typedef float  f32;
     typedef double f64;
 }
-
-#endif

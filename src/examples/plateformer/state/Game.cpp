@@ -217,6 +217,8 @@ void Game::simulate(float dt, int steps)
         for (unsigned i=0; i<objects.size(); ++i)
         {
             auto obj = objects[i];
+            obj->position.x = math::clamp(obj->position.x, -boundary.x, boundary.x);
+            obj->position.y = math::clamp(obj->position.y, -boundary.y, boundary.y);
 
             if(obj->position.x < -boundary.x)
             {
@@ -296,15 +298,15 @@ bool Game::manage(sleek::device::input *a) noexcept
 
 void Game::remove(Object *t) noexcept
 {
-    auto it = objects.begin();
-    while (it != objects.end())
-    {
-      if (it->get() == t) {
+    auto it = std::find_if(
+        objects.begin(), objects.end(),
+        [t](const std::shared_ptr<Object>& node) {
+            return node.get() == t;
+        }
+    );
+
+    if (it != objects.end())
         objects.erase(it);
-        return;
-      }
-      ++it;
-    }
 }
 
 void Game::spawnAmmo(Object *owner, math::vec2f position, math::vec2f velocity, int i)

@@ -4,6 +4,13 @@
 #include <GL/gl.h>
 using namespace sleek;
 
+#define REDUX_COUNT 2
+
+//    {"shader/screen/normal_debug.frag",   1, 0, driver::TXFMT_RGBA},
+//    {"shader/screen/redux_debug.frag",    1, 0, driver::TXFMT_RGBA},
+//    {"shader/screen/position_debug.frag", 1, 0, driver::TXFMT_RGBA},
+//    {"shader/screen/redux_debug.frag",  1,   0, driver::TXFMT_RGBA},
+
 struct postprocess
 {
     const char *fragment;
@@ -13,7 +20,15 @@ struct postprocess
 };
 
 std::vector<postprocess> postprocess_pass = {
-    {"shader/screen/sobel.frag",         1,   0, driver::TXFMT_RGBA},
+//    {"shader/screen/redux.frag",        1, 512, driver::TXFMT_RGBA_32F},
+//    {"shader/screen/redux2.frag",       5,  64, driver::TXFMT_RGBA_32F},
+//
+    {"shader/screen/ssao.frag",         1,   0, driver::TXFMT_LUMINANCE},
+    {"shader/screen/blur.frag",         1, 512, driver::TXFMT_LUMINANCE},
+    {"shader/screen/fxaa.frag",         1,   0, driver::TXFMT_RGBA},
+
+//    {"shader/screen/tonemap.frag",    1,   0, driver::TXFMT_RGBA},
+//    {"shader/screen/debug.frag",      1,   0, driver::TXFMT_RGBA},
 };
 
 PostProcessing::PostProcessing(Core *c) noexcept
@@ -48,6 +63,8 @@ PostProcessing::PostProcessing(Core *c) noexcept
     mt->Texture.push_back(scenefb->getTexture(0)); // albedo
     mt->Texture.push_back(scenefb->getTexture(1)); // normal
     mt->Texture.push_back(scenefb->getTexture(2)); // position
+    mt->Texture.push_back(scenefb->getTexture(0)); // last  {updated later}
+    mt->Texture.push_back(scenefb->getTexture(0)); // redux {updated later}
 
     std::vector<sleek::driver::TextureFormat> attachment;
 
@@ -69,6 +86,8 @@ PostProcessing::PostProcessing(Core *c) noexcept
             device::Device *dev = (device::Device*)i->user[0];
             driver::material *mat = (driver::material*)i->user[2];
 
+            i->setTexture("redux",       mat->Texture[4], 4);
+            i->setTexture("last",        mat->Texture[3], 3);
             i->setTexture("position",    mat->Texture[2], 2);
             i->setTexture("normal",      mat->Texture[1], 1);
             i->setTexture("base",        mat->Texture[0], 0);
@@ -122,6 +141,8 @@ void PostProcessing::end() noexcept
 void PostProcessing::draw() noexcept
 {
     auto *driver = core->getDriver();
+    mt->Texture[3] = fb[0]->getTexture(0);
+    mt->Texture[4] = fb[REDUX_COUNT]->getTexture(0);
     driver->setActiveMaterial(mt);
 
     for(int i = 0; i<pp.size()-1; ++i)

@@ -8,12 +8,12 @@ in vec2 uv;
 uniform sampler2D base;
 
 out vec4 color;
-out vec4 normal;
-out vec4 position;
+out vec3 normal;
+out vec3 position;
 
 void main()
 {
     color = C*texture2D(base, uv);
-    normal = vec4(normalize(N),1);
-    position = vec4(P.xy / P.w * gl_FragCoord.z, gl_FragCoord.z, 1);
+    normal = normalize(N);
+    position = vec3(P.xy / P.w * gl_FragCoord.z, gl_FragCoord.z);
 }

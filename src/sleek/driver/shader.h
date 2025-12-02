@@ -1,5 +1,4 @@
-#ifndef SHADER
-#define SHADER
+#pragma once
 
 #include "texture.h"
 #include "identifier.h"
@@ -105,5 +104,3 @@ namespace sleek
         };
     }
 }
-
-#endif

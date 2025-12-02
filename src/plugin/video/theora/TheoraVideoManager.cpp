@@ -76,7 +76,7 @@ TheoraVideoClip* TheoraVideoManager::getVideoClipByName(std::string name)
 	foreach(TheoraVideoClip*,mClips)
 		if ((*it)->getName() == name) return *it;
 
-	return 0;
+	return nullptr;
 }
 
 void TheoraVideoManager::setAudioInterfaceFactory(TheoraAudioInterfaceFactory* factory)

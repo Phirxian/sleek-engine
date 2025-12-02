@@ -58,7 +58,7 @@ namespace sleek
 
                 // not a pcx
                 if(header.Manufacturer != 0x0a && header.Encoding != 0x01)
-                    return 0;
+                    return nullptr;
 
                 // unsupported type
                 if(header.BitsPerPixel != 8 && header.BitsPerPixel != 4 && header.BitsPerPixel != 1)

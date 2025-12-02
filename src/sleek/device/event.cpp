@@ -5,7 +5,7 @@ namespace sleek
 {
     namespace device
     {
-        event::event() noexcept : asRunning(true)
+        event::event() noexcept : current(nullptr), asRunning(true)
         {
         }
 
@@ -29,7 +29,8 @@ namespace sleek
 
         void event::reset() noexcept
         {
-            current->clear();
+            if (current)
+                current->clear();
         }
 
         void event::exit() noexcept

@@ -37,7 +37,7 @@ namespace sleek
                 glEnd();
             glEndList();
 
-            glNewList(quadc, GL_COMPILE);
+            glNewList(cubec, GL_COMPILE);
                 glBegin(GL_QUADS);
                 glCubeCenter();
                 glEnd();

@@ -1,5 +1,4 @@
-#ifndef TEXTURE_2D
-#define TEXTURE_2D
+#pragma once
 
 #include <iosfwd>
 #include <fstream>
@@ -143,5 +142,3 @@ namespace sleek
         using texture_ptr = std::shared_ptr<texture>;
     }
 }
-
-#endif

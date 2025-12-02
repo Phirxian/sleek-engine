@@ -56,7 +56,10 @@ namespace sleek
         {
             cm->render();
 
-            std::sort(nd.begin(), nd.end());
+            std::sort(nd.begin(), nd.end(), [](const std::shared_ptr<Node>& a, const std::shared_ptr<Node>& b) {
+                return a->operator<(b.get());
+            });
+            
             for(auto &it : nd)
                 it->render();
         }

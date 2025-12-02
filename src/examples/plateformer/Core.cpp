@@ -26,7 +26,7 @@ using namespace sleek;
 Core::Core() noexcept
 {
     device::Device_stub info = device::Device_stub(1024,768,32,false);
-    screen = CreateDeviceWindowManager(device::DWM_AUTO, info);
+    screen = CreateDeviceWindowManager(device::DWM_GLFW3, info);
 
     if (screen == nullptr)
     {
@@ -61,7 +61,7 @@ Core::Core() noexcept
     scene = new Game(this);
     screen->setEventReceiver(this);
 
-    pp = new PostProcessing(this);
+    // pp = new PostProcessing(this);
 }
 
 Core::~Core() noexcept
@@ -113,7 +113,7 @@ bool Core::manage(sleek::device::input *a) noexcept
         }
     }
 
-    pp->manage(a);
+    // pp->manage(a);
 
     if(guienv->manage(a))
         return true;
@@ -163,12 +163,12 @@ void Core::run() noexcept
 
         renderer->bind();
         renderer->begin(0xFF101010);
-            pp->begin();
-                if(scene)
+            //pp->begin();
+            //    if(scene)
                     scene->render();
-            pp->end();
+            //pp->end();
 
-            pp->draw();
+            //pp->draw();
 
             guienv->render();
         renderer->end();

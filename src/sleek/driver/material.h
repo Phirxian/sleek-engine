@@ -1,5 +1,4 @@
-#ifndef MATERIAL
-#define MATERIAL
+#pragma once
 
 #include "../compile.h"
 #include "../define.h"
@@ -78,5 +77,3 @@ namespace sleek
         };
     }
 }
-
-#endif

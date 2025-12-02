@@ -135,7 +135,7 @@ namespace sleek
                     break;
                 }
 
-                return 0;
+                return nullptr;
             #else
                 return nullptr;
             #endif

@@ -1,7 +1,5 @@
 #include "timer.h"
 
-#include <sys/time.h>
-#include <unistd.h>
 #include <chrono>
 
 namespace sleek

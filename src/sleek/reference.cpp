@@ -42,13 +42,13 @@ namespace sleek
     }
     reference* reference::getBloc(const u32 index) const noexcept
     {
-        return getNumberBloc() < index ? bloc[index] : 0;
+        return index < getNumberBloc() ? bloc[index] : nullptr;
     }
     reference* reference::getBloc(const std::string &name) const noexcept
     {
         for(u32 i = 0; i<getNumberBloc(); ++i)
             if(getBloc(i) && getBloc(i)->getSerialiseName() == name) return bloc[i];
-        return 0;
+        return nullptr;
     }
     void reference::removeBloc(const std::string &name) noexcept
     {
@@ -58,7 +58,7 @@ namespace sleek
     void reference::removeBloc(const u32 index) noexcept
     {
         int i = 0;
-        for(auto it = bloc.begin(); it != bloc.end(); ++it)
+        for(auto it = bloc.begin(); it != bloc.end(); ++it, ++i)
         {
             if(i == index)
             {
@@ -85,7 +85,7 @@ namespace sleek
     }
     std::string reference::getAttribute(const u32 index) const noexcept
     {
-        return getNumberAttribute() < index ? info[index].value : "";
+        return index < getNumberAttribute() ? info[index].value : "";
     }
     void reference::removeAttribute(const std::string &name) noexcept
     {
@@ -95,7 +95,7 @@ namespace sleek
     void reference::removeAttribute(const u32 index) noexcept
     {
         int i = 0;
-        for(auto it = info.begin(); it != info.end(); ++it)
+        for(auto it = info.begin(); it != info.end(); ++it, ++i)
         {
             if(i == index)
             {

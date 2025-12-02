@@ -1,8 +1,8 @@
-#ifndef __LOADER__
-#define __LOADER__
+#pragma once
 
 #include <vector>
 #include <utility>
+#include <memory>
 
 #include "ressource.h"
 
@@ -28,12 +28,10 @@ namespace sleek
                 virtual bool writeTexture(std::shared_ptr<driver::texture>, const std::string&) const noexcept;
             public:
                 std::shared_ptr<io::filesystem> fs;
-                std::vector<std::pair<mimetype*, meshloader*>> rmesh;
-                std::vector<std::pair<mimetype*, textureloader*>> rtexture;
-                std::vector<std::pair<mimetype*, meshwriter*>> wmesh;
-                std::vector<std::pair<mimetype*, texturewriter*>> wtexture;
+                std::vector<std::pair<std::unique_ptr<mimetype>, std::unique_ptr<meshloader>>> rmesh;
+                std::vector<std::pair<std::unique_ptr<mimetype>, std::unique_ptr<textureloader>>> rtexture;
+                std::vector<std::pair<std::unique_ptr<mimetype>, std::unique_ptr<meshwriter>>> wmesh;
+                std::vector<std::pair<std::unique_ptr<mimetype>, std::unique_ptr<texturewriter>>> wtexture;
         };
     }
 }
-
-#endif // __LOADER__

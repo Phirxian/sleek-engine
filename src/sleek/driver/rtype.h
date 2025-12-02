@@ -1,5 +1,4 @@
-#ifndef RENDER_TYPE_FOR_MATERIAL
-#define RENDER_TYPE_FOR_MATERIAL
+#pragma once
 
 #include "rtype.h"
 
@@ -51,5 +50,3 @@ namespace sleek
         };
     }
 }
-
-#endif

@@ -85,94 +85,72 @@ namespace sleek
             else
             {
                 #ifdef texture_loader_blp_support
-                rtexture.push_back(std::make_pair(new texturemime_blp(), new textureloader_blp()));
-                wtexture.push_back(std::make_pair(new texturemime_blp(), new texturewriter_blp()));
+                rtexture.push_back(std::make_pair(std::make_unique<texturemime_blp>(), std::make_unique<textureloader_blp>()));
+                wtexture.push_back(std::make_pair(std::make_unique<texturemime_blp>(), std::make_unique<texturewriter_blp>()));
                 #endif
 
                 #ifdef texture_loader_bmp_support
-                rtexture.push_back(std::make_pair(new texturemime_bmp(), new textureloader_bmp()));
-                wtexture.push_back(std::make_pair(new texturemime_bmp(), new texturewriter_bmp()));
+                rtexture.push_back(std::make_pair(std::make_unique<texturemime_bmp>(), std::make_unique<textureloader_bmp>()));
+                wtexture.push_back(std::make_pair(std::make_unique<texturemime_bmp>(), std::make_unique<texturewriter_bmp>()));
                 #endif
 
                 #ifdef texture_loader_jpeg_support
-                rtexture.push_back(std::make_pair(new texturemime_jpg(), new textureloader_jpg()));
-                wtexture.push_back(std::make_pair(new texturemime_jpg(), new texturewriter_jpg()));
+                rtexture.push_back(std::make_pair(std::make_unique<texturemime_jpg>(), std::make_unique<textureloader_jpg>()));
+                wtexture.push_back(std::make_pair(std::make_unique<texturemime_jpg>(), std::make_unique<texturewriter_jpg>()));
                 #endif
 
                 #ifdef texture_loader_pcx_support
-                rtexture.push_back(std::make_pair(new texturemime_pcx(), new textureloader_pcx()));
-                wtexture.push_back(std::make_pair(new texturemime_pcx(), new texturewriter_pcx()));
+                rtexture.push_back(std::make_pair(std::make_unique<texturemime_pcx>(), std::make_unique<textureloader_pcx>()));
+                wtexture.push_back(std::make_pair(std::make_unique<texturemime_pcx>(), std::make_unique<texturewriter_pcx>()));
                 #endif
 
                 #ifdef texture_loader_pgm_support
-                rtexture.push_back(std::make_pair(new texturemime_pgm(), new textureloader_pgm()));
-                wtexture.push_back(std::make_pair(new texturemime_pgm(), new texturewriter_pgm()));
+                rtexture.push_back(std::make_pair(std::make_unique<texturemime_pgm>(), std::make_unique<textureloader_pgm>()));
+                wtexture.push_back(std::make_pair(std::make_unique<texturemime_pgm>(), std::make_unique<texturewriter_pgm>()));
                 #endif
 
                 #ifdef texture_loader_png_support
-                rtexture.push_back(std::make_pair(new texturemime_png(), new textureloader_png()));
-                wtexture.push_back(std::make_pair(new texturemime_png(), new texturewriter_png()));
+                rtexture.push_back(std::make_pair(std::make_unique<texturemime_png>(), std::make_unique<textureloader_png>()));
+                wtexture.push_back(std::make_pair(std::make_unique<texturemime_png>(), std::make_unique<texturewriter_png>()));
                 #endif
 
                 #ifdef texture_loader_tga_support
-                rtexture.push_back(std::make_pair(new texturemime_tga(), new textureloader_tga()));
-                wtexture.push_back(std::make_pair(new texturemime_tga(), new texturewriter_tga()));
+                rtexture.push_back(std::make_pair(std::make_unique<texturemime_tga>(), std::make_unique<textureloader_tga>()));
+                wtexture.push_back(std::make_pair(std::make_unique<texturemime_tga>(), std::make_unique<texturewriter_tga>()));
                 #endif
 
                 #ifdef texture_loader_tiff_support
-                rtexture.push_back(std::make_pair(new texturemime_tiff(), new textureloader_tiff()));
+                rtexture.push_back(std::make_pair(std::make_unique<texturemime_tiff>(), std::make_unique<textureloader_tiff>()));
                 // unsupported write
                 #endif
 
                 #ifdef mesh_loader_3ds_support
-                rmesh.push_back(std::make_pair(new meshmime_3ds(), new meshloader_3ds()));
+                rmesh.push_back(std::make_pair(std::make_unique<meshmime_3ds>(), std::make_unique<meshloader_3ds>()));
                 // unsupported write
                 #endif
 
                 #ifdef mesh_loader_txt_support
-                rmesh.push_back(std::make_pair(new meshmime_txt(), new meshloader_txt()));
-                wmesh.push_back(std::make_pair(new meshmime_txt(), new meshwriter_txt()));
+                rmesh.push_back(std::make_pair(std::make_unique<meshmime_txt>(), std::make_unique<meshloader_txt>()));
+                wmesh.push_back(std::make_pair(std::make_unique<meshmime_txt>(), std::make_unique<meshwriter_txt>()));
                 #endif
 
                 #ifdef mesh_loader_obj_support
-                rmesh.push_back(std::make_pair(new meshmime_obj(), new meshloader_obj()));
-                wmesh.push_back(std::make_pair(new meshmime_obj(), new meshwriter_obj()));
+                rmesh.push_back(std::make_pair(std::make_unique<meshmime_obj>(), std::make_unique<meshloader_obj>()));
+                wmesh.push_back(std::make_pair(std::make_unique<meshmime_obj>(), std::make_unique<meshwriter_obj>()));
                 #endif
             }
         }
         loader::~loader()
         {
-            for(auto e : rtexture)
-            {
-                delete e.first;
-                delete e.second;
-            }
-
-            for(auto e : rmesh)
-            {
-                delete e.first;
-                delete e.second;
-            }
-
-            for(auto e : wmesh)
-            {
-                delete e.first;
-                delete e.second;
-            }
-
-            for(auto e : wtexture)
-            {
-                delete e.first;
-                delete e.second;
-            }
+            // unique_ptr automatically handles cleanup, no manual deletion needed
         }
         std::shared_ptr<driver::mesh> loader::loadMesh(const std::string &filename) const noexcept
         {
-            for(auto e : rmesh)
+            for(const auto& e : rmesh)
             {
                 if(e.first->match(filename))
                 {
-                    auto loader = e.second;
+                    auto loader = e.second.get();
                     auto file = fs->read(filename);
                     auto mesh = file ? loader->read(file.get()) : nullptr;
                     debug_mesh(mesh, filename.c_str());
@@ -185,11 +163,11 @@ namespace sleek
         }
         std::shared_ptr<driver::texture> loader::loadTexture(const std::string &filename) const noexcept
         {
-            for(auto e : rtexture)
+            for(const auto& e : rtexture)
             {
                 if(e.first->match(filename))
                 {
-                    auto loader = e.second;
+                    auto loader = e.second.get();
                     auto file = fs->read(filename);
                     auto texture = file ? loader->read(file.get()) : nullptr;
                     debug_texture(texture, filename.c_str());
@@ -205,11 +183,11 @@ namespace sleek
             if(!data)
                 return false;
 
-            for(auto e : wmesh)
+            for(const auto& e : wmesh)
             {
                 if(e.first->match(filename))
                 {
-                    auto writer = e.second;
+                    auto writer = e.second.get();
                     auto file = fs->write(filename);
                     return file ? writer->write(data.get(), file.get()) : false;
                     // if false, file should be deleted ?
@@ -223,11 +201,11 @@ namespace sleek
             if(!data)
                 return false;
 
-            for(auto e : wtexture)
+            for(const auto& e : wtexture)
             {
                 if(e.first->match(filename))
                 {
-                    auto writer = e.second;
+                    auto writer = e.second.get();
                     auto file = fs->write(filename);
                     return file ? writer->write(data.get(), file.get()) : false;
                 }

@@ -47,6 +47,9 @@ namespace sleek
 
         void texture::setPixel(const math::vec2i &pos, const math::pixel &color) noexcept
         {
+            if (pos.x < 0 || pos.x >= original.x || pos.y < 0 || pos.y >= original.y)
+                return;
+
             // int idx = indexof(pos);
             int idx = (pos.x + pos.y*original.x)*pitch;
 
@@ -186,7 +189,7 @@ namespace sleek
         texture* texture::clone() const noexcept
         {
             texture *tmp = new texture(original, fmt);
-            memcpy(tmp->buffer, buffer, getBufferSize());
+            std::memcpy(tmp->buffer, buffer, getBufferSize());
             return tmp;
         }
 
@@ -205,13 +208,9 @@ namespace sleek
             {
                 for(int i = 0; i<getBufferSize(); i+= pitch)
                 {
-                    float avg = *((float*)(&buffer)+0)
-                              + *((float*)(&buffer)+1)
-                              + *((float*)(&buffer)+2);
-
-                    *((float*)(&buffer)+0) = avg/3.0;
-                    *((float*)(&buffer)+1) = avg/3.0;
-                    *((float*)(&buffer)+2) = avg/3.0;
+                    float* floats = reinterpret_cast<float*>(&buffer[i]);
+                    float avg = (floats[0] + floats[1] + floats[2]) / 3.0;
+                    floats[0] = floats[1] = floats[2] = avg;
                 }
             }
         }
@@ -233,9 +232,9 @@ namespace sleek
 //                    unsigned long src = (x+(original.y-y-1)*original.x)*pitch;
 //                    unsigned long dst = (x+y*original.x)*pitch;
 //
-//                    memcpy(tmp, buffer+src, pitch);
-//                    memcpy(buffer+src, buffer+dst, pitch);
-//                    memcpy(buffer+dst, tmp, pitch);
+//                    std::memcpy(tmp, buffer+src, pitch);
+//                    std::memcpy(buffer+src, buffer+dst, pitch);
+//                    std::memcpy(buffer+dst, tmp, pitch);
                 }
             }
         }
@@ -294,9 +293,10 @@ namespace sleek
                 case TXFMT_RGBA_32F:
                     for(int i = 0; i<getBufferSize(); i+= pitch)
                     {
-                        *((float*)(&buffer)+0) = 1.0-*((float*)(&buffer)+0);
-                        *((float*)(&buffer)+1) = 1.0-*((float*)(&buffer)+1);
-                        *((float*)(&buffer)+2) = 1.0-*((float*)(&buffer)+2);
+                        float* floats = reinterpret_cast<float*>(&buffer[i]);
+                        floats[0] = 1.0-floats[0];
+                        floats[1] = 1.0-floats[1];
+                        floats[2] = 1.0-floats[2];
                     }
                 break;
             }

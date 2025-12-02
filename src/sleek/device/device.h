@@ -1,5 +1,4 @@
-#ifndef DEVICE
-#define DEVICE
+#pragma once
 
 #include "icone.h"
 #include "device_stub.h"
@@ -107,5 +106,3 @@ namespace sleek
         std::shared_ptr<Device> CreateDeviceWindowManager(const DeviceWindowManager&, const Device_stub&) noexcept;
     }
 }
-
-#endif
